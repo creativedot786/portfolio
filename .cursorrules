@@ -1,0 +1,30 @@
+# AI Engineering Rules
+
+This file defines the strict rules that all AI assistants must follow when modifying this codebase.
+
+## 1. Architectural Integrity
+- Follow the feature-based folder structure.
+- Do not create components in `src/components` unless they are truly shared base primitives (shadcn/ui) or global layout elements.
+- Domain-specific components belong in `src/features/{feature-name}/components`.
+
+## 2. Design System & Styling
+- Never hardcode colors, spacing, typography, or breakpoints.
+- Use Tailwind CSS v4 variables mapped to our design tokens.
+- All UI components must compose `src/components/ui` primitives. DO NOT recreate `Button`, `Input`, `Dialog`, etc.
+- Use `Inter Tight` font variables (`font-sans`).
+
+## 3. Code Quality & Patterns
+- Default to React Server Components. Use `"use client"` only when necessary (hooks, events, browser APIs).
+- Maintain Single Responsibility Principle (SRP). Keep components under 300-500 lines.
+- Write strict TypeScript. Do not use `any` or `@ts-ignore` without a descriptive comment.
+- Validate inputs using Zod.
+
+## 4. Performance & Accessibility
+- Use `next/image` and `next/font`.
+- Ensure keyboard navigability and ARIA compliance.
+- Keep Client Components as leaf nodes to minimize JavaScript payload.
+
+## 5. Collaboration
+- Check `task.md` or `docs/` for ongoing context before proposing large changes.
+- Explain "why" in comments, not "what".
+- Ensure new code passes `pnpm lint` and `pnpm build`.
