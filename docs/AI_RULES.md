@@ -1,6 +1,6 @@
 # AI Engineering Rules
 
-This project is actively developed using AI assistants (Claude, GPT-4, etc.). To ensure long-term maintainability, all AI agents must follow the strict constraints defined in the `.cursorrules` file located at the root of the repository.
+This project is actively developed using AI assistants (Claude, GPT, etc.). To ensure long-term maintainability, all AI agents must follow the strict constraints defined in the `.cursorrules` file located at the root of the repository.
 
 **Key tenets:**
 1. **Never Duplicate**: Always search the codebase for existing primitives before writing new ones.
