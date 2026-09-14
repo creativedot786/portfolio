@@ -42,6 +42,10 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
       try {
         if (sessionStorage.getItem('hr-loader') || matchMedia('(prefers-reduced-motion: reduce)').matches) {
           document.documentElement.classList.add('no-loader');
+        } else {
+          // First visit: hold the page and the grid until the logo has drawn, then draw the
+          // lines, then let the content in. Set before first paint so nothing flashes.
+          document.documentElement.classList.add('intro');
         }
       } catch (e) {}
       // Theme and grid are restored before first paint, so a Cream visitor never sees a dark flash.
@@ -65,22 +69,38 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
     <CursorMultifollow client:idle />
     <HoverPreview client:idle />
     <script>
+      // ── the intro ──────────────────────────────────────────────
+      // 0        the logo draws and fills (Loader.astro)
+      // 900ms    the grid lines draw down the first screen, left to right
+      // 1100ms   the loader dissolves under them
+      // 2000ms   the lines are done; the page and the rail fade in and the hero rises
+      // Any later visit in the session, and reduced motion, skip all of it.
       function loader() {
         const l = document.getElementById('loader');
+        const root = document.documentElement;
         if (!l) return;
         let seen = false;
         try { seen = !!sessionStorage.getItem('hr-loader'); } catch (e) {}
-        if (seen || matchMedia('(prefers-reduced-motion: reduce)').matches) { l.remove(); return; }
+        if (seen || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          l.remove(); root.classList.remove('intro'); root.classList.add('lines-done'); return;
+        }
+        setTimeout(() => root.classList.add('lines'), 900);
         setTimeout(() => {
           l.classList.add('out');
           try { sessionStorage.setItem('hr-loader', '1'); } catch (e) {}
           setTimeout(() => l.remove(), 500);
         }, 1100);
+        setTimeout(() => {
+          root.classList.add('lines-done');
+          root.classList.remove('intro');
+          revealCheck();
+        }, 2000);
       }
       // Reveals are checked inside the scroll loop below rather than by IntersectionObserver.
       // IO is suspended whenever the document is not rendering, and one loop driving reveal,
       // drift and the scrolling flag is simpler than three mechanisms doing similar work.
       function revealCheck() {
+        if (document.documentElement.classList.contains('intro')) return;   // not until the lines are in
         const vh = innerHeight;
         document.querySelectorAll('.reveal:not(.in)').forEach((el) => {
           const r = el.getBoundingClientRect();

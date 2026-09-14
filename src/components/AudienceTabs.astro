@@ -57,6 +57,9 @@ import { audiences } from '../data/audiences';
   :global(html.js) .panel.leaving .stmt :global(.w > span){transform:translateY(-112%);transition-duration:.45s;transition-delay:calc(var(--i) * 12ms)}
 
   :global(html.js) .lead-wrap{opacity:0;transform:translateY(8px);transition:opacity .5s var(--ease-out-soft) .3s,transform .5s var(--ease-out-soft) .3s}
+  /* During the intro the first panel is held down; when html.intro goes, it rises as usual. */
+  :global(html.js.intro) .panel.on .stmt :global(.w > span){transform:translateY(112%)}
+  :global(html.js.intro) .panel.on .lead-wrap{opacity:0;transform:translateY(8px)}
   :global(html.js) .panel.on .lead-wrap{opacity:1;transform:none}
   :global(html.js) .panel.leaving .lead-wrap{opacity:0;transition-delay:0s;transition-duration:.25s}
 

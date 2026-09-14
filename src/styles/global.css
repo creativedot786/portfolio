@@ -365,60 +365,63 @@
   .tsw:not([aria-checked="true"]):hover { transform: scale(1.18); }
   .tsw:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; }
 
-  /* ── grid overlay ────────────────────────────────────────────
-     Dotted, not ruled: a 1px column of round dots every 6px on both edges of every column, the
-     same template as the content. ANCHORED TO THE DOCUMENT, not the viewport. A fixed layer
-     made every moving flare look as if it slid against the page; attached to the page, the
-     flare moves with the content and the illusion cannot occur. Behind the content at z 0. */
+  /* ── grid ────────────────────────────────────────────────────
+     Twelve solid lines, one at the START of every column, always on. Every piece of content
+     has its left edge exactly on a line, because the lines and the content read the same
+     template. Anchored to the document, behind the content, at 7% ink — furniture, not a
+     feature. Modelled on conceptualize.ae's ruled page; the mechanism is our own.
+     The toggle is gone. What remains alive is the flare: a soft bright segment dealt to a
+     random line every so often, travelling up in page space so it moves with the content. */
   body { position: relative; }
   .grid-layer { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
   main, footer { position: relative; z-index: 1; }
   .grid-layer > .shell { height: 100%; }
-  .grid-layer .col { display: flex; justify-content: space-between; height: 100%; }
+  .grid-layer .col { position: relative; height: 100%; }
   .grid-layer .ln {
-    position: relative;
+    position: absolute; left: 0; top: 0;
     width: 1px; height: 100%;
-    opacity: 0;
-    background: radial-gradient(circle, color-mix(in srgb, var(--color-primary) 14%, transparent) .55px, transparent .8px) 0 0 / 1px 6px;
-    transition: opacity .55s var(--ease-out-soft);
+    background: color-mix(in srgb, var(--color-primary) 7%, transparent);
   }
-  :root.grid-on .grid-layer .ln { opacity: 1; }
+  /* The intro. While html.intro the page and the rail are held at 0 and the lines at zero
+     height; html.lines draws them down the first screen, staggered left to right; html.lines-done
+     lets them run the full document. Everything is gated on html.js so a page without script
+     is simply there. */
+  html.js.intro main, html.js.intro .rail-layer { opacity: 0; }
+  main, .rail-layer { transition: opacity .6s var(--ease-out-soft); }
+  html.js.intro .grid-layer .ln { max-height: 0; }
+  html.js.lines .grid-layer .ln { max-height: 100vh; transition: max-height .7s var(--ease-out-soft); }
+  html.js.lines-done .grid-layer .ln, html.js.no-loader .grid-layer .ln { max-height: none; transition: none; }
+  html.js.lines .grid-layer .col:nth-child(1) .ln { transition-delay: 0.000s }
+  html.js.lines .grid-layer .col:nth-child(2) .ln { transition-delay: 0.035s }
+  html.js.lines .grid-layer .col:nth-child(3) .ln { transition-delay: 0.070s }
+  html.js.lines .grid-layer .col:nth-child(4) .ln { transition-delay: 0.105s }
+  html.js.lines .grid-layer .col:nth-child(5) .ln { transition-delay: 0.140s }
+  html.js.lines .grid-layer .col:nth-child(6) .ln { transition-delay: 0.175s }
+  html.js.lines .grid-layer .col:nth-child(7) .ln { transition-delay: 0.210s }
+  html.js.lines .grid-layer .col:nth-child(8) .ln { transition-delay: 0.245s }
+  html.js.lines .grid-layer .col:nth-child(9) .ln { transition-delay: 0.280s }
+  html.js.lines .grid-layer .col:nth-child(10) .ln { transition-delay: 0.315s }
+  html.js.lines .grid-layer .col:nth-child(11) .ln { transition-delay: 0.350s }
+  html.js.lines .grid-layer .col:nth-child(12) .ln { transition-delay: 0.385s }
 
-  /* The flare is the same dot pattern, brighter, through a soft 260px window. It is given a
-     start and an end in DOCUMENT coordinates by the scheduler — just below the viewport to just
-     above it — so every pass crosses what you are looking at, on whichever line it was dealt.
-     `both` holds it at its start before the animation begins: without that it sat at the top of
-     its line, visible, waiting — the "stuck at the top" flares. */
+  /* A thirteenth line at the container's right edge. Without it the last line had a whole
+     column plus the margin after it (138px) against 48px before the first. */
+  .grid-layer .ln-end { left: auto; right: 0; }
   .grid-layer .ln::after {
     content: ""; position: absolute; left: 0; top: 0;
     width: 1px; height: 320px; opacity: 0;
-    /* 60% against the line's 14% — a little over four times brighter — with the bright core
-       taking the middle 40% of the window rather than the middle 10%. Slow AND faint is the
-       combination the eye cannot track; this is calm but present. */
-    background: radial-gradient(circle, color-mix(in srgb, var(--color-primary) 60%, transparent) .6px, transparent .85px) 0 0 / 1px 6px;
+    background: color-mix(in srgb, var(--color-primary) 46%, transparent);
     -webkit-mask: linear-gradient(to top, transparent, #000 30%, #000 70%, transparent);
     mask: linear-gradient(to top, transparent, #000 30%, #000 70%, transparent);
   }
   .grid-layer .ln.flare::after {
     opacity: 1;
-    animation: ln-flare var(--dur, 5s) linear both;
+    animation: ln-flare var(--dur, 10s) linear both;
   }
   @keyframes ln-flare {
     from { transform: translateY(var(--from)) }
     to   { transform: translateY(var(--to)) }
   }
-  .grid-layer .col:nth-child(1) .ln { transition-delay: 0.00s }
-  .grid-layer .col:nth-child(2) .ln { transition-delay: 0.04s }
-  .grid-layer .col:nth-child(3) .ln { transition-delay: 0.08s }
-  .grid-layer .col:nth-child(4) .ln { transition-delay: 0.12s }
-  .grid-layer .col:nth-child(5) .ln { transition-delay: 0.16s }
-  .grid-layer .col:nth-child(6) .ln { transition-delay: 0.20s }
-  .grid-layer .col:nth-child(7) .ln { transition-delay: 0.24s }
-  .grid-layer .col:nth-child(8) .ln { transition-delay: 0.28s }
-  .grid-layer .col:nth-child(9) .ln { transition-delay: 0.32s }
-  .grid-layer .col:nth-child(10) .ln { transition-delay: 0.36s }
-  .grid-layer .col:nth-child(11) .ln { transition-delay: 0.40s }
-  .grid-layer .col:nth-child(12) .ln { transition-delay: 0.44s }
   @media (max-width: 1023px) { .grid-layer { display: none; } }
 }
 

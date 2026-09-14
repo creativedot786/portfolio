@@ -806,3 +806,61 @@ than two things animating. No drift on desktop — the reveal is the motion.
 gentle drift (−0.03) with its lower edge dissolving so any overlap with the heading reads as
 depth rather than collision. Behind-the-text was rejected here: on a 390px screen the words
 would cover the photograph's full width with nothing to dissolve into.
+
+
+## Grid, simplified — 14 Sep 2026
+
+Modelled on conceptualize.ae's ruled page after Huzaifa raised it; the mechanism is ours.
+
+**Twelve solid lines, one at the start of every column, always on.** Every piece of content has its
+left edge exactly on a line — verified at 1440 across the rail, tabs, headline, lead, case copy
+and image, About lead and photographs, journey copy and photograph, roles, quotes and footer.
+Lines are 1px at 7% ink, anchored to the document, behind the content. Furniture, not a feature.
+
+**Gone:** the toggle and its button, the dotted pattern, the draw-on, `hr-grid` storage, the
+`grid-on` selectors and the `.glass` class. The rail's tools are the theme pill alone.
+
+**Kept:** the flare, now a solid soft segment rather than lit dots — dealt to a random line every
+6–12s, one pass each, spawned below the viewport and ending above it, travelling in page space.
+At most two in flight. It starts on its own 1.2s after load; nothing is dealt in a background tab,
+on touch layouts, or under reduced motion.
+
+**Density:** 12 lines every 114px, from 24 every ~57px. Half the marks, and solid reads as
+structure where dots read as texture.
+
+**Revert:** `git checkout 64452a7 -- src/` restores the dotted, toggled version exactly.
+
+
+**Thirteen lines, and boxes that end on one — 14 Sep.** Lines at column starts left a whole
+column plus the margin after the twelfth (138px against 48 before the first); a thirteenth line at
+the container's right edge makes the margins 48 / 48. And because a column's *end* is never a
+line, any box that needs a hard right edge — case study image, journey photograph, About
+photographs, the roles list with its right-aligned dates — extends across its trailing gutter to
+the next column's start: `margin-right: calc(-1 * var(--grid-gutter))`. Left edge on a line,
+right edge on a line, the gutter absorbed as air inside the box. Verified: every such edge lands
+exactly; the dates end on the column-11 line at 1188.
+
+**The journey hover target is the whole row**, full shell width, not the copy — so the photograph
+reveals with the pointer anywhere across the beat, including the empty right side.
+
+
+## The intro — 14 Sep 2026
+
+First visit only (session storage), never under reduced motion:
+
+| | |
+|---|---|
+| 0 | the logo draws and fills, alone on the ground |
+| 900ms | the twelve grid lines draw down the first screen, staggered 35ms left to right |
+| 1100ms | the loader dissolves under them |
+| 2000ms | the lines run the full document; the page and the rail fade in; the hero words rise |
+
+Held during the intro: `main` and the rail at opacity 0, the lines at `max-height: 0`, the hero's
+first panel down at its pre-reveal position, and the reveal check suspended — so nothing arrives
+before its cue. All gated on `html.js`; a page without script is simply there.
+
+Lines draw by `max-height` to `100vh` rather than to their full document height, because a line
+11,000px tall drawing in 700ms would cross the first screen in a frame. What you see draw is the
+screen you are looking at; the rest is already there below the fold.
+
+Logo 56 → 64px.
