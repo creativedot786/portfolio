@@ -113,7 +113,7 @@ const along = [
   :global(html.js) .along figure.in figcaption{opacity:1}
 
   @media (min-width:1024px){
-    .along figure{grid-column:4/7}            /* 318 */
+    .along figure{grid-column:4/7;margin-right:calc(-1 * var(--grid-gutter))}            /* line to line */
     .along figure:nth-child(even){grid-column:9/12}
     .along figure + figure{margin-top:120px}
     /* Widths stay equal so the zigzag stays calm; only the ratio varies. */
@@ -127,7 +127,7 @@ const along = [
 
   /* ── Where I've worked ── */
   .roles,.roles-cta{grid-column:1/-1;list-style:none}
-  @media (min-width:1024px){ .roles,.roles-cta{grid-column:4/11} }   /* last two columns left empty */
+  @media (min-width:1024px){ .roles,.roles-cta{grid-column:4/11;margin-right:calc(-1 * var(--grid-gutter))} }   /* 4-10, dates ending on the column-11 line */
   /* No rules. A solid horizontal line across a dotted vertical grid is two systems arguing;
      nine rows with dates on the right edge scan fine on rhythm alone. */
   .role{

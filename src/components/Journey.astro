@@ -60,7 +60,8 @@ const ratios = ['4 / 3', '3 / 4', '4 / 3', '3 / 4'];
     .beat-text{grid-column:4/9;grid-row:1}
     .beat-photo{
       grid-column:7/12;grid-row:1;
-      justify-self:start;width:100%;
+      justify-self:stretch;width:auto;               /* stretch, so the negative margin can widen it */
+      margin-right:calc(-1 * var(--grid-gutter));   /* ends on the column-12 line */
       align-self:center;
       /* the part under the words dissolves */
       -webkit-mask:linear-gradient(to right, transparent 0%, #000 45%);
@@ -74,9 +75,9 @@ const ratios = ['4 / 3', '3 / 4', '4 / 3', '3 / 4'];
       transition:opacity .28s var(--ease-out-soft), transform .28s var(--ease-out-soft);
       translate:none;   /* no drift on desktop; the hover reveal is the motion here */
     }
-    .beat-text:hover ~ .beat-photo,
-    .beat-text.is-hot ~ .beat-photo,
-    .beat-text:focus-within ~ .beat-photo{
+    .beat:hover .beat-photo,
+    .beat.is-hot .beat-photo,
+    .beat:focus-within .beat-photo{
       opacity:1;
       transform:none;
       transition:opacity .5s var(--ease-out-soft), transform .7s var(--ease-out-soft);
@@ -93,6 +94,7 @@ const ratios = ['4 / 3', '3 / 4', '4 / 3', '3 / 4'];
   // state only updates on the next mousemove. So a beat arriving under the cursor mid-scroll
   // stayed dark until the mouse twitched. On every scroll frame this hit-tests whatever is
   // under the last known pointer position and drives the reveal from a class instead.
+  // The target is the whole beat row, full shell width, not just the copy.
   function journeyHover() {
     if ((window as any).__journeyHover) return;
     (window as any).__journeyHover = true;
@@ -102,9 +104,9 @@ const ratios = ['4 / 3', '3 / 4', '4 / 3', '3 / 4'];
     const sync = () => {
       ticking = false;
       const el = mx < 0 ? null : document.elementFromPoint(mx, my);
-      const text = el?.closest?.('.beat-text') as HTMLElement | null;
-      document.querySelectorAll<HTMLElement>('.beat-text.is-hot').forEach((t) => { if (t !== text) t.classList.remove('is-hot'); });
-      text?.classList.add('is-hot');
+      const beat = el?.closest?.('.beat') as HTMLElement | null;
+      document.querySelectorAll<HTMLElement>('.beat.is-hot').forEach((b) => { if (b !== beat) b.classList.remove('is-hot'); });
+      beat?.classList.add('is-hot');
     };
     const ask = () => { if (!ticking) { ticking = true; requestAnimationFrame(sync); } };
 

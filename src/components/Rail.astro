@@ -45,11 +45,6 @@ const sections: [string, string][] = [
           </div>
         </div>
 
-        <button type="button" class="glass" data-grid-btn aria-pressed="false" aria-label="Show layout grid">
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M5 3v18M12 3v18M19 3v18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-          </svg>
-        </button>
       </div>
     </div>
   </div>
@@ -57,8 +52,8 @@ const sections: [string, string][] = [
 
 <div class="grid-layer" data-grid-layer aria-hidden="true">
   <div class="shell">
-    {Array.from({ length: 12 }).map(() => (
-      <div class="col"><i class="ln"></i><i class="ln"></i></div>
+    {Array.from({ length: 12 }).map((_, i) => (
+      <div class="col"><i class="ln"></i>{i === 11 && <i class="ln ln-end"></i>}</div>
     ))}
   </div>
 </div>
@@ -106,25 +101,27 @@ const sections: [string, string][] = [
       });
     }
 
-    // ── grid overlay ─────────────────────────────────────────
-    const gridBtn = document.querySelector<HTMLButtonElement>('[data-grid-btn]');
+    // ── grid flare ──────────────────────────────────────────
+    // The grid is always on. Flares are dealt, not assigned: every 6-12s a random idle line
+    // gets one pass, spawned just below the viewport and ending just above it, so it always
+    // crosses what is on screen. At most two in flight; each pass ends and the line returns
+    // to the pool. Nothing is dealt while the tab is in the background, on touch layouts, or
+    // under reduced motion; a pass already in flight is never cancelled.
     const lines = [...document.querySelectorAll<HTMLElement>('.grid-layer .ln')];
-
-    // Flares are dealt, not assigned. Every 6-12s a random idle line gets one pass, spawned just
-    // below the viewport and ending just above it, so it always crosses what is on screen — on
-    // the right-hand lines as often as the left. At most two in flight. Each pass ends, the
-    // line goes back in the pool, and the next deal picks again.
     const inFlight = new Set<HTMLElement>();
     let dealTimer = 0;
+    const canDeal = () =>
+      !document.hidden && matchMedia('(min-width: 1024px)').matches &&
+      !matchMedia('(prefers-reduced-motion: reduce)').matches;
     const deal = () => {
       dealTimer = 0;
-      if (!root.classList.contains('grid-on') || document.hidden) return;
+      if (!canDeal()) return;
       if (inFlight.size < 2) {
         const pool = lines.filter((l) => !inFlight.has(l));
         const l = pool[Math.floor(Math.random() * pool.length)];
         l.style.setProperty('--from', Math.round(scrollY + innerHeight + 300) + 'px');
         l.style.setProperty('--to', Math.round(scrollY - 400) + 'px');
-        l.style.setProperty('--dur', (9 + Math.random() * 4).toFixed(1) + 's');   // ~125-180px/s: crosses the screen in 5-7s
+        l.style.setProperty('--dur', (9 + Math.random() * 4).toFixed(1) + 's');
         inFlight.add(l);
         l.classList.add('flare');
         const done = (e: AnimationEvent) => {
@@ -137,40 +134,15 @@ const sections: [string, string][] = [
       }
       schedule();
     };
-    // The first deal comes quickly; after that, one every 6-12s. Waiting the full interval
-    // before the first meant nothing at all for up to eighteen seconds after the grid came on.
     const schedule = (first = false) => {
       clearTimeout(dealTimer);
       dealTimer = window.setTimeout(deal, first ? 1200 : 6000 + Math.random() * 6000);
     };
-    const stopFlares = () => {
-      clearTimeout(dealTimer); dealTimer = 0;
-      lines.forEach((l) => l.classList.remove('flare'));
-      inFlight.clear();
-    };
-    // Going to the background stops the DEALING, not the flares already in flight — those
-    // finish on their own (animationend still fires) and return to the pool. Cancelling them
-    // was unnecessary, and in any environment that flickers visibility it killed every pass.
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) { clearTimeout(dealTimer); dealTimer = 0; }
-      else if (root.classList.contains('grid-on') && matchMedia('(min-width: 1024px)').matches && !dealTimer) schedule(true);
+      else if (!dealTimer) schedule(true);
     });
-
-    if (gridBtn) {
-      const sync = (on: boolean) => {
-        root.classList.toggle('grid-on', on);
-        gridBtn.setAttribute('aria-pressed', String(on));
-        gridBtn.classList.toggle('on', on);
-        gridBtn.setAttribute('aria-label', on ? 'Hide layout grid' : 'Show layout grid');
-        if (on && !matchMedia('(prefers-reduced-motion: reduce)').matches) { stopFlares(); schedule(true); } else stopFlares();
-      };
-      sync(root.classList.contains('grid-on'));
-      gridBtn.addEventListener('click', () => {
-        const on = !root.classList.contains('grid-on');
-        sync(on);
-        try { localStorage.setItem('hr-grid', on ? '1' : '0'); } catch (e) {}
-      });
-    }
+    if (canDeal()) schedule(true);
 
     // ── scroll spy ───────────────────────────────────────────
     // Marks whichever section owns the middle of the viewport, and keeps the hash in step so
