@@ -23,9 +23,9 @@ const arrow = 'inline-flex items-center gap-1.5';
         <p class="text-body md:text-h3 leading-[1.55] tabular-nums" data-clock aria-live="off">—</p>
       </div>
       <div class="lg:justify-self-end font-bold text-body md:text-h3 leading-[1.55]">
-        <p><a class={arrow} href={`mailto:${site.email}`}>{site.emailShown}<svg class="w-[14px] h-[14px]" viewBox="0 0 14.4 14.4" aria-hidden="true"><path d="M1.2 13.2L13.2 1.2M13.2 1.2H1.2M13.2 1.2V13.2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" fill="none"/></svg></a></p>
-        <p><a class={arrow} href={site.linkedin} target="_blank" rel="noopener">LinkedIn<svg class="w-[14px] h-[14px]" viewBox="0 0 14.4 14.4" aria-hidden="true"><path d="M1.2 13.2L13.2 1.2M13.2 1.2H1.2M13.2 1.2V13.2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" fill="none"/></svg></a></p>
-        <p><a class={arrow} href={site.resume} target="_blank" rel="noopener">Resume<svg class="w-[14px] h-[14px]" viewBox="0 0 14.4 14.4" aria-hidden="true"><path d="M1.2 13.2L13.2 1.2M13.2 1.2H1.2M13.2 1.2V13.2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" fill="none"/></svg></a></p>
+        <p><a class={arrow} href={`mailto:${site.email}`}>{site.emailShown}<svg class="arr w-[14px] h-[14px]" viewBox="0 0 14.4 14.4" aria-hidden="true"><path d="M1.2 13.2L13.2 1.2M13.2 1.2H1.2M13.2 1.2V13.2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" fill="none"/></svg></a></p>
+        <p><a class={arrow} href={site.linkedin} target="_blank" rel="noopener">LinkedIn<svg class="arr w-[14px] h-[14px]" viewBox="0 0 14.4 14.4" aria-hidden="true"><path d="M1.2 13.2L13.2 1.2M13.2 1.2H1.2M13.2 1.2V13.2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" fill="none"/></svg></a></p>
+        <p><a class={arrow} href={site.resume} target="_blank" rel="noopener">Resume<svg class="arr w-[14px] h-[14px]" viewBox="0 0 14.4 14.4" aria-hidden="true"><path d="M1.2 13.2L13.2 1.2M13.2 1.2H1.2M13.2 1.2V13.2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" fill="none"/></svg></a></p>
       </div>
     </div></div>
     <div class="shell"><div class="col-full mt-6 max-md:mt-5 text-body md:text-h3">©{year}</div></div>
@@ -50,8 +50,6 @@ const arrow = 'inline-flex items-center gap-1.5';
   :global(html.js) .foot-body{opacity:0;transform:translateY(14px);
     transition:opacity .6s cubic-bezier(.65,0,.35,1) .25s,transform .6s cubic-bezier(.65,0,.35,1) .25s}
   :global(html.js) .strip-wrap.in ~ .foot-body{opacity:1;transform:none}
-  footer a:hover svg{transform:translate(2px,-2px)}
-  footer a svg{transition:transform .3s ease-in-out}
   @media (prefers-reduced-motion:reduce){
     .strip{transform:none;transition:none}
     :global(html.js) .foot-body{opacity:1;transform:none;transition:none}

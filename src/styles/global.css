@@ -290,15 +290,16 @@
      nav and the toggles disappear the moment the footer scrolls under them. */
   .rail-nav.inv a { color: color-mix(in srgb, var(--color-on-inverse) 55%, transparent); }
   .rail-nav.inv a:hover, .rail-nav.inv a.on { color: var(--color-on-inverse); }
-  .rail-tools.inv .glass {
-    color: color-mix(in srgb, var(--color-on-inverse) 70%, transparent);
-    background: color-mix(in srgb, var(--color-on-inverse) 8%, transparent);
-  }
-  .rail-tools.inv .glass:hover { color: var(--color-on-inverse); }
-  .rail-nav a, .glass { transition: color .25s var(--ease-out-soft), background .25s var(--ease-out-soft), border-color .25s var(--ease-out-soft); }
+  .rail-nav a { transition: color .25s var(--ease-out-soft), background .25s var(--ease-out-soft), border-color .25s var(--ease-out-soft); }
   /* icon tracks the font size so it never floats loose of the word */
-  .rail-nav a svg { width: .78em; height: .78em; flex: none; stroke-width: 2; opacity: .75; }
-  .rail-nav a:hover svg { opacity: 1; }
+  .rail-nav a svg { width: .78em; height: .78em; flex: none; stroke-width: 2; }
+
+  /* ── outward arrow ─────────────────────────────────────────
+     Every link that leaves the site carries the same glyph and the same nudge: on hover the
+     arrow moves 2px up and 2px right, the way it points. One rule, so the rail, the resume
+     link and the footer can never drift apart. */
+  .arr { opacity: .75; transition: transform .3s var(--ease-out-soft), opacity .2s var(--ease-out-soft); }
+  a:hover .arr, a:focus-visible .arr { transform: translate(2px, -2px); opacity: 1; }
 
   .rail-tools { margin-top: auto; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
 

@@ -75,7 +75,7 @@ const along = [
       <p class="roles-cta mt-8">
         <a class="role-cta" href={site.resume} target="_blank" rel="noopener">
           Full resume
-          <svg viewBox="0 0 14.4 14.4" aria-hidden="true"><path d="M1.2 13.2L13.2 1.2M13.2 1.2H1.2M13.2 1.2V13.2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" fill="none"/></svg>
+          <svg class="arr" viewBox="0 0 14.4 14.4" aria-hidden="true"><path d="M1.2 13.2L13.2 1.2M13.2 1.2H1.2M13.2 1.2V13.2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" fill="none"/></svg>
           <span class="sr-only">(opens in a new tab)</span>
         </a>
       </p>
@@ -142,9 +142,8 @@ const along = [
     font-weight:600;color:var(--color-secondary);text-decoration:none;
     transition:color .2s var(--ease-out-soft);
   }
-  .role-cta svg{width:.72em;height:.72em;flex:none;opacity:.75}
+  .role-cta svg{width:.72em;height:.72em;flex:none}
   .role-cta:hover{color:var(--color-primary)}
-  .role-cta:hover svg{opacity:1}
   @media (max-width:640px){
     .role{flex-direction:column;align-items:flex-start;gap:6px}
   }
