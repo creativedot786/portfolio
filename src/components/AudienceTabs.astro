@@ -1,0 +1,162 @@
+---
+import { audiences } from '../data/audiences';
+---
+<section id="intro" class="hero section flex flex-col justify-center" style="min-height:100svh" aria-labelledby="hero-heading" data-hero>
+  <div class="shell">
+    <div class="col-title mb-5 lg:mb-6">
+      <div class="tabs relative flex gap-[6px] overflow-x-auto max-lg:-mx-3 max-lg:px-3" role="tablist" aria-label="Who are you?" data-tabs>
+        {audiences.map((a, i) => (
+          <button role="tab" id={`tab-${a.id}`} aria-selected={i === 0 ? 'true' : 'false'} aria-controls={`panel-${a.id}`} tabindex={i === 0 ? 0 : -1}
+            class="relative z-10 whitespace-nowrap text-meta font-semibold text-tertiary px-[18px] py-1.5 rounded-full transition-colors hover:text-secondary aria-selected:text-primary">{a.label}</button>
+        ))}
+        <i class="tab-ind absolute top-0 h-full rounded-full overflow-hidden" aria-hidden="true"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="stack">
+    {audiences.map((a, i) => (
+      <div class={`panel shell invisible ${i === 0 ? 'on' : ''}`} role="tabpanel" id={`panel-${a.id}`} aria-labelledby={`tab-${a.id}`}>
+        {i === 0
+          ? <h1 id="hero-heading" class="stmt col-title text-display text-primary tracking-[-.022em] mb-5 lg:mb-6 [text-wrap:balance]" data-split set:html={a.heading} />
+          : <h2 class="stmt col-title text-display text-primary tracking-[-.022em] mb-5 lg:mb-6 [text-wrap:balance]" data-split set:html={a.heading} />}
+        <div class="lead-wrap col-lead">
+          <p class="text-h3 text-secondary" set:html={a.body} />
+          {a.close && <p class="mt-3 font-bold text-primary">{a.close}</p>}
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+<style>
+  .tabs{scrollbar-width:none}
+  @media (max-width:1023px){.tabs{-webkit-mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 40px),transparent)}}
+  .tabs::-webkit-scrollbar{display:none}
+  /* The pill carries a quiet accent tint, so the accent is present in the first interactive
+     element on the page without touching the prose. */
+  .tab-ind{left:0;width:0;background:color-mix(in srgb,var(--color-accent) 8%,var(--color-surface-raised));transition:left .55s var(--ease-out-soft),width .55s var(--ease-out-soft)}
+  .tab-ind::after{content:'';position:absolute;inset:0;background:color-mix(in srgb,var(--color-primary) 7%,transparent);transform-origin:left center;transform:scaleX(0)}
+  .tab-ind.run::after{animation:tab-progress var(--auto,7s) linear forwards}
+  @keyframes tab-progress{to{transform:scaleX(1)}}
+
+  /* Every panel is its own .shell, stacked in one grid cell, so the headline keeps the
+     same left edge as the tab row no matter which panel is showing. */
+  .stack{display:grid}
+  .panel{grid-area:1/1}
+  .panel.on,.panel.leaving{visibility:visible}
+  /* The headline is now the full ink colour, so emphasis can no longer be carried by brightness.
+     It moves to weight — Fraunces is variable, so 400 to 600 is free. */
+  .stmt{font-weight:400}
+  .stmt :global(em),.stmt :global(a){font-weight:600}
+
+  /* Masked word transition: outgoing words rise out, incoming rise in. */
+  .stmt :global(.w){display:inline-block;overflow:hidden;vertical-align:top;padding:.06em .02em .12em;margin:-.06em -.02em -.12em}
+  .stmt :global(.w > span){display:inline-block}
+  :global(html.js) .stmt :global(.w > span){transform:translateY(112%);transition:transform .75s var(--ease-out-soft);transition-delay:calc(var(--i) * 26ms)}
+  :global(html.js) .panel.on .stmt :global(.w > span){transform:none}
+  :global(html.js) .panel.leaving .stmt :global(.w > span){transform:translateY(-112%);transition-duration:.45s;transition-delay:calc(var(--i) * 12ms)}
+
+  :global(html.js) .lead-wrap{opacity:0;transform:translateY(8px);transition:opacity .5s var(--ease-out-soft) .3s,transform .5s var(--ease-out-soft) .3s}
+  :global(html.js) .panel.on .lead-wrap{opacity:1;transform:none}
+  :global(html.js) .panel.leaving .lead-wrap{opacity:0;transition-delay:0s;transition-duration:.25s}
+
+  @media (prefers-reduced-motion:reduce){
+    .stmt :global(.w > span),.lead-wrap{transition:none!important}
+    .tab-ind,.tab-ind::after{transition:none;animation:none}
+  }
+</style>
+<script>
+  function splitWords(el: HTMLElement) {
+    if (el.dataset.splitDone) return;
+    el.dataset.splitDone = '1';
+    let i = 0;
+    const frag = document.createDocumentFragment();
+    const wrap = (cls?: string) => {
+      const w = document.createElement('span'); w.className = 'w';
+      const inner = document.createElement('span'); inner.style.setProperty('--i', String(i++));
+      if (cls) inner.className = cls;
+      w.appendChild(inner); return { w, inner };
+    };
+    [...el.childNodes].forEach((node) => {
+      // A preview word is kept whole: splitting it into separate spans would drop its
+      // data-preview attribute and give one phrase three hover triggers.
+      const isEm = node.nodeType === 1 && (node as HTMLElement).tagName === 'EM'
+        && !(node as HTMLElement).dataset.preview;
+      if (node.nodeType === 3 || isEm) {
+        const cls = isEm ? (node as HTMLElement).className : undefined;
+        (node.textContent || '').split(/(\s+)/).forEach((p) => {
+          if (!p) return;
+          if (/^\s+$/.test(p)) { frag.appendChild(document.createTextNode(' ')); return; }
+          const { w, inner } = wrap(cls); inner.textContent = p; frag.appendChild(w);
+        });
+      } else {
+        const { w, inner } = wrap(); inner.appendChild(node.cloneNode(true)); frag.appendChild(w);
+      }
+    });
+    el.textContent = '';
+    el.appendChild(frag);
+  }
+
+  function hero() {
+    const root = document.querySelector<HTMLElement>('[data-hero]');
+    if (!root || (root as any).__init) return;
+    (root as any).__init = true;
+    root.querySelectorAll<HTMLElement>('[data-split]').forEach(splitWords);
+
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const panels = [...root.querySelectorAll<HTMLElement>('[role="tabpanel"]')];
+    const ind = root.querySelector<HTMLElement>('.tab-ind')!;
+    const row = root.querySelector<HTMLElement>('[data-tabs]')!;
+    const rm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const AUTO = 7000;
+    root.style.setProperty('--auto', AUTO + 'ms');
+
+    let cur = 0, timer = 0, autoTimer = 0, userTook = false, overTabs = false, inView = true;
+
+    const place = () => { const t = tabs[cur]; ind.style.left = t.offsetLeft + 'px'; ind.style.width = t.offsetWidth + 'px'; };
+    const stopAuto = () => { clearTimeout(autoTimer); ind.classList.remove('run'); };
+    const schedule = () => {
+      stopAuto();
+      if (rm || userTook || overTabs || !inView || document.hidden) return;
+      void ind.offsetWidth;
+      ind.classList.add('run');
+      autoTimer = window.setTimeout(() => activate((cur + 1) % tabs.length), AUTO);
+    };
+    const activate = (i: number, focus = false, byUser = false) => {
+      if (byUser) { userTook = true; stopAuto(); }
+      if (i === cur) { if (focus) tabs[i].focus(); return; }
+      const prev = cur; cur = i;
+      tabs.forEach((t, k) => { t.setAttribute('aria-selected', k === i ? 'true' : 'false'); t.tabIndex = k === i ? 0 : -1; });
+      panels[prev].classList.remove('on'); panels[prev].classList.add('leaving');
+      clearTimeout(timer);
+      timer = window.setTimeout(() => panels[prev].classList.remove('leaving'), 520);
+      panels[i].classList.add('on');
+      if (focus) tabs[i].focus();
+      tabs[i].scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+      place();
+      if (!byUser) schedule();
+    };
+
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => activate(i, false, true));
+      t.addEventListener('keydown', (e) => {
+        const n = tabs.length; let k: number | null = null;
+        if (e.key === 'ArrowRight') k = (i + 1) % n;
+        if (e.key === 'ArrowLeft') k = (i - 1 + n) % n;
+        if (e.key === 'Home') k = 0;
+        if (e.key === 'End') k = n - 1;
+        if (k !== null) { e.preventDefault(); activate(k, true, true); }
+      });
+    });
+
+    place();
+    addEventListener('resize', place, { passive: true });
+    if ((document as any).fonts?.ready) (document as any).fonts.ready.then(place);
+    row.addEventListener('mouseenter', () => { overTabs = true; stopAuto(); });
+    row.addEventListener('mouseleave', () => { overTabs = false; schedule(); });
+    document.addEventListener('visibilitychange', () => { if (document.hidden) stopAuto(); else schedule(); });
+    new IntersectionObserver((es) => { inView = es[0].isIntersecting; if (inView) schedule(); else stopAuto(); }, { threshold: 0.35 }).observe(root);
+    schedule();
+  }
+  document.addEventListener('astro:page-load', hero);
+</script>

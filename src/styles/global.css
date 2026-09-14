@@ -1,0 +1,451 @@
+@import "tailwindcss";
+
+@theme {
+  /* Tailwind's own palette, type scale and font stacks are removed outright.
+     Nothing below this line exists unless we declare it, so an off-system value
+     cannot be typed by accident. Verified safe: no default class is used anywhere. */
+  --color-*: initial;
+  --text-*: initial;
+  --font-*: initial;
+
+  /* ── type ────────────────────────────────────────────── */
+  --font-display: "Fraunces Variable", Georgia, serif;
+  --font-body: "Manrope Variable", system-ui, sans-serif;
+  /* Captions and metadata. A system stack, so the monospace voice costs nothing to download. */
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  --text-caption: 13px;
+  --text-caption--line-height: 1.5;
+
+  --text-display: clamp(42px, 6.4vw, 104px);
+  --text-display--line-height: 0.98;
+  --text-h2: clamp(30px, 3.2vw, 46px);
+  --text-h2--line-height: 1.06;
+  --text-h3: 22px;
+  --text-h3--line-height: 1.2;
+  --text-quote: clamp(24px, 2.4vw, 32px);
+  --text-quote--line-height: 1.24;
+  --text-h3--line-height: 1.2;
+  --text-body: 17px;
+  --text-body--line-height: 1.55;
+  --text-meta: 14px;
+  --text-meta--line-height: 1.4;
+
+  /* ── colour ──────────────────────────────────────────
+     Three real colours. Everything else is mixed from them, so nothing can
+     drift out of system: secondary and tertiary text are the SAME colour at
+     lower alpha, and surfaces are the text colour mixed into the ground. */
+  --color-page: #0A0B0D;              /* cool near-black: holds product screenshots without a cast */
+  --color-primary: #EDEBE4;           /* warm bone */
+  --color-accent: #D9A441;            /* brass: warm on cool, and carries no state meaning */
+
+  --color-secondary: color-mix(in srgb, var(--color-primary) 72%, transparent);
+  /* The tertiary mix is a per-theme knob, not a constant. 14px muted text needs 4.5:1, and the
+     mix required to reach it depends on how light the GROUND is, not on dark-vs-light: a flat 50%
+     gives 4.65:1 on near-black, 4.24:1 on mid blue-grey and 3.30:1 on cream. The last two fail. */
+  --mix-tertiary: 49%;
+  --color-tertiary:  color-mix(in srgb, var(--color-primary) var(--mix-tertiary), transparent);
+  --color-line:        color-mix(in srgb, var(--color-primary) 14%, transparent);
+  --color-line-strong: color-mix(in srgb, var(--color-primary) 24%, transparent);
+  --color-surface:        color-mix(in srgb, var(--color-primary) 6%, var(--color-page));
+  --color-surface-raised: color-mix(in srgb, var(--color-primary) 11%, var(--color-page));
+
+  --color-inverse: var(--color-primary);
+  --color-on-inverse: var(--color-page);
+
+  /* aliases so installed 21st/shadcn components inherit the palette. Never written by hand. */
+  --color-background: var(--color-page);
+  --color-foreground: var(--color-primary);
+  --color-card: var(--color-surface);
+  --color-card-foreground: var(--color-primary);
+  --color-popover: var(--color-surface);
+  --color-popover-foreground: var(--color-primary);
+  --color-muted: var(--color-surface-raised);
+  --color-muted-foreground: var(--color-secondary);
+  --color-accent-foreground: var(--color-primary);
+  --color-border: var(--color-line);
+  --color-input: var(--color-line);
+  --color-ring: var(--color-primary);
+
+  /* ── layout ──────────────────────────────────────────── */
+  --spacing: 8px;              /* p-1 8 · p-2 16 · p-3 24 · p-5 40 · p-8 64 · p-12 96 · p-20 160 */
+  --container-wide: 1720px;
+  --container-prose: 1200px;
+  --ease-out-soft: cubic-bezier(.2,.7,.2,1);
+}
+
+/* ── themes ──────────────────────────────────────────────
+   A theme is three seeds and one solved number. Everything else is derived, so a theme
+   never restates a colour that can be mixed. :root[data-theme] outranks the :root that
+   @theme emits, so the derived tokens recompute on their own.  */
+:root[data-theme="slate"] {
+  --color-page: #27333A; --color-primary: #E6ECEF; --color-accent: #FF8A6B; --mix-tertiary: 56%;
+}
+:root[data-theme="moss"] {
+  --color-page: #12241C; --color-primary: #E7EDE4; --color-accent: #E88BB0; --mix-tertiary: 51%;
+}
+:root[data-theme="cream"] {
+  --color-page: #F3EDDF; --color-primary: #191611; --color-accent: #5C3F86; --mix-tertiary: 61%;
+  color-scheme: light;
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    --section-space: 56px;
+    /* one 12-column grid, used by the content, the rail and the overlay alike */
+    --grid-margin: 24px;
+    --grid-gutter: 24px;
+  }
+  @media (min-width: 1024px) {
+    :root { --section-space: 112px; --grid-margin: 48px; }
+  }
+
+  html {
+    background: var(--color-page);
+    color: var(--color-primary);
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    scroll-padding-top: 24px;
+    scroll-behavior: smooth;
+  }
+  body { margin: 0; min-height: 100vh; display: flex; flex-direction: column; }
+  main { flex: 1; }
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.012em;
+    margin: 0;
+    text-wrap: balance;
+    font-variation-settings: "opsz" 144, "SOFT" 40;
+  }
+  p { margin: 0 }
+  img { max-width: 100%; display: block }
+  a { color: inherit; text-decoration: none }
+  button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer }
+  :focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; border-radius: 2px }
+}
+
+@layer components {
+  /* The only vertical rhythm rule on the site. Every section uses it, no exceptions,
+     so the gap between any two is always 2 x --section-space. One number to tune. */
+  .section { padding-block: var(--section-space) }
+
+  /* Reveals: visible at rest, animated only once JS confirms it can run. */
+  html.js .reveal { opacity: 0; transform: translateY(12px); transition: opacity .55s var(--ease-out-soft), transform .55s var(--ease-out-soft) }
+  html.js .reveal.in { opacity: 1; transform: none }
+  html.js .reveal:nth-child(2) { transition-delay: 60ms }
+  html.js .reveal:nth-child(3) { transition-delay: 120ms }
+  html.js .reveal:nth-child(4) { transition-delay: 180ms }
+
+
+  /* Hover-preview trigger word. Dotted at rest, sitting close to the baseline so it
+     never collides with the line below. Text and dots both take the accent on hover. */
+  [data-preview]{
+    color: var(--color-primary);
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+    text-decoration-thickness: max(2px, 0.04em);
+    /* The accent at rest. The word itself stays ink, so the sentence still reads as one thought —
+     the accent MARKS the keyword rather than filling it. */
+  text-decoration-color: var(--color-accent);
+    text-underline-offset: max(3px, 0.08em);
+    cursor: help;
+    transition: color .25s var(--ease-out-soft), text-decoration-color .25s var(--ease-out-soft);
+  }
+  [data-preview]:hover, [data-preview]:focus-visible{
+    color: var(--color-accent);
+    text-decoration-color: var(--color-accent);
+  }
+
+  /* 21st multifollow cursor. Upstream positions the rings absolutely inside a Stage div;
+     making that div a full-viewport fixed layer is what takes it site-wide.
+     The component ships no CSS of its own, so this is the only styling it needs. */
+  .cursor-stage { position: fixed; inset: 0; z-index: 200; pointer-events: none }
+  @media (pointer: fine) {
+    html.has-cursor, html.has-cursor * { cursor: none !important }
+  }
+  @media (pointer: coarse) { .cursor-stage { display: none } }
+  /* The 21st component hardcodes the dot to white, which disappears the moment a light theme
+     is picked. Overridden here so the vendored source stays untouched: the dot is always the
+     theme's ink, and flips to the ground over an inverted surface like the footer.
+     The rings keep their own colours — they read on any ground. */
+  .cursor-stage .cursor-dot { background-color: var(--color-primary) !important }
+  .cursor-stage.is-inverted .cursor-dot { background-color: var(--color-page) !important }
+
+  /* Placeholder well, until real imagery lands. */
+  /* No border, no radius. Frames are cut sharp and sit on the surface alone — a 1px line around
+     an image reads as a UI control, not a photograph. */
+  .ph { position: relative; overflow: hidden; display: grid; place-items: center; text-align: center; padding: 16px;
+        background: var(--color-surface);
+        color: var(--color-tertiary); font-size: var(--text-meta) }
+  .ph::before { content: ""; position: absolute; inset: 0;
+        background: repeating-linear-gradient(135deg, transparent 0 14px, color-mix(in srgb, var(--color-primary) 4%, transparent) 14px 15px) }
+  .ph > * { position: relative }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important }
+  html.js .reveal { opacity: 1; transform: none }
+  .cursor-stage { display: none }
+  html.has-cursor, html.has-cursor * { cursor: auto !important }
+}
+
+/* Cursor ring stroke. Scaling a ring scales its border with it, so an expanded ring would
+   carry a ~5px stroke. Thinning it as the ring opens holds the line near 1.5px.
+   Deliberately outside @layer: layered !important loses to Motion's inline style. */
+.cursor-stage [data-cursor] { transition: border-width .28s var(--ease-out-soft) }
+.cursor-stage.is-hovering [data-cursor] { border-width: 0.7px !important }
+
+
+@layer components {
+  /* ── the one grid ──────────────────────────────────────────────
+     Content, the left rail and the grid overlay all read this same template. That is the whole
+     reason the overlay can never collide with anything: it is not aligned to the content, it is
+     the content's own grid drawn on top of itself. Twelve columns, gutter 24, margin 48, capped
+     at 1720 — so above that width the lines stop at the container rather than the viewport. */
+  .shell {
+    width: 100%;
+    max-width: var(--container-wide);
+    margin-inline: auto;
+    padding-inline: var(--grid-margin);
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--grid-gutter);
+  }
+
+  /* Below lg there is no rail, so everything spans the full twelve. */
+  .col-full, .col-title, .col-lead, .col-prose, .col-text, .col-media { grid-column: 1 / -1; }
+
+  @media (min-width: 1024px) {
+    /* Columns 2 and 3 are deliberately empty: 228px of air between the rail and the content.
+       Measured off billysweeney.com, who runs nav in column 1 and content from column 5.
+       Column 4 rather than 5 because a 4-12 band is 1002px — exactly the width the headline
+       already occupied at columns 2-10, so the whole block shifts right with no reflow.
+
+       THE RULE: the gap protects prose, not pictures. Prose always starts at column 4 and
+       always ends at column 12, so every reading measure on the site shares one right edge.
+       Media may start at column 3, because an image has no measure to protect. */
+    .col-full  { grid-column: 4 / -1; }   /* 1002 — tables, card grids */
+    .col-title { grid-column: 4 / -1; }   /* 1002 — headlines */
+    .col-lead  { grid-column: 6 / 11; }   /*  546 — 48 chars */
+    .col-prose { grid-column: 4 / 9; }    /*  546 */
+    /* Both pinned to row 1. The copy comes first in the DOM so the heading is read before the
+       image, but it sits at columns 9-12 while the image sits at 3-8 — and grid's default sparse
+       packing will not place an item behind a cursor that has already passed, so without an
+       explicit row the image drops to row 2 and the two stack. */
+    .col-text  { grid-column: 9 / -1; grid-row: 1; }  /*  432 — case study copy, 49 chars */
+    .col-media { grid-column: 3 / 8;  grid-row: 1; }  /*  546 — column 8 left empty between them */
+  }
+
+  /* ── left rail ──────────────────────────────────────────────
+     Fixed layer running the same .shell, so the rail lands on column 1 by construction rather
+     than by arithmetic that would drift the moment a token changed. */
+  .rail-layer { position: fixed; inset: 0; z-index: 60; pointer-events: none; }
+  .rail-layer > .shell { height: 100%; }
+  .rail {
+    grid-column: 1;
+    pointer-events: auto;
+    display: flex; flex-direction: column; gap: 24px;
+    height: 100%;
+    padding-block: 40px;
+  }
+  @media (max-width: 1023px) { .rail-layer { display: none; } }
+
+  /* Hovering the mark reveals a greeting beside it, on one line, one face, one size. The name is
+     set apart by colour alone — mixing faces or sizes inside a five-word sentence read as odd. */
+  .logo-name {
+    position: absolute; left: calc(100% + 16px); top: 50%;
+    translate: -8px -50%;
+    white-space: nowrap;
+    font-family: var(--font-body); font-size: 18px; font-weight: 500;
+    color: var(--color-secondary);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .28s var(--ease-out-soft), translate .28s var(--ease-out-soft);
+  }
+  .logo-who { color: var(--color-primary); font-weight: 600; }
+  .logo-link:hover .logo-name, .logo-link:focus-visible .logo-name { opacity: 1; translate: 0 -50%; }
+
+  .rail-nav { display: flex; flex-direction: column; gap: 2px; margin-top: var(--nav-offset, 8px); }
+  .rail-nav a {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: var(--text-meta); font-weight: 600; line-height: 1.3;
+    color: var(--color-tertiary); text-decoration: none;
+    padding-block: 5px;
+    transition: color .22s var(--ease-out-soft);
+  }
+  .rail-nav a:hover { color: var(--color-secondary); }
+  .rail-nav a.on { color: var(--color-accent); }
+
+  /* The footer is the inverse ground, and the rail is fixed on top of it — without this the
+     nav and the toggles disappear the moment the footer scrolls under them. */
+  .rail-nav.inv a { color: color-mix(in srgb, var(--color-on-inverse) 55%, transparent); }
+  .rail-nav.inv a:hover, .rail-nav.inv a.on { color: var(--color-on-inverse); }
+  .rail-tools.inv .glass {
+    color: color-mix(in srgb, var(--color-on-inverse) 70%, transparent);
+    background: color-mix(in srgb, var(--color-on-inverse) 8%, transparent);
+  }
+  .rail-tools.inv .glass:hover { color: var(--color-on-inverse); }
+  .rail-nav a, .glass { transition: color .25s var(--ease-out-soft), background .25s var(--ease-out-soft), border-color .25s var(--ease-out-soft); }
+  /* icon tracks the font size so it never floats loose of the word */
+  .rail-nav a svg { width: .78em; height: .78em; flex: none; stroke-width: 2; opacity: .75; }
+  .rail-nav a:hover svg { opacity: 1; }
+
+  .rail-tools { margin-top: auto; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+
+  /* ── scroll drift ────────────────────────────────────────────
+     Two depth planes only, and small. The earlier version gave every photograph its own rate,
+     which made them converge — depth needs elements at the same distance to move together. */
+  [data-drift] { translate: 0 var(--y, 0px); will-change: translate; }
+  @media (prefers-reduced-motion: reduce) { [data-drift] { translate: none !important; } }
+
+  /* ── image captions ──────────────────────────────────────────
+     Mono, small, set to the right edge of the image it belongs to. */
+  .cap {
+    margin: 10px 0 0;
+    font-family: var(--font-mono);
+    font-size: var(--text-caption);
+    line-height: 1.5;
+    color: var(--color-tertiary);
+    text-align: right;
+  }
+
+  /* ── glass controls ──────────────────────────────────────────
+     Round like the logo, never boxed. Tinted with the theme's own ink so they belong to
+     whichever theme is live, rather than being a fixed grey chip laid over it. */
+  .glass {
+    width: 44px; height: 44px; border-radius: 999px;
+    display: grid; place-items: center;
+    color: var(--color-secondary);
+    background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+    border: 0;
+    backdrop-filter: blur(14px) saturate(1.3);
+    -webkit-backdrop-filter: blur(14px) saturate(1.3);
+    transition: color .2s var(--ease-out-soft), background .2s var(--ease-out-soft), border-color .2s var(--ease-out-soft);
+  }
+  .glass:hover {
+    color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+  }
+  /* No pressed or open state on the buttons themselves. The grid being on is visible on the
+     page, and the theme being open is visible in the capsule — a second indicator on the
+     button made the two icons look like they had different outlines. */
+  .glass svg { width: 18px; height: 18px; }
+
+  /* ── theme control ──────────────────────────────────────────
+     The selected theme's swatch is the button. There is no separate icon and no click on it:
+     hovering grows the same pill upward to reveal the other three, and the only click is the
+     one that picks a theme. The pill is anchored at its bottom, so the swatch you hovered
+     never moves — the others arrive above it. */
+  .theme-ctl { position: relative; width: 44px; height: 44px; }
+  .theme-pill {
+    position: absolute; left: 0; bottom: 0;
+    width: 44px; height: 44px;
+    box-sizing: border-box; padding: 10px 0;
+    border-radius: 22px; overflow: hidden;
+    display: flex; flex-direction: column-reverse; align-items: center; gap: 12px;
+    background: color-mix(in srgb, var(--color-primary) 8%, transparent);
+    backdrop-filter: blur(14px) saturate(1.3);
+    -webkit-backdrop-filter: blur(14px) saturate(1.3);
+    transition: height .3s var(--ease-out-soft), background .25s var(--ease-out-soft);
+  }
+  .theme-ctl:hover .theme-pill,
+  .theme-ctl:focus-within .theme-pill {
+    height: calc(44px + 3 * 36px);                /* one swatch at rest, four open */
+    background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+  }
+  .rail-tools.inv .theme-pill { background: color-mix(in srgb, var(--color-on-inverse) 8%, transparent); }
+
+  .tsw {
+    flex: none;
+    width: 24px; height: 24px; border-radius: 999px;
+    border: 0; padding: 0; cursor: pointer;
+    background: linear-gradient(135deg, var(--g) 0 50%, var(--a) 50% 100%);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--i) 40%, transparent);
+    opacity: 0; translate: 0 6px;
+    transition: transform .2s var(--ease-out-soft), opacity .22s var(--ease-out-soft), translate .22s var(--ease-out-soft);
+  }
+  /* The selected one sits at the bottom (column-reverse puts order -1 first) and is always
+     visible: it is the resting state of the control. */
+  .tsw[aria-checked="true"] { order: -1; opacity: 1; translate: 0 0; cursor: default; }
+  .theme-ctl:hover .tsw,
+  .theme-ctl:focus-within .tsw { opacity: 1; translate: 0 0; }
+  .theme-pill .tsw:nth-child(1) { transition-delay: .04s }
+  .theme-pill .tsw:nth-child(2) { transition-delay: .08s }
+  .theme-pill .tsw:nth-child(3) { transition-delay: .12s }
+  .theme-pill .tsw:nth-child(4) { transition-delay: .16s }
+  .tsw:not([aria-checked="true"]):hover { transform: scale(1.18); }
+  .tsw:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; }
+
+  /* ── grid overlay ────────────────────────────────────────────
+     Dotted, not ruled: a 1px column of round dots every 6px on both edges of every column, the
+     same template as the content. ANCHORED TO THE DOCUMENT, not the viewport. A fixed layer
+     made every moving flare look as if it slid against the page; attached to the page, the
+     flare moves with the content and the illusion cannot occur. Behind the content at z 0. */
+  body { position: relative; }
+  .grid-layer { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+  main, footer { position: relative; z-index: 1; }
+  .grid-layer > .shell { height: 100%; }
+  .grid-layer .col { display: flex; justify-content: space-between; height: 100%; }
+  .grid-layer .ln {
+    position: relative;
+    width: 1px; height: 100%;
+    opacity: 0;
+    background: radial-gradient(circle, color-mix(in srgb, var(--color-primary) 14%, transparent) .55px, transparent .8px) 0 0 / 1px 6px;
+    transition: opacity .55s var(--ease-out-soft);
+  }
+  :root.grid-on .grid-layer .ln { opacity: 1; }
+
+  /* The flare is the same dot pattern, brighter, through a soft 260px window. It is given a
+     start and an end in DOCUMENT coordinates by the scheduler — just below the viewport to just
+     above it — so every pass crosses what you are looking at, on whichever line it was dealt.
+     `both` holds it at its start before the animation begins: without that it sat at the top of
+     its line, visible, waiting — the "stuck at the top" flares. */
+  .grid-layer .ln::after {
+    content: ""; position: absolute; left: 0; top: 0;
+    width: 1px; height: 320px; opacity: 0;
+    /* 60% against the line's 14% — a little over four times brighter — with the bright core
+       taking the middle 40% of the window rather than the middle 10%. Slow AND faint is the
+       combination the eye cannot track; this is calm but present. */
+    background: radial-gradient(circle, color-mix(in srgb, var(--color-primary) 60%, transparent) .6px, transparent .85px) 0 0 / 1px 6px;
+    -webkit-mask: linear-gradient(to top, transparent, #000 30%, #000 70%, transparent);
+    mask: linear-gradient(to top, transparent, #000 30%, #000 70%, transparent);
+  }
+  .grid-layer .ln.flare::after {
+    opacity: 1;
+    animation: ln-flare var(--dur, 5s) linear both;
+  }
+  @keyframes ln-flare {
+    from { transform: translateY(var(--from)) }
+    to   { transform: translateY(var(--to)) }
+  }
+  .grid-layer .col:nth-child(1) .ln { transition-delay: 0.00s }
+  .grid-layer .col:nth-child(2) .ln { transition-delay: 0.04s }
+  .grid-layer .col:nth-child(3) .ln { transition-delay: 0.08s }
+  .grid-layer .col:nth-child(4) .ln { transition-delay: 0.12s }
+  .grid-layer .col:nth-child(5) .ln { transition-delay: 0.16s }
+  .grid-layer .col:nth-child(6) .ln { transition-delay: 0.20s }
+  .grid-layer .col:nth-child(7) .ln { transition-delay: 0.24s }
+  .grid-layer .col:nth-child(8) .ln { transition-delay: 0.28s }
+  .grid-layer .col:nth-child(9) .ln { transition-delay: 0.32s }
+  .grid-layer .col:nth-child(10) .ln { transition-delay: 0.36s }
+  .grid-layer .col:nth-child(11) .ln { transition-delay: 0.40s }
+  .grid-layer .col:nth-child(12) .ln { transition-delay: 0.44s }
+  @media (max-width: 1023px) { .grid-layer { display: none; } }
+}
+
+/* Theme swap is a deliberate, visible moment — but only the ground and the ink animate.
+   Transitioning every colour makes the whole page smear. Sits outside @layer so it beats
+   component-level transitions. */
+:root, :root body { transition: background-color .45s var(--ease-out-soft), color .45s var(--ease-out-soft); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .grid-layer .ln { transition: none; }
+  .grid-layer .ln::after { display: none; }
+  .theme-pill, .tsw { transition: none; }
+  :root, :root body { transition: none; }
+}

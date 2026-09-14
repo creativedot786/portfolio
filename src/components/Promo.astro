@@ -1,0 +1,68 @@
+---
+import type { Work } from '../data/work';
+interface Props { item: Work; index: number; total: number }
+const { item } = Astro.props;
+
+---
+<section class="promo section" id={`work-${item.slug}`} data-promo aria-labelledby={`promo-${item.slug}`}>
+  <div class="shell gap-y-5 lg:items-center">
+    <div class="promo-text col-text">
+      <p class="text-meta font-bold mb-3 text-accent">{item.industryLabel}</p>
+      <h3 id={`promo-${item.slug}`} class="text-h2 mb-3 max-w-[16ch]">{item.title}</h3>
+      <p class="text-body text-secondary">{item.line}</p>
+      <p class="mt-3 text-meta text-tertiary">Case study coming</p>
+    </div>
+    <div class="col-media">
+      {item.image ? (
+        <img
+          class="promo-img block w-full aspect-[16/10] object-cover bg-surface"
+          src={item.image}
+          alt={item.alt}
+          width="2200"
+          height="1375"
+          loading="lazy"
+          decoding="async"
+          data-cursor-expand
+        />
+      ) : (
+        <div class="ph promo-img w-full aspect-[16/10]" data-cursor-expand><span>Case study image</span></div>
+      )}
+    </div>
+  </div>
+</section>
+<style>
+  :global(html.js) .promo-text > *{opacity:0;transform:translateY(14px);transition:opacity .6s var(--ease-out-soft),transform .6s var(--ease-out-soft)}
+  :global(html.js) .promo-text > *:nth-child(2){transition-delay:70ms}
+  :global(html.js) .promo-text > *:nth-child(3){transition-delay:140ms}
+  :global(html.js) .promo-text > *:nth-child(4){transition-delay:210ms}
+  :global(html.js) .promo-img{opacity:0;transform:scale(1.035);transition:opacity .8s var(--ease-out-soft),transform 1.2s var(--ease-out-soft)}
+  :global(html.js) .promo.in .promo-text > *{opacity:1;transform:none}
+  :global(html.js) .promo.in .promo-img{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){
+    :global(html.js) .promo-text > *,:global(html.js) .promo-img{opacity:1;transform:none;transition:none}
+  }
+</style>
+<script>
+  function promos() {
+    const secs = [...document.querySelectorAll<HTMLElement>('[data-promo]')];
+    if (!secs.length) return;
+    const io = new IntersectionObserver((es) => { es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { threshold: 0.4 });
+    secs.forEach((s) => { if (!(s as any).__io) { (s as any).__io = true; io.observe(s); } });
+
+    const dots = document.querySelector<HTMLElement>('[data-dots]');
+    const work = document.getElementById('work');
+    if (!dots || !work || (dots as any).__init) return;
+    (dots as any).__init = true;
+    const links = [...dots.querySelectorAll<HTMLAnchorElement>('a')];
+    new IntersectionObserver((es) => { dots.classList.toggle('show', es[0].isIntersecting); }, { rootMargin: '-35% 0px -35% 0px' }).observe(work);
+    const active = new IntersectionObserver((es) => {
+      es.forEach((e) => { if (e.isIntersecting) { const i = secs.indexOf(e.target as HTMLElement); links.forEach((l, k) => l.classList.toggle('on', k === i)); } });
+    }, { threshold: 0.55 });
+    secs.forEach((s) => active.observe(s));
+    links.forEach((l, i) => l.addEventListener('click', (e) => {
+      e.preventDefault();
+      secs[i].scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+    }));
+  }
+  document.addEventListener('astro:page-load', promos);
+</script>

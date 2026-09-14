@@ -1,0 +1,29 @@
+---
+import { LOGO_PATH } from '../data/logo';
+---
+<div id="loader" class="fixed inset-0 z-[100] grid place-items-center bg-page" aria-hidden="true">
+  <svg class="ld block" viewBox="0 0 44 44" width="88" height="88" focusable="false">
+    <path class="ld-stroke" d={LOGO_PATH} />
+    <path class="ld-fill" d={LOGO_PATH} />
+  </svg>
+</div>
+<script is:inline data-astro-rerun>
+  (function(){
+    var l=document.getElementById('loader');
+    if(!l||document.documentElement.classList.contains('no-loader')) return;
+    var p=l.querySelector('.ld-stroke');
+    try{ var n=p.getTotalLength(); p.style.strokeDasharray=String(n); p.style.strokeDashoffset=String(n); }catch(e){}
+    l.classList.add('go');
+  })();
+</script>
+<style>
+  #loader{transition:opacity .45s var(--ease-out-soft),visibility 0s .45s}
+  #loader.out{opacity:0;visibility:hidden}
+  :global(html.no-loader) #loader{display:none}
+  .ld-stroke{fill:none;stroke:var(--color-primary);stroke-width:.5;stroke-linejoin:round;stroke-linecap:round}
+  #loader.go .ld-stroke{animation:ld-draw .85s cubic-bezier(.5,0,.2,1) forwards}
+  .ld-fill{fill:var(--color-primary);opacity:0}
+  #loader.go .ld-fill{animation:ld-fillin .3s ease .68s forwards}
+  @keyframes ld-draw{to{stroke-dashoffset:0}}
+  @keyframes ld-fillin{to{opacity:1}}
+</style>

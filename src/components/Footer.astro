@@ -1,0 +1,82 @@
+---
+import { site } from '../data/site';
+const year = new Date().getFullYear();
+// The strip is the transition between the site's two grounds, so it is mixed from them rather
+// than from a neutral grey ramp: band 1 is exactly --color-page (dissolving into the page above)
+// and band 9 is exactly --color-primary (the footer's own ground, so there is no seam below).
+// The percentages keep the original ramp's rhythm — slow at the ends, quicker through the middle.
+const steps = [0, 7, 18, 27, 41, 63, 85, 93, 100];
+const bands = steps.map((n) => `color-mix(in srgb, var(--color-primary) ${n}%, var(--color-page))`);
+const arrow = 'inline-flex items-center gap-1.5';
+---
+<footer id="contact" class="bg-inverse text-on-inverse" data-cursor-invert>
+  <div class="strip-wrap" data-strip aria-hidden="true">
+    <div class="strip">
+      {bands.map((c) => <div class="h-7 max-md:h-5" style={`background:${c}`}></div>)}
+    </div>
+  </div>
+
+  <div class="foot-body pt-5 pb-5">
+    <div class="shell gap-y-5"><div class="col-full grid gap-5 lg:grid-cols-[1fr_auto] lg:gap-8">
+      <div>
+        <p class="text-body md:text-h3 leading-[1.55] tabular-nums">{site.location}</p>
+        <p class="text-body md:text-h3 leading-[1.55] tabular-nums" data-clock aria-live="off">—</p>
+      </div>
+      <div class="lg:justify-self-end font-bold text-body md:text-h3 leading-[1.55]">
+        <p><a class={arrow} href={`mailto:${site.email}`}>{site.emailShown}<svg class="w-[14px] h-[14px]" viewBox="0 0 14.4 14.4" aria-hidden="true"><path d="M1.2 13.2L13.2 1.2M13.2 1.2H1.2M13.2 1.2V13.2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" fill="none"/></svg></a></p>
+        <p><a class={arrow} href={site.linkedin} target="_blank" rel="noopener">LinkedIn<svg class="w-[14px] h-[14px]" viewBox="0 0 14.4 14.4" aria-hidden="true"><path d="M1.2 13.2L13.2 1.2M13.2 1.2H1.2M13.2 1.2V13.2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" fill="none"/></svg></a></p>
+        <p><a class={arrow} href={site.resume} target="_blank" rel="noopener">Resume<svg class="w-[14px] h-[14px]" viewBox="0 0 14.4 14.4" aria-hidden="true"><path d="M1.2 13.2L13.2 1.2M13.2 1.2H1.2M13.2 1.2V13.2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" fill="none"/></svg></a></p>
+      </div>
+    </div></div>
+    <div class="shell"><div class="col-full mt-6 max-md:mt-5 text-body md:text-h3">©{year}</div></div>
+  </div>
+</footer>
+<style>
+  /* The strip scales up out of the footer as one object, so nothing is ever drawn onto the
+     page black. Nine staggered wipes read as construction when the cover is dark; this reads
+     as the footer's ground arriving, which is what the ramp now means.
+     .strip-wrap carries no transform on purpose — it is the IntersectionObserver's target, and
+     a scaleY(0) element collapses to a zero-height box that never intersects reliably. */
+  /* Origin TOP, not bottom. Growing upward meant the strip ran against the scroll — you are
+     moving down the page and the animation travelled up to meet you, which is why it read as
+     fighting the gesture rather than continuing it. Downward, it feels like the page filling in
+     ahead of you. */
+  .strip{transform:scaleY(0);transform-origin:top;will-change:transform;
+         transition:transform .8s cubic-bezier(.65,0,.35,1)}
+  .strip-wrap.in .strip{transform:scaleY(1)}
+
+  /* The content arrives with the strip rather than sitting there waiting for it, so the footer
+     reads as one object. */
+  :global(html.js) .foot-body{opacity:0;transform:translateY(14px);
+    transition:opacity .6s cubic-bezier(.65,0,.35,1) .25s,transform .6s cubic-bezier(.65,0,.35,1) .25s}
+  :global(html.js) .strip-wrap.in ~ .foot-body{opacity:1;transform:none}
+  footer a:hover svg{transform:translate(2px,-2px)}
+  footer a svg{transition:transform .3s ease-in-out}
+  @media (prefers-reduced-motion:reduce){
+    .strip{transform:none;transition:none}
+    :global(html.js) .foot-body{opacity:1;transform:none;transition:none}
+  }
+</style>
+<script>
+  function footer() {
+    const els = document.querySelectorAll('[data-clock]');
+    const fmt = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true, timeZone: 'Asia/Dubai' });
+    const tick = () => { const t = fmt.format(new Date()) + ' (Local Time)'; els.forEach((e) => { e.textContent = t; }); };
+    tick();
+    const w = window as any;
+    if (w.__clock) clearInterval(w.__clock);
+    w.__clock = setInterval(tick, 1000);
+
+    const wrap = document.querySelector<HTMLElement>('[data-strip]');
+    if (!wrap || (wrap as any).__io) return;
+    (wrap as any).__io = true;
+    // Fires 220px before the strip reaches the viewport, so the motion is already under way by
+    // the time it is visible. The old per-band threshold of 0.5 meant each band waited until
+    // half of itself was on screen — you were guaranteed to watch it draw.
+    // Toggling rather than unobserving replays it every time the footer comes back into view.
+    new IntersectionObserver((entries) => {
+      entries.forEach((e) => { wrap.classList.toggle('in', e.isIntersecting); });
+    }, { rootMargin: '0px 0px 220px 0px' }).observe(wrap);
+  }
+  document.addEventListener('astro:page-load', footer);
+</script>

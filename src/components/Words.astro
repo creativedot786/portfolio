@@ -1,0 +1,109 @@
+---
+import { words } from '../data/words';
+interface Props { heading?: string }
+// Conversational, to sit with "How I got here" and "Where I've worked". The old subtext
+// ("From people I've worked with, on LinkedIn") is gone — the heading now says it.
+const { heading = "What it's like to work with me" } = Astro.props;
+// Only the first paragraph is quoted. A four-paragraph recommendation is a wall at this size;
+// the attribution links to the full text on LinkedIn.
+const lede = (t: string) => t.split(/\n\s*\n/)[0].trim();
+---
+<section id="references" class="section" aria-labelledby="words-h" data-refs>
+  <div class="shell mb-12 lg:mb-20">
+    <h2 id="words-h" class="col-title text-h2 reveal">{heading}</h2>
+  </div>
+
+  <div class="shell quotes">
+    {words.map((w, i) => (
+      <figure class="quote reveal m-0" data-drift data-rate={i % 2 ? '-0.06' : '0.06'}>
+        <blockquote class="m-0">
+          <p class="qt m-0">
+            <span class="qm qm-open" aria-hidden="true">&#8220;</span>{lede(w.text)}<span class="qm qm-close" aria-hidden="true">&#8221;</span>
+          </p>
+        </blockquote>
+        <figcaption class="attrib">
+          <a href={w.url} target="_blank" rel="noopener">
+            {w.name}, {w.role}
+            <span class="sr-only"> (opens in a new tab)</span>
+          </a>
+        </figcaption>
+      </figure>
+    ))}
+  </div>
+</section>
+
+<style>
+  /* Cards are gone. A bordered panel with an avatar read as a testimonial widget; set as a
+     quote it reads as somebody speaking.
+     The quote text is Manrope, not Fraunces: the display face is the site's own voice, so
+     borrowing it for someone else's words blurs who is talking. */
+  .quotes{row-gap:0}
+  .quote{grid-column:1/-1;position:relative}
+  .quote + .quote{margin-top:88px}
+
+  .qt{
+    font-family:var(--font-body);
+    font-weight:600;
+    font-size:var(--text-quote);
+    line-height:1.24;
+    letter-spacing:-.02em;
+    color:var(--color-primary);
+    text-wrap:pretty;
+  }
+
+  /* To the reference: the opening mark sits at the top-left corner, large, with the first
+     letter overlapping its lower-right; the closing mark tucks in after the last word. Both
+     are BEHIND the text — the figure is an isolated stacking context and the marks carry a
+     negative z-index, so the solid letters paint over the outlines. Manrope rather than
+     Fraunces: the reference's marks are the rounded sans shape, and the serif's calligraphic
+     contrast fought the bold text beside it. */
+  .quote{isolation:isolate}
+  .qm{
+    font-family:var(--font-body);
+    font-weight:700;
+    color:transparent;
+    -webkit-text-stroke:1.2px var(--color-line-strong);
+    line-height:0;
+    z-index:-1;
+    pointer-events:none;
+  }
+  .qm-open{
+    position:absolute;
+    left:-.36em;top:.26em;
+    font-size:3.4em;
+  }
+  /* line-height:0 collapses the mark's box so it cannot stretch the last line, but it also
+     centres the glyph on that collapsed box — which is why it floated a line high. Anchored
+     to the line top and pushed down so its ink starts at the cap height of the last line and
+     hangs below the baseline, as in the reference. */
+  .qm-close{
+    position:relative;
+    display:inline-block;
+    font-size:3.4em;
+    line-height:0;
+    vertical-align:top;
+    top:.46em;
+    margin-left:-.12em;
+  }
+  .attrib{margin-top:22px}
+  .attrib a{
+    font-family:var(--font-mono);
+    font-size:var(--text-caption);
+    letter-spacing:.01em;
+    color:var(--color-tertiary);
+    text-decoration:none;
+    transition:color .2s var(--ease-out-soft);
+  }
+  .attrib a:hover{color:var(--color-primary)}
+
+  @media (min-width:1024px){
+    /* Five columns, not seven. At 774 the lines ran long and the block read as a paragraph
+       rather than as a quote; 546 puts it at roughly 33 characters, which is where the
+       reference sits. Alternating starts keep it from stacking as four identical slabs. */
+    .quotes figure:nth-child(1){grid-column:5/10}
+    .quotes figure:nth-child(2){grid-column:7/12}
+    .quotes figure:nth-child(3){grid-column:5/10}
+    .quotes figure:nth-child(4){grid-column:7/12}
+    .quote + .quote{margin-top:104px}
+  }
+</style>

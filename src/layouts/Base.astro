@@ -1,0 +1,126 @@
+---
+import '@fontsource-variable/fraunces/full.css';
+import '@fontsource-variable/manrope';
+import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
+import Rail from '../components/Rail.astro';
+import Footer from '../components/Footer.astro';
+import Loader from '../components/Loader.astro';
+import { CursorMultifollow } from '../components/ui/motion-cursor-multifollow';
+import { HoverPreview } from '../components/ui/hover-preview';
+import { site } from '../data/site';
+
+interface Props { title: string; description: string }
+const { title, description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, site.url).href;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#0A0B0D" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={site.name} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <script is:inline data-astro-rerun>
+      document.documentElement.classList.add('js');
+      // Hide the system cursor only where the custom one will actually render.
+      try {
+        if (matchMedia('(pointer: fine)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          document.documentElement.classList.add('has-cursor');
+        }
+      } catch (e) {}
+      try {
+        if (sessionStorage.getItem('hr-loader') || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          document.documentElement.classList.add('no-loader');
+        }
+      } catch (e) {}
+      // Theme and grid are restored before first paint, so a Cream visitor never sees a dark flash.
+      try {
+        var t = localStorage.getItem('hr-theme');
+        if (t && t !== 'brass') {
+          document.documentElement.setAttribute('data-theme', t);
+          var grounds = { slate: '#27333A', moss: '#12241C', cream: '#F3EDDF' };
+          var m = document.querySelector('meta[name="theme-color"]');
+          if (m && grounds[t]) m.content = grounds[t];
+        }
+        if (localStorage.getItem('hr-grid') === '1') document.documentElement.classList.add('grid-on');
+      } catch (e) {}
+    </script>
+    <ClientRouter />
+  </head>
+  <body>
+    <Loader />
+    <Rail />
+    <main id="main"><slot /></main>
+    <Footer />
+    <CursorMultifollow client:idle />
+    <HoverPreview client:idle />
+    <script>
+      function loader() {
+        const l = document.getElementById('loader');
+        if (!l) return;
+        let seen = false;
+        try { seen = !!sessionStorage.getItem('hr-loader'); } catch (e) {}
+        if (seen || matchMedia('(prefers-reduced-motion: reduce)').matches) { l.remove(); return; }
+        setTimeout(() => {
+          l.classList.add('out');
+          try { sessionStorage.setItem('hr-loader', '1'); } catch (e) {}
+          setTimeout(() => l.remove(), 500);
+        }, 1100);
+      }
+      // Reveals are checked inside the scroll loop below rather than by IntersectionObserver.
+      // IO is suspended whenever the document is not rendering, and one loop driving reveal,
+      // drift and the scrolling flag is simpler than three mechanisms doing similar work.
+      function revealCheck() {
+        const vh = innerHeight;
+        document.querySelectorAll('.reveal:not(.in)').forEach((el) => {
+          const r = el.getBoundingClientRect();
+          if (r.top < vh * 0.92 && r.bottom > 0) el.classList.add('in');
+        });
+      }
+      // ── shared scroll loop: drift planes + the scrolling flag ──
+      // One rAF per scroll for everything that rides the scroll position. Drift is measured
+      // from each element's distance to the viewport centre, so an element sits exactly at its
+      // authored position when centred and moves only as it enters and leaves.
+      function scrollLoop() {
+        if (window.__scrollLoop) return;
+        window.__scrollLoop = true;
+        const root = document.documentElement;
+        const rm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        let ticking = false, idle = 0;
+        const drift = () => {
+          if (rm || !matchMedia('(min-width: 1024px)').matches) return;
+          const mid = innerHeight / 2;
+          document.querySelectorAll('[data-drift]').forEach((el) => {
+            const r = el.getBoundingClientRect();
+            const rate = parseFloat(el.getAttribute('data-rate') || '0');
+            const y = (r.top + r.height / 2 - mid) * rate;
+            el.style.setProperty('--y', y.toFixed(1) + 'px');
+          });
+        };
+        const frame = () => { ticking = false; drift(); revealCheck(); };
+        addEventListener('scroll', () => {
+          if (!ticking) { ticking = true; requestAnimationFrame(frame); }
+          // The grid flare pauses while the page moves, and resumes once it has been still.
+          root.classList.add('scrolling');
+          clearTimeout(idle);
+          idle = setTimeout(() => root.classList.remove('scrolling'), 180);
+        }, { passive: true });
+        addEventListener('resize', frame, { passive: true });
+        drift();
+        revealCheck();
+      }
+      document.addEventListener('astro:page-load', () => { loader(); scrollLoop(); });
+    </script>
+  </body>
+</html>

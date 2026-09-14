@@ -1,0 +1,16 @@
+---
+import Logo from './Logo.astro';
+import { site } from '../data/site';
+const isAbout = Astro.url.pathname.startsWith('/about');
+const link = 'text-body font-medium text-secondary tracking-[-.005em] transition-colors hover:text-primary';
+---
+<header class="sticky top-0 z-50 bg-page">
+  <div class="mx-auto w-full max-w-wide px-3 lg:px-6 grid grid-cols-[1fr_auto_1fr] items-center" style="height:var(--hdr)">
+    <a href="/" class="justify-self-start inline-flex rounded-full" aria-label="Huzaifa Ratlam, home"><Logo size={56} /></a>
+    <nav class="justify-self-center flex gap-5 max-md:gap-3" aria-label="Primary">
+      <a class={link} href="/#work">Work</a>
+      <a class={link + (isAbout ? ' text-primary' : '')} href="/about" aria-current={isAbout ? 'page' : undefined}>About</a>
+    </nav>
+    <a class={link + ' justify-self-end'} href={site.resume} target="_blank" rel="noopener">Resume</a>
+  </div>
+</header>

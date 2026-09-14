@@ -1,0 +1,116 @@
+---
+import { beats } from '../data/beats';
+// Placeholder ratios until the real photographs land — alternated so both cases are visible.
+// A real <img> will size to its own ratio inside the same envelope.
+const ratios = ['4 / 3', '3 / 4', '4 / 3', '3 / 4'];
+---
+<section id="journey" class="section" aria-labelledby="journey-h">
+  <div class="shell">
+    <h2 id="journey-h" class="col-title text-h2 mb-8 lg:mb-12 reveal">How I got here</h2>
+  </div>
+
+  <div class="j-list">
+    {beats.map((b, i) => (
+      <article class="beat shell" data-beat>
+        <div class="beat-text reveal">
+          <p class="text-meta text-tertiary mb-2">{b.place} · {b.when}</p>
+          <h3 class="text-h2 mb-3" set:html={b.heading} />
+          <p class="text-secondary" set:html={b.body} />
+        </div>
+        <div class="beat-photo" aria-hidden="true" style={`--ar:${ratios[i % ratios.length]}`} data-drift data-rate="-0.03">
+          <div class="ph"><span>Photo · {b.photo}</span></div>
+        </div>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  /* Each beat is its own .shell, so the copy and its photograph are placed by column rather
+     than by arithmetic. Copy in 4-8. The photograph starts two columns before the copy's right
+     edge — column 7 — and runs five columns to 11, sitting BEHIND the copy on the same row.
+     Its left 45% dissolves, which is exactly the two columns the words sit on, so the words
+     always read and the photograph stays rich on the side they never touch. */
+  .j-list{display:grid;row-gap:96px}
+  .beat{position:relative;row-gap:24px}
+  .beat-text{grid-column:1/-1;position:relative;z-index:1}
+
+  .beat-photo{
+    grid-column:1/-1;
+    order:-1;               /* above the copy on mobile; explicit row placement overrides this on desktop */
+    justify-self:end;
+    width:55%;
+    z-index:0;
+    pointer-events:none;
+    /* on mobile the drift can carry it into the heading; its lower edge dissolves so that reads
+       as the photograph sitting behind the words rather than colliding with them */
+    -webkit-mask:linear-gradient(to bottom, #000 55%, transparent);
+    mask:linear-gradient(to bottom, #000 55%, transparent);
+  }
+  /* Envelope: full width of its columns, no taller than 60vh, at the image's own ratio. */
+  .beat-photo .ph{
+    width:min(100%, calc(60vh * var(--ar, 1)));
+    aspect-ratio:var(--ar, 1);
+    margin-left:auto;
+  }
+
+  @media (min-width:1024px){
+    .j-list{row-gap:128px}
+    .beat{min-height:480px;align-items:center}
+    .beat-text{grid-column:4/9;grid-row:1}
+    .beat-photo{
+      grid-column:7/12;grid-row:1;
+      justify-self:start;width:100%;
+      align-self:center;
+      /* the part under the words dissolves */
+      -webkit-mask:linear-gradient(to right, transparent 0%, #000 45%);
+      mask:linear-gradient(to right, transparent 0%, #000 45%);
+      /* Reveal: arrives, not appears. Fades in over 500ms while settling from 1.05 to 1 and
+         drifting 16px left to rest. Leaves faster, and without the scale, so moving between
+         beats reads as a crossfade rather than two things animating. */
+      opacity:0;
+      transform:translateX(16px) scale(1.05);
+      transform-origin:left center;
+      transition:opacity .28s var(--ease-out-soft), transform .28s var(--ease-out-soft);
+      translate:none;   /* no drift on desktop; the hover reveal is the motion here */
+    }
+    .beat-text:hover ~ .beat-photo,
+    .beat-text.is-hot ~ .beat-photo,
+    .beat-text:focus-within ~ .beat-photo{
+      opacity:1;
+      transform:none;
+      transition:opacity .5s var(--ease-out-soft), transform .7s var(--ease-out-soft);
+    }
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .beat-photo{transition:none!important}
+  }
+</style>
+
+<script>
+  // Browsers do not recompute :hover while the page scrolls under a stationary pointer — the
+  // state only updates on the next mousemove. So a beat arriving under the cursor mid-scroll
+  // stayed dark until the mouse twitched. On every scroll frame this hit-tests whatever is
+  // under the last known pointer position and drives the reveal from a class instead.
+  function journeyHover() {
+    if ((window as any).__journeyHover) return;
+    (window as any).__journeyHover = true;
+    if (!matchMedia('(pointer: fine)').matches) return;
+
+    let mx = -1, my = -1, ticking = false;
+    const sync = () => {
+      ticking = false;
+      const el = mx < 0 ? null : document.elementFromPoint(mx, my);
+      const text = el?.closest?.('.beat-text') as HTMLElement | null;
+      document.querySelectorAll<HTMLElement>('.beat-text.is-hot').forEach((t) => { if (t !== text) t.classList.remove('is-hot'); });
+      text?.classList.add('is-hot');
+    };
+    const ask = () => { if (!ticking) { ticking = true; requestAnimationFrame(sync); } };
+
+    addEventListener('mousemove', (e) => { mx = e.clientX; my = e.clientY; ask(); }, { passive: true });
+    addEventListener('scroll', ask, { passive: true });
+    document.addEventListener('mouseleave', () => { mx = -1; my = -1; ask(); });
+  }
+  document.addEventListener('astro:page-load', journeyHover);
+</script>

@@ -1,0 +1,281 @@
+---
+import Logo from './Logo.astro';
+import { site } from '../data/site';
+import { themes } from '../data/themes';
+
+// The seven sections, in scroll order. This list is the single source for the rail, the
+// scroll-spy and the hash — add a section here and nothing else needs touching.
+const sections: [string, string][] = [
+  ['intro', 'Intro'],
+  ['work', 'Work'],
+  ['about', 'About'],
+  ['journey', 'Journey'],
+  ['background', 'Background'],
+  ['references', 'References'],
+  ['contact', 'Contact'],
+];
+---
+<div class="rail-layer" data-rail>
+  <div class="shell">
+    <div class="rail">
+      <a href="#intro" class="logo-link relative inline-flex items-center rounded-full self-start" aria-label="Huzaifa Ratlam, top of page">
+        <Logo size={56} />
+        <span class="logo-name" aria-hidden="true"><span class="logo-hi">Hi, I'm</span> <span class="logo-who">Huzaifa</span></span>
+      </a>
+
+      <nav class="rail-nav" aria-label="Sections">
+        {sections.map(([id, label], i) => (
+          <a href={`#${id}`} data-spy={id} class={i === 0 ? 'on' : ''}>{label}</a>
+        ))}
+        <a href={site.resume} target="_blank" rel="noopener">
+          Resume
+          <svg viewBox="0 0 14.4 14.4" aria-hidden="true"><path d="M1.2 13.2L13.2 1.2M13.2 1.2H1.2M13.2 1.2V13.2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" fill="none"/></svg>
+          <span class="sr-only">(opens in a new tab)</span>
+        </a>
+      </nav>
+
+      <div class="rail-tools">
+        <div class="theme-ctl" data-theme-ctl>
+          <div class="theme-pill" role="radiogroup" aria-label="Theme" tabindex="0">
+            {themes.map((t) => (
+              <button type="button" class="tsw" role="radio" data-theme-set={t.id}
+                aria-checked={t.id === 'brass' ? 'true' : 'false'} aria-label={t.name}
+                style={`--g:${t.ground};--a:${t.accent};--i:${t.ink}`}></button>
+            ))}
+          </div>
+        </div>
+
+        <button type="button" class="glass" data-grid-btn aria-pressed="false" aria-label="Show layout grid">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 3v18M12 3v18M19 3v18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="grid-layer" data-grid-layer aria-hidden="true">
+  <div class="shell">
+    {Array.from({ length: 12 }).map(() => (
+      <div class="col"><i class="ln"></i><i class="ln"></i></div>
+    ))}
+  </div>
+</div>
+
+<script>
+  import { themes } from '../data/themes';
+
+  function rail() {
+    const root = document.documentElement;
+
+    // ── theme ────────────────────────────────────────────────
+    // The initial theme is applied by an inline script in <head> so there is no flash;
+    // this only wires the picker.
+
+    function markTheme(id: string) {
+      document.querySelectorAll<HTMLElement>('[data-theme-set]').forEach((b) => {
+        b.setAttribute('aria-checked', String(b.dataset.themeSet === id));
+      });
+    }
+    function setTheme(id: string) {
+      if (id === 'brass') root.removeAttribute('data-theme');
+      else root.setAttribute('data-theme', id);
+      try { localStorage.setItem('hr-theme', id); } catch (e) {}
+      // The glasses catch the light in the new accent — the moment the accent changes is the
+      // moment to show it.
+      document.querySelectorAll<HTMLElement>('.logo').forEach((l) => {
+        l.classList.remove('shine'); void l.offsetWidth; l.classList.add('shine');
+      });
+      const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+      const t = themes.find((x) => x.id === id);
+      if (meta && t) meta.content = t.ground;
+      markTheme(id);
+    }
+    markTheme(root.getAttribute('data-theme') || 'brass');
+
+    const ctl = document.querySelector<HTMLElement>('[data-theme-ctl]');
+    if (ctl) {
+      ctl.addEventListener('click', (e) => {
+        const b = (e.target as Element).closest<HTMLElement>('[data-theme-set]');
+        if (!b || b.getAttribute('aria-checked') === 'true') return;
+        setTheme(b.dataset.themeSet!);
+        // Collapse after choosing: the new choice is now the resting swatch, so blur closes it
+        // for keyboard users and the pointer leaving closes it for everyone else.
+        (document.activeElement as HTMLElement | null)?.blur?.();
+      });
+    }
+
+    // ── grid overlay ─────────────────────────────────────────
+    const gridBtn = document.querySelector<HTMLButtonElement>('[data-grid-btn]');
+    const lines = [...document.querySelectorAll<HTMLElement>('.grid-layer .ln')];
+
+    // Flares are dealt, not assigned. Every 6-12s a random idle line gets one pass, spawned just
+    // below the viewport and ending just above it, so it always crosses what is on screen — on
+    // the right-hand lines as often as the left. At most two in flight. Each pass ends, the
+    // line goes back in the pool, and the next deal picks again.
+    const inFlight = new Set<HTMLElement>();
+    let dealTimer = 0;
+    const deal = () => {
+      dealTimer = 0;
+      if (!root.classList.contains('grid-on') || document.hidden) return;
+      if (inFlight.size < 2) {
+        const pool = lines.filter((l) => !inFlight.has(l));
+        const l = pool[Math.floor(Math.random() * pool.length)];
+        l.style.setProperty('--from', Math.round(scrollY + innerHeight + 300) + 'px');
+        l.style.setProperty('--to', Math.round(scrollY - 400) + 'px');
+        l.style.setProperty('--dur', (9 + Math.random() * 4).toFixed(1) + 's');   // ~125-180px/s: crosses the screen in 5-7s
+        inFlight.add(l);
+        l.classList.add('flare');
+        const done = (e: AnimationEvent) => {
+          if (e.pseudoElement !== '::after') return;
+          l.removeEventListener('animationend', done);
+          l.classList.remove('flare');
+          inFlight.delete(l);
+        };
+        l.addEventListener('animationend', done);
+      }
+      schedule();
+    };
+    // The first deal comes quickly; after that, one every 6-12s. Waiting the full interval
+    // before the first meant nothing at all for up to eighteen seconds after the grid came on.
+    const schedule = (first = false) => {
+      clearTimeout(dealTimer);
+      dealTimer = window.setTimeout(deal, first ? 1200 : 6000 + Math.random() * 6000);
+    };
+    const stopFlares = () => {
+      clearTimeout(dealTimer); dealTimer = 0;
+      lines.forEach((l) => l.classList.remove('flare'));
+      inFlight.clear();
+    };
+    // Going to the background stops the DEALING, not the flares already in flight — those
+    // finish on their own (animationend still fires) and return to the pool. Cancelling them
+    // was unnecessary, and in any environment that flickers visibility it killed every pass.
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) { clearTimeout(dealTimer); dealTimer = 0; }
+      else if (root.classList.contains('grid-on') && matchMedia('(min-width: 1024px)').matches && !dealTimer) schedule(true);
+    });
+
+    if (gridBtn) {
+      const sync = (on: boolean) => {
+        root.classList.toggle('grid-on', on);
+        gridBtn.setAttribute('aria-pressed', String(on));
+        gridBtn.classList.toggle('on', on);
+        gridBtn.setAttribute('aria-label', on ? 'Hide layout grid' : 'Show layout grid');
+        if (on && !matchMedia('(prefers-reduced-motion: reduce)').matches) { stopFlares(); schedule(true); } else stopFlares();
+      };
+      sync(root.classList.contains('grid-on'));
+      gridBtn.addEventListener('click', () => {
+        const on = !root.classList.contains('grid-on');
+        sync(on);
+        try { localStorage.setItem('hr-grid', on ? '1' : '0'); } catch (e) {}
+      });
+    }
+
+    // ── scroll spy ───────────────────────────────────────────
+    // Marks whichever section owns the middle of the viewport, and keeps the hash in step so
+    // every section is linkable without a click ever pushing a history entry.
+    const links = [...document.querySelectorAll<HTMLElement>('[data-spy]')];
+    const targets = links
+      .map((l) => document.getElementById(l.dataset.spy!))
+      .filter(Boolean) as HTMLElement[];
+    if (!targets.length) return;
+
+    // Driven from scroll rather than IntersectionObserver on purpose. IO only reports while
+    // the document is being rendered, so it goes silent in background tabs and previews — and
+    // a navigation whose active state silently stops updating is worse than one that costs a
+    // rAF per scroll. The work here is a handful of getBoundingClientRect reads, coalesced.
+    let active = '';
+    let ticking = false;
+
+    const pick = () => {
+      ticking = false;
+      let best: HTMLElement | null = null;
+      let bestTop = Infinity;
+
+      for (const t of targets) {
+        const r = t.getBoundingClientRect();
+        // The section owning the upper-middle band of the viewport wins, so a short section
+        // between two tall ones cannot flicker the active state.
+        if (r.top <= innerHeight * 0.45 && r.bottom > innerHeight * 0.3) {
+          const d = Math.abs(r.top);
+          if (d < bestTop) { bestTop = d; best = t; }
+        }
+      }
+      // The last section is often shorter than the band, so at the end of the page claim it.
+      if (innerHeight + Math.ceil(scrollY) >= document.documentElement.scrollHeight - 2) {
+        best = targets[targets.length - 1];
+      }
+      if (!best || best.id === active) return;
+
+      active = best.id;
+      links.forEach((l) => l.classList.toggle('on', l.dataset.spy === active));
+      // replaceState, never pushState: every section stays linkable without filling the
+      // back button with scroll positions.
+      history.replaceState(null, '', '#' + active);
+    };
+
+    // ── the nav's first item meets the hero's tab row ────────
+    // Measured rather than hardcoded: the hero is bottom-anchored, so the tab row's position
+    // depends on the viewport. The rail is fixed, so this only holds at the top of the page —
+    // which is the only place both are visible at once, and is exactly where the alignment reads.
+    const navEl = document.querySelector<HTMLElement>('.rail-nav');
+    const tabs = document.querySelector<HTMLElement>('[data-tabs]');
+    const alignNav = () => {
+      if (!navEl || !tabs || !matchMedia('(min-width: 1024px)').matches) {
+        navEl?.style.removeProperty('--nav-offset');
+        return;
+      }
+      navEl.style.removeProperty('--nav-offset');
+      const link = navEl.querySelector('a');
+      const tab = tabs.querySelector<HTMLElement>('[role="tab"]');
+      if (!link || !tab) return;
+      // Align the TEXT, not the boxes. Both are 14px, but the tab is a pill with 12px of padding
+      // and the nav link has 5px, so matching box edges leaves the words 7px apart.
+      const tabText = tab.getBoundingClientRect().top + parseFloat(getComputedStyle(tab).paddingTop);
+      const linkText = link.getBoundingClientRect().top + parseFloat(getComputedStyle(link).paddingTop);
+      const delta = tabText - linkText;
+      if (delta > 0) navEl.style.setProperty('--nav-offset', Math.round(delta) + 'px');
+      // Converge: one pass can land short if the hero has not finished settling.
+      requestAnimationFrame(() => {
+        const t2 = tab.getBoundingClientRect().top + parseFloat(getComputedStyle(tab).paddingTop);
+        const l2 = link.getBoundingClientRect().top + parseFloat(getComputedStyle(link).paddingTop);
+        const d2 = t2 - l2;
+        if (Math.abs(d2) > 1) {
+          const cur = parseFloat(navEl.style.getPropertyValue('--nav-offset')) || 0;
+          const next = Math.max(0, Math.round(cur + d2));
+          navEl.style.setProperty('--nav-offset', next + 'px');
+        }
+      });
+    };
+
+    // ── the rail over the footer ─────────────────────────────
+    // The footer is the inverse ground. Each part is checked against where the band strip has
+    // actually turned light, rather than against the footer's top edge — the strip's own top
+    // band is the page colour, so the footer's box starts long before its ground does.
+    const strip = document.querySelector<HTMLElement>('[data-strip]');
+    const toolsEl = document.querySelector<HTMLElement>('.rail-tools');
+    const invert = () => {
+      if (!strip || !navEl || !toolsEl) return;
+      const sr = strip.getBoundingClientRect();
+      const lightTop = sr.top + sr.height * 0.55;
+      const over = (el: HTMLElement) => {
+        const r = el.getBoundingClientRect();
+        return lightTop < r.top + r.height * 0.5;
+      };
+      navEl.classList.toggle('inv', over(navEl));
+      toolsEl.classList.toggle('inv', over(toolsEl));
+    };
+
+    const frame = () => { ticking = false; pick(); invert(); };
+    const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(frame); } };
+    addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('resize', () => { alignNav(); onScroll(); }, { passive: true });
+    if ((document as any).fonts?.ready) (document as any).fonts.ready.then(alignNav);
+    alignNav();
+    pick();
+    invert();
+  }
+
+  document.addEventListener('astro:page-load', rail);
+</script>

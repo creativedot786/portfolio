@@ -1,0 +1,5 @@
+---
+// About is now a section of the single page. Anything already shared pointing at /about
+// still lands in the right place instead of 404ing.
+return Astro.redirect('/#about', 301);
+---
