@@ -1,8 +1,5 @@
 ---
 import { beats } from '../data/beats';
-// Placeholder ratios until the real photographs land — alternated so both cases are visible.
-// A real <img> will size to its own ratio inside the same envelope.
-const ratios = ['4 / 3', '3 / 4', '4 / 3', '3 / 4'];
 ---
 <section id="journey" class="section" aria-labelledby="journey-h">
   <div class="shell">
@@ -10,21 +7,21 @@ const ratios = ['4 / 3', '3 / 4', '4 / 3', '3 / 4'];
   </div>
 
   <div class="j-list">
-    {beats.map((b, i) => (
-      <article class="beat shell" data-beat data-pin={b.id}>
+    {beats.map((b) => (
+      <article class="beat shell" data-beat>
         <div class="beat-text reveal">
-          <p class="text-meta text-tertiary mb-2">{b.place} · {b.when}</p>
-          <h3 class="text-h2 mb-3" set:html={b.heading} />
+          <h3 class="text-h2 mb-3"><span class="sr-only">{b.place}, {b.when}. </span><span set:html={b.heading} /></h3>
           <p class="text-secondary" set:html={b.body} />
         </div>
-        <div class={`beat-photo${b.photos ? ' has-pin' : ''}`} aria-hidden="true" style={`--ar:${ratios[i % ratios.length]}`} data-drift data-rate="-0.03">
-          {b.photos ? (
-            <div class="pin">
-              {b.photos.map((ph) => <img src={ph.src} alt={ph.alt} loading="lazy" decoding="async" />)}
-            </div>
-          ) : (
-            <div class="ph"><span>Photo · {b.photo}</span></div>
-          )}
+        <div class="beat-photo" aria-hidden="true" data-drift data-rate="-0.03">
+          <div class="board">
+            {b.photos.map((ph) => (
+              <figure class="snap" style={`grid-column:${ph.col};grid-row:${ph.row};aspect-ratio:${ph.ar};${ph.align ? `align-self:${ph.align};` : ''}`}>
+                <i class={`tape ${ph.tape}`}></i>
+                <img src={ph.src} alt={ph.alt} loading="lazy" decoding="async" />
+              </figure>
+            ))}
+          </div>
         </div>
       </article>
     ))}
@@ -45,7 +42,7 @@ const ratios = ['4 / 3', '3 / 4', '4 / 3', '3 / 4'];
     grid-column:1/-1;
     order:-1;               /* above the copy on mobile; explicit row placement overrides this on desktop */
     justify-self:end;
-    width:55%;
+    width:100%;             /* the board takes the full width on mobile; three photographs at 55% would be stamps */
     z-index:0;
     pointer-events:none;
     /* on mobile the drift can carry it into the heading; its lower edge dissolves so that reads
@@ -53,38 +50,27 @@ const ratios = ['4 / 3', '3 / 4', '4 / 3', '3 / 4'];
     -webkit-mask:linear-gradient(to bottom, #000 55%, transparent);
     mask:linear-gradient(to bottom, #000 55%, transparent);
   }
-  /* Envelope: full width of its columns, no taller than 60vh, at the image's own ratio. */
-  .beat-photo .ph{
-    width:min(100%, calc(60vh * var(--ar, 1)));
-    aspect-ratio:var(--ar, 1);
-    margin-left:auto;
-  }
-
-  /* The pinboards. Photographs placed by hand per beat, keyed on the beat's id, and sized by
-     what each one is. No overlap, no motion of their own — the reveal is the motion. Positions
-     are percentages of the slot, so a composition holds at any width. The slot's left 45%
-     dissolves under the copy, so in every board the photographs of people hold the clear right
-     side and the scenery or the app screens are what fade under the words. */
-  .pin{position:relative;width:100%;aspect-ratio:1.3}
-  .pin img{position:absolute;display:block;object-fit:cover;aspect-ratio:4/3;background:var(--color-surface);
-           box-shadow:0 14px 30px -16px rgb(0 0 0 / .7)}
-
-  /* Cubix, 2011. Five: two of people, two Facebook app screens, the business card. The Walmart
-     screen is a tall leaderboard cropped to a short frame — a glimpse of the time, not the work. */
-  [data-pin="cubix"] .pin img:nth-child(1){left:30%;top:0;width:52%;aspect-ratio:3/2;transform:rotate(-1.5deg)}      /* desk */
-  [data-pin="cubix"] .pin img:nth-child(2){right:0;bottom:0;width:26%;aspect-ratio:2/3;transform:rotate(2deg)}       /* rooftop */
-  [data-pin="cubix"] .pin img:nth-child(3){left:2%;top:6%;width:22%;aspect-ratio:3/4;object-position:top;transform:rotate(-2.5deg)}   /* fan-o-matic, cropped */
-  [data-pin="cubix"] .pin img:nth-child(4){left:14%;bottom:5%;width:36%;transform:rotate(1.5deg)}   /* spin to win */
-  [data-pin="cubix"] .pin img:nth-child(5){left:51%;bottom:7%;width:19%;transform:rotate(4deg)}     /* card */
-
-  /* Dar es Salaam, 2012. Three, all 4:3: the coast and the tortoise on the clear side, the
-     beach — scenery, the least lost — under the words. */
-  [data-pin="tz"] .pin img:nth-child(1){right:0;top:0;width:52%;transform:rotate(1.5deg)}          /* coast */
-  [data-pin="tz"] .pin img:nth-child(2){right:4%;bottom:0;width:44%;transform:rotate(-2deg)}       /* tortoise */
-  [data-pin="tz"] .pin img:nth-child(3){left:4%;top:6%;width:40%;transform:rotate(-1.2deg)}        /* beach */
-  /* on mobile the composition takes the full width; five images at 55% would be stamps */
-  .beat-photo.has-pin{width:100%}
-
+  /* The board. A five-column grid inside the slot whose tracks are the page's own columns and
+     gutters, so every photograph starts on a line and ends on one — the trailing gutter track
+     is what lets a span end on the column-12 line. No rotation: the grid is the pinboard, and
+     the tape is what says pinned. Photographs are sized by the columns, not by eye; the one in
+     the slot's left two columns is the one that fades under the copy, so it is the one the
+     beat can afford to lose. Per-photo placement lives with the photo in beats.ts. */
+  .board{display:grid;grid-template-columns:repeat(5, 1fr var(--grid-gutter));column-gap:0;row-gap:var(--grid-gutter);width:100%}
+  .snap{margin:0;position:relative;width:100%}
+  .snap img{display:block;width:100%;height:100%;object-fit:cover;aspect-ratio:inherit;background:var(--color-surface);
+          box-shadow:0 14px 30px -16px rgb(0 0 0 / .7)}
+  /* One strip of tape per photograph: translucent accent, torn ends. Accent is otherwise
+     reserved for meaning (the active link, the highlighted word, the glasses); here it is the
+     one decorative use on the site, kept to one strip each and to this section. */
+  .tape{position:absolute;z-index:1;width:74px;height:20px;pointer-events:none;
+        background:color-mix(in srgb, var(--color-accent) 42%, transparent);
+        clip-path:polygon(0 18%,2% 0,98% 6%,100% 24%,99% 82%,97% 100%,3% 94%,1% 78%);
+        box-shadow:inset 0 0 0 1px color-mix(in srgb, #fff 8%, transparent)}
+  .tape.t{left:50%;top:-9px;transform:translateX(-50%) rotate(-2deg)}
+  .tape.tl{left:-22px;top:10px;transform:rotate(-42deg)}
+  .tape.tr{right:-22px;top:10px;transform:rotate(42deg)}
+  :root[data-theme="cream"] .tape{box-shadow:inset 0 0 0 1px color-mix(in srgb, #000 6%, transparent)}
   @media (min-width:1024px){
     .j-list{row-gap:128px}
     .beat{min-height:480px;align-items:center}

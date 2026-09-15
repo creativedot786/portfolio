@@ -918,3 +918,37 @@ data entry plus one block of positions — nothing shared moves.
 
 **Files.** `public/journey/tz/{coast,tortoise,beach}.jpg`, downsized to ~2× display
 (largest 112 KB). Alt text describes the scene; nobody in the photographs is named.
+
+## Journey boards on the grid, with tape — 15 Sep 2026
+
+Huzaifa asked for the photo containers to sit on grid lines, and sent two references of taped
+polaroids. Three directions were built on the real grid with the real photographs
+(artifact "Journey Pinboards"): on the grid, scattered with flush edges, and framed.
+
+**On the grid, chosen.** A rotated photograph cannot sit on a line — a 2° tilt lifts a corner
+6px off it — so "scattered" and "on the grid" were pulling against each other. Every photograph
+now spans whole columns and ends on a line, with no rotation. The board is a five-column grid
+inside the slot whose tracks alternate column / gutter (`repeat(5, 1fr var(--grid-gutter))`),
+so a span that includes the trailing gutter ends on the column-12 line exactly. Sizes are
+decided by the columns, not by eye: the people photograph in each beat takes three columns to
+the right edge; the two left columns of the slot, which fade under the copy, hold the
+photograph the beat can afford to lose — an app screen, the beach, the sticky wall.
+Placement lives with each photo in `beats.ts` (`col`, `row`, `ar`, `tape`, `align`).
+
+**Tape, not frame.** The reference's white polaroid border was shown and argued against: on
+the three dark themes it becomes the brightest thing in the section and outranks the
+headline; on cream it vanishes; the site has no borders anywhere else. What was kept is the
+strip of tape — one per photograph, translucent accent (42%), torn ends by clip-path. This is
+the one decorative use of the accent on the site; it is kept to a single strip and to this
+section. It also gives the theme change one more place to show.
+
+**Hairline meta removed.** "Karachi · 2011" above each heading is gone at Huzaifa's request;
+place and year stay as an sr-only prefix on the heading so the timeline survives for
+assistive tech. The Conceptualize and Dubai headings were rewritten: "Founding designer at a
+Dubai agency. Then a team to build." and "From agency to product, one at a time."
+
+**Photographs.** Cubix drops to three (card and rooftop removed). Conceptualize: the team of
+five, the sticky wall, the monitor with the agency site, the video-wall office. Dubai: the
+"We are BSF" wall, a large group in the desert, presenting to a room — all three from a
+folder Huzaifa labelled misc, placed under Dubai 2019–today pending his confirmation. Alt
+text describes the scene; nobody is named until he confirms who is who.
