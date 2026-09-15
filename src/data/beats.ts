@@ -16,7 +16,8 @@ export const beats: Beat[] = [
     body: `Cubix was an agency in Karachi with clients abroad. I designed company pages and websites, and got my first exposure to mobile apps, back when that meant a 320 by 480 pixel iPhone screen.`,
     photo: 'Cubix',
     photos: [
-      { src: '/journey/cubix/team.jpg',        alt: 'Four of the Cubix team in the office, 2011' },
+      { src: '/journey/cubix/desk.jpg',        alt: 'At a desk in the Cubix office, a poker game on the screen' },
+      { src: '/journey/cubix/rooftop.jpg',     alt: 'Two of the team on the office rooftop, Karachi behind them' },
       { src: '/journey/cubix/fan-o-matic.jpg', alt: 'Fan-O-Matic, a Facebook leaderboard app for Walmart' },
       { src: '/journey/cubix/spin-to-win.jpg', alt: 'Spin to Win, a Facebook app for Casinotop10' },
       { src: '/journey/cubix/card.jpg',        alt: 'The Cubix Labs business card' },

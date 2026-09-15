@@ -867,10 +867,13 @@ Logo 56 → 64px.
 
 ## Cubix photographs — 15 Sep 2026
 
-The first real photographs in the journey. Four things Huzaifa kept from 2011: four of the
-team in the office, the Cubix Labs business card, and two Facebook app screens (Fan-O-Matic
-for Walmart, Spin to Win for Casinotop10). A fifth — a colleague's drawing of the team as
-cats — was in the first pass and Huzaifa took it out.
+The first real photographs in the journey. Five things Huzaifa kept from 2011: someone at a
+desk in the office with a poker game on the screen, two of the team on the office rooftop with
+Karachi behind them, the Cubix Labs business card, and two Facebook app screens (Fan-O-Matic
+for Walmart, Spin to Win for Casinotop10). The first pass had a group photo of four at the
+office and a colleague's drawing of the team as cats; Huzaifa took both out and added the desk
+and rooftop photographs instead. Names in the two people photographs are not known to me, so
+the alt text describes the scene, not the people.
 
 **What the section is for.** Journey is the story; the photographs are evidence of having
 been there. They are a glimpse of a past life, not work samples — so they are small, freely
@@ -883,19 +886,20 @@ Hand-placed absolute positions inside a `.pin` slot at 1.3:1, all as percentages
 composition holds at any width. No overlap, no motion of their own — the reveal is the motion.
 
 **Placement follows the dissolve.** The photo slot starts at column 7 and its left 45% fades
-under the words, so nothing that matters sits hard against the left edge: the people start
-at 4%, the casino screen at 26% and takes the clear bottom-centre, the Walmart screen and the
-card hold the right side.
+under the words. The two photographs of people are what the section is about, so they hold
+the clear right side — the desk top-right, the rooftop portrait bottom-right. The two app
+screens are the ones that fade: Fan-O-Matic top-left under the heading, Spin to Win bottom-
+left half under the copy. The card sits between, in the clear.
 
-**Sizes.** People largest (58% of the slot, 3:2), the casino screen next (38%), the Walmart
-screen tall and narrow (26%, 3:4, cropped from the top), the card smallest (24%) — a card is
-card-sized. Rotations of 1–5°, alternating
-sign, so it reads as pinned rather than laid out. A soft drop shadow lifts them off the ground
-without a border or radius, in line with the no-border rule.
+**Sizes.** The desk photograph largest (52% of the slot, 3:2), Spin to Win next (36%, 4:3),
+the rooftop tall and narrow (26%, 2:3), Fan-O-Matic (22%, 3:4, cropped from the top), the
+card smallest (19%) — a card is card-sized. Rotations of 1.5–4°, alternating sign, so it
+reads as pinned rather than laid out. A soft drop shadow lifts them off the ground without a
+border or radius, in line with the no-border rule.
 
 **Mobile.** The board takes the full content width above the copy (five images at 55% width
 would be stamps), and keeps the bottom dissolve so the drift can carry it into the heading.
 
-**Files.** `public/journey/cubix/{team,card,fan-o-matic,spin-to-win}.jpg`, downsized
-to display size ×2 (largest 101 KB). Data in `beats.ts` as `photos[]` with real alt text;
+**Files.** `public/journey/cubix/{desk,rooftop,card,fan-o-matic,spin-to-win}.jpg`, downsized
+to roughly display size ×2 (largest 91 KB). Data in `beats.ts` as `photos[]` with alt text;
 beats without `photos` keep the placeholder.

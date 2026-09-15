@@ -60,20 +60,21 @@ const ratios = ['4 / 3', '3 / 4', '4 / 3', '3 / 4'];
     margin-left:auto;
   }
 
-  /* The pinboard. Four photographs placed by hand and sized by what each one is: the people
+  /* The pinboard. Five photographs placed by hand and sized by what each one is: the people
      large, the card card-sized, the two app screens in between. No overlap, no motion of their
      own — the reveal is the motion. The Walmart screen is a tall leaderboard and is cropped to
      a short frame; these are a glimpse of the time, not the work. Positions are percentages of
      the slot, so the composition holds at any width. The slot's left 45% dissolves under the
-     copy, so the people and the casino screen — the two with the most in them — are kept
-     towards the clear side. */
+     copy, so the two photographs of people hold the clear right side and the app screens are
+     the ones that fade under the words. */
   .pin{position:relative;width:100%;aspect-ratio:1.3}
   .pin img{position:absolute;display:block;object-fit:cover;background:var(--color-surface);
            box-shadow:0 14px 30px -16px rgb(0 0 0 / .7)}
-  .pin img:nth-child(1){left:4%;top:0;width:58%;aspect-ratio:3/2;transform:rotate(-1.2deg)}       /* team */
-  .pin img:nth-child(2){right:0;top:6%;width:26%;aspect-ratio:3/4;object-position:top;transform:rotate(2deg)}   /* fan-o-matic, cropped */
-  .pin img:nth-child(3){left:26%;bottom:4%;width:38%;aspect-ratio:4/3;transform:rotate(-2deg)}    /* spin to win */
-  .pin img:nth-child(4){right:3%;bottom:14%;width:24%;aspect-ratio:4/3;transform:rotate(4deg)}    /* card */
+  .pin img:nth-child(1){left:30%;top:0;width:52%;aspect-ratio:3/2;transform:rotate(-1.5deg)}      /* desk */
+  .pin img:nth-child(2){right:0;bottom:0;width:26%;aspect-ratio:2/3;transform:rotate(2deg)}       /* rooftop */
+  .pin img:nth-child(3){left:2%;top:6%;width:22%;aspect-ratio:3/4;object-position:top;transform:rotate(-2.5deg)}   /* fan-o-matic, cropped */
+  .pin img:nth-child(4){left:14%;bottom:5%;width:36%;aspect-ratio:4/3;transform:rotate(1.5deg)}   /* spin to win */
+  .pin img:nth-child(5){left:51%;bottom:7%;width:19%;aspect-ratio:4/3;transform:rotate(4deg)}     /* card */
   /* on mobile the composition takes the full width; five images at 55% would be stamps */
   .beat-photo.has-pin{width:100%}
 
