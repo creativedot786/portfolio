@@ -19,7 +19,6 @@ export const beats: Beat[] = [
       { src: '/journey/cubix/team.jpg',        alt: 'Four of the Cubix team in the office, 2011' },
       { src: '/journey/cubix/fan-o-matic.jpg', alt: 'Fan-O-Matic, a Facebook leaderboard app for Walmart' },
       { src: '/journey/cubix/spin-to-win.jpg', alt: 'Spin to Win, a Facebook app for Casinotop10' },
-      { src: '/journey/cubix/drawing.jpg',     alt: "A colleague's drawing of the team as five cats: Umair, Faraz, Aisha, Huzaifa and Fahad" },
       { src: '/journey/cubix/card.jpg',        alt: 'The Cubix Labs business card' },
     ],
   },

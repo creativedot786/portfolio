@@ -867,9 +867,10 @@ Logo 56 → 64px.
 
 ## Cubix photographs — 15 Sep 2026
 
-The first real photographs in the journey. Five things Huzaifa kept from 2011: four of the
-team in the office, a colleague's drawing of the five of them as cats, the Cubix Labs business
-card, and two Facebook app screens (Fan-O-Matic for Walmart, Spin to Win for Casinotop10).
+The first real photographs in the journey. Four things Huzaifa kept from 2011: four of the
+team in the office, the Cubix Labs business card, and two Facebook app screens (Fan-O-Matic
+for Walmart, Spin to Win for Casinotop10). A fifth — a colleague's drawing of the team as
+cats — was in the first pass and Huzaifa took it out.
 
 **What the section is for.** Journey is the story; the photographs are evidence of having
 been there. They are a glimpse of a past life, not work samples — so they are small, freely
@@ -882,19 +883,19 @@ Hand-placed absolute positions inside a `.pin` slot at 1.3:1, all as percentages
 composition holds at any width. No overlap, no motion of their own — the reveal is the motion.
 
 **Placement follows the dissolve.** The photo slot starts at column 7 and its left 45% fades
-under the words. So the thing that matters most in the clear zone: the drawing — the most
-"past life" of the five — takes the bottom-centre; the casino screen, the most "work" of the
-five, is the one that sits under the copy and dissolves. First pass had them the other way
-round and the drawing was nearly invisible.
+under the words, so nothing that matters sits hard against the left edge: the people start
+at 4%, the casino screen at 26% and takes the clear bottom-centre, the Walmart screen and the
+card hold the right side.
 
-**Sizes.** People largest (58% of the slot, 3:2), the drawing next (37%), the two screens
-(30% and 26%), the card smallest (22%) — a card is card-sized. Rotations of 1–5°, alternating
+**Sizes.** People largest (58% of the slot, 3:2), the casino screen next (38%), the Walmart
+screen tall and narrow (26%, 3:4, cropped from the top), the card smallest (24%) — a card is
+card-sized. Rotations of 1–5°, alternating
 sign, so it reads as pinned rather than laid out. A soft drop shadow lifts them off the ground
 without a border or radius, in line with the no-border rule.
 
 **Mobile.** The board takes the full content width above the copy (five images at 55% width
 would be stamps), and keeps the bottom dissolve so the drift can carry it into the heading.
 
-**Files.** `public/journey/cubix/{team,drawing,card,fan-o-matic,spin-to-win}.jpg`, downsized
+**Files.** `public/journey/cubix/{team,card,fan-o-matic,spin-to-win}.jpg`, downsized
 to display size ×2 (largest 101 KB). Data in `beats.ts` as `photos[]` with real alt text;
 beats without `photos` keep the placeholder.
