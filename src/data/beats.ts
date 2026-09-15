@@ -1,4 +1,8 @@
-export type Beat = { place: string; when: string; heading: string; body: string; photo: string };
+// `photos`, when present, is rendered as a scattered composition in a fixed order: the first is
+// the large one. Alt text describes what is actually in the frame. `photo` is the placeholder
+// label for beats that have no photographs yet.
+export type BeatPhoto = { src: string; alt: string };
+export type Beat = { place: string; when: string; heading: string; body: string; photo: string; photos?: BeatPhoto[] };
 
 // Same hover-preview mechanism as the hero. Keys live in previews.ts.
 const ind = (key: 'fintech' | 'e-government' | 'e-commerce', href: string, text: string) =>
@@ -11,6 +15,13 @@ export const beats: Beat[] = [
     heading: 'I started out when Facebook company pages were still a design brief.',
     body: `Cubix was an agency in Karachi with clients abroad. I designed company pages and websites, and got my first exposure to mobile apps, back when that meant a 320 by 480 pixel iPhone screen.`,
     photo: 'Cubix',
+    photos: [
+      { src: '/journey/cubix/team.jpg',        alt: 'Four of the Cubix team in the office, 2011' },
+      { src: '/journey/cubix/fan-o-matic.jpg', alt: 'Fan-O-Matic, a Facebook leaderboard app for Walmart' },
+      { src: '/journey/cubix/spin-to-win.jpg', alt: 'Spin to Win, a Facebook app for Casinotop10' },
+      { src: '/journey/cubix/drawing.jpg',     alt: "A colleague's drawing of the team as five cats: Umair, Faraz, Aisha, Huzaifa and Fahad" },
+      { src: '/journey/cubix/card.jpg',        alt: 'The Cubix Labs business card' },
+    ],
   },
   {
     place: 'Dar es Salaam',
