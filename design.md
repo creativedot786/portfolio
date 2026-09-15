@@ -903,3 +903,18 @@ would be stamps), and keeps the bottom dissolve so the drift can carry it into t
 **Files.** `public/journey/cubix/{desk,rooftop,card,fan-o-matic,spin-to-win}.jpg`, downsized
 to roughly display size ×2 (largest 91 KB). Data in `beats.ts` as `photos[]` with alt text;
 beats without `photos` keep the placeholder.
+
+## Tanzania photographs — 15 Sep 2026
+
+Three from 2012, all 4:3: standing on the rocks at the coast, holding a tortoise, and a beach
+lined with palms. Same rule as Cubix — the two with a person in them hold the clear right side
+(coast top-right at 52%, tortoise below it at 44%), and the beach, which is scenery and loses
+the least by fading, sits top-left under the heading at 40%.
+
+**Boards are keyed per beat.** Each beat now carries an `id` (`cubix`, `tz`, `conceptualize`,
+`dubai`), written to the article as `data-pin`, and the board CSS is scoped to it. So the
+order in `photos[]` is the order the CSS places, and adding a beat's photographs means one
+data entry plus one block of positions — nothing shared moves.
+
+**Files.** `public/journey/tz/{coast,tortoise,beach}.jpg`, downsized to ~2× display
+(largest 112 KB). Alt text describes the scene; nobody in the photographs is named.

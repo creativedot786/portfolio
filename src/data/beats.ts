@@ -1,8 +1,8 @@
-// `photos`, when present, is rendered as a scattered composition in a fixed order: the first is
-// the large one. Alt text describes what is actually in the frame. `photo` is the placeholder
-// label for beats that have no photographs yet.
+// `photos`, when present, is rendered as a scattered board whose layout is keyed on `id` in
+// Journey.astro, so the order here is the order the CSS places them in. Alt text describes what
+// is actually in the frame. `photo` is the placeholder label for beats without photographs yet.
 export type BeatPhoto = { src: string; alt: string };
-export type Beat = { place: string; when: string; heading: string; body: string; photo: string; photos?: BeatPhoto[] };
+export type Beat = { id: string; place: string; when: string; heading: string; body: string; photo: string; photos?: BeatPhoto[] };
 
 // Same hover-preview mechanism as the hero. Keys live in previews.ts.
 const ind = (key: 'fintech' | 'e-government' | 'e-commerce', href: string, text: string) =>
@@ -10,6 +10,7 @@ const ind = (key: 'fintech' | 'e-government' | 'e-commerce', href: string, text:
 
 export const beats: Beat[] = [
   {
+    id: 'cubix',
     place: 'Karachi',
     when: '2011',
     heading: 'I started out when Facebook company pages were still a design brief.',
@@ -24,13 +25,20 @@ export const beats: Beat[] = [
     ],
   },
   {
+    id: 'tz',
     place: 'Dar es Salaam',
     when: '2012',
     heading: 'At twenty, the only designer in the company.',
     body: `I took a job in Tanzania because working abroad felt like too good an opportunity to pass up. Branding and websites for local clients. It's where I learned to own a piece of work end to end.`,
     photo: 'Tanzania',
+    photos: [
+      { src: '/journey/tz/coast.jpg',    alt: 'Standing on the rocks at the coast near Dar es Salaam' },
+      { src: '/journey/tz/tortoise.jpg', alt: 'Holding a tortoise, with more of them on the ground behind' },
+      { src: '/journey/tz/beach.jpg',    alt: 'Palm trees along a beach in Tanzania' },
+    ],
   },
   {
+    id: 'conceptualize',
     place: 'Karachi, then Dubai',
     when: '2014 to 2019',
     heading: 'Five years at a Dubai agency, from founding designer to a team of four.',
@@ -38,6 +46,7 @@ export const beats: Beat[] = [
     photo: 'Conceptualize',
   },
   {
+    id: 'dubai',
     place: 'Dubai',
     when: '2019 to today',
     heading: 'One product at a time, instead of a new client every month.',

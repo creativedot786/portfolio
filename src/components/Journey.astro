@@ -11,7 +11,7 @@ const ratios = ['4 / 3', '3 / 4', '4 / 3', '3 / 4'];
 
   <div class="j-list">
     {beats.map((b, i) => (
-      <article class="beat shell" data-beat>
+      <article class="beat shell" data-beat data-pin={b.id}>
         <div class="beat-text reveal">
           <p class="text-meta text-tertiary mb-2">{b.place} · {b.when}</p>
           <h3 class="text-h2 mb-3" set:html={b.heading} />
@@ -60,21 +60,28 @@ const ratios = ['4 / 3', '3 / 4', '4 / 3', '3 / 4'];
     margin-left:auto;
   }
 
-  /* The pinboard. Five photographs placed by hand and sized by what each one is: the people
-     large, the card card-sized, the two app screens in between. No overlap, no motion of their
-     own — the reveal is the motion. The Walmart screen is a tall leaderboard and is cropped to
-     a short frame; these are a glimpse of the time, not the work. Positions are percentages of
-     the slot, so the composition holds at any width. The slot's left 45% dissolves under the
-     copy, so the two photographs of people hold the clear right side and the app screens are
-     the ones that fade under the words. */
+  /* The pinboards. Photographs placed by hand per beat, keyed on the beat's id, and sized by
+     what each one is. No overlap, no motion of their own — the reveal is the motion. Positions
+     are percentages of the slot, so a composition holds at any width. The slot's left 45%
+     dissolves under the copy, so in every board the photographs of people hold the clear right
+     side and the scenery or the app screens are what fade under the words. */
   .pin{position:relative;width:100%;aspect-ratio:1.3}
-  .pin img{position:absolute;display:block;object-fit:cover;background:var(--color-surface);
+  .pin img{position:absolute;display:block;object-fit:cover;aspect-ratio:4/3;background:var(--color-surface);
            box-shadow:0 14px 30px -16px rgb(0 0 0 / .7)}
-  .pin img:nth-child(1){left:30%;top:0;width:52%;aspect-ratio:3/2;transform:rotate(-1.5deg)}      /* desk */
-  .pin img:nth-child(2){right:0;bottom:0;width:26%;aspect-ratio:2/3;transform:rotate(2deg)}       /* rooftop */
-  .pin img:nth-child(3){left:2%;top:6%;width:22%;aspect-ratio:3/4;object-position:top;transform:rotate(-2.5deg)}   /* fan-o-matic, cropped */
-  .pin img:nth-child(4){left:14%;bottom:5%;width:36%;aspect-ratio:4/3;transform:rotate(1.5deg)}   /* spin to win */
-  .pin img:nth-child(5){left:51%;bottom:7%;width:19%;aspect-ratio:4/3;transform:rotate(4deg)}     /* card */
+
+  /* Cubix, 2011. Five: two of people, two Facebook app screens, the business card. The Walmart
+     screen is a tall leaderboard cropped to a short frame — a glimpse of the time, not the work. */
+  [data-pin="cubix"] .pin img:nth-child(1){left:30%;top:0;width:52%;aspect-ratio:3/2;transform:rotate(-1.5deg)}      /* desk */
+  [data-pin="cubix"] .pin img:nth-child(2){right:0;bottom:0;width:26%;aspect-ratio:2/3;transform:rotate(2deg)}       /* rooftop */
+  [data-pin="cubix"] .pin img:nth-child(3){left:2%;top:6%;width:22%;aspect-ratio:3/4;object-position:top;transform:rotate(-2.5deg)}   /* fan-o-matic, cropped */
+  [data-pin="cubix"] .pin img:nth-child(4){left:14%;bottom:5%;width:36%;transform:rotate(1.5deg)}   /* spin to win */
+  [data-pin="cubix"] .pin img:nth-child(5){left:51%;bottom:7%;width:19%;transform:rotate(4deg)}     /* card */
+
+  /* Dar es Salaam, 2012. Three, all 4:3: the coast and the tortoise on the clear side, the
+     beach — scenery, the least lost — under the words. */
+  [data-pin="tz"] .pin img:nth-child(1){right:0;top:0;width:52%;transform:rotate(1.5deg)}          /* coast */
+  [data-pin="tz"] .pin img:nth-child(2){right:4%;bottom:0;width:44%;transform:rotate(-2deg)}       /* tortoise */
+  [data-pin="tz"] .pin img:nth-child(3){left:4%;top:6%;width:40%;transform:rotate(-1.2deg)}        /* beach */
   /* on mobile the composition takes the full width; five images at 55% would be stamps */
   .beat-photo.has-pin{width:100%}
 
