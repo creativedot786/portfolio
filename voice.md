@@ -130,14 +130,17 @@ Candidate (not yet approved as final copy):
 > Dar es Salaam, 2012. **At twenty, the only designer in the company.** I took a job in Tanzania
 > because working abroad felt like too good an opportunity to pass up. Branding and websites for
 > local clients. It's where I learned to own a piece of work end to end.
-> Karachi, then Dubai, 2014 to 2019. **Five years at a Dubai agency, from founding designer to a
-> team of four.** I joined Conceptualize, a Dubai design agency, as its founding designer, working
+> Karachi, then Dubai, 2014 to 2019. **Founding designer at a Dubai agency. Then a team to build.**
+> I joined Conceptualize, a Dubai design agency, as its founding designer, working
 > remotely from Karachi until I moved to Dubai in 2017. As the agency grew I built the design
 > function, hired and ran a team of four, and worked with clients like RTA and Meydan.
-> Dubai, 2019 to today. **One product at a time, instead of a new client every month.** In 2019 I
+> Dubai, 2019 to today. **From agency to product, one at a time.** In 2019 I
 > joined the team behind TAMM, Abu Dhabi's government services app. Since then: a digital bank at
 > Banque Saudi Fransi, an on-demand home services app at Rizek, and Tradeling, a B2B marketplace,
 > where AI became part of the daily workflow.
+> (The place and year lines are no longer shown; they remain as a screen-reader prefix on each
+> heading. Headings rewritten 15 Sep 2026 — the earlier "Five years at a Dubai agency…" and "One
+> product at a time, instead of a new client every month" said too much before the body did.)
 > (Review 06. Heading 4 approved. Heading 3 reworded, awaiting yes.)
 
 ### Home audience tabs (review 10, 2026-09-07, awaiting yes)
