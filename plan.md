@@ -414,3 +414,12 @@ third time this session; check the built CSS before believing a styling bug.
   broken, but no preview appears either.
 - Cream needs transparent PNGs for the case studies; two of three are on dark grounds.
 - `words.ts` is still four placeholders marked never-publish.
+
+## 15 Sep 2026 — About after Background; books and a record
+
+Section order is now Intro, Work, Journey, Background, About, References, Contact. About's
+photographs are replaced by two books (3D from the flat cover) and a record (drawn disc,
+sleeve, turning). Placeholders: Creative Selection, Inspired, The G Code — Huzaifa to send
+his own covers, Amazon links and a Spotify / YouTube Music link. `npm run shelf` refreshes
+the record from the link. Still open: About photo captions are gone with the photos; the
+hover-preview images under /previews are still missing.

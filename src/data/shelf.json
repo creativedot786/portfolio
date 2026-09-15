@@ -1,0 +1,24 @@
+{
+  "listening": {
+    "url": "https://www.youtube.com/watch?v=aJMizL0hgi8",
+    "title": "The G Code",
+    "artist": "PeelingFlesh",
+    "year": "2024",
+    "cover": "/shelf/g-code.jpg",
+    "_note": "placeholder from chrisandrews.xyz until Huzaifa sends his own link; a YouTube Music or Spotify link needs no overrides"
+  },
+  "books": [
+    {
+      "title": "Creative Selection",
+      "author": "Ken Kocienda",
+      "cover": "/shelf/creative-selection.jpg",
+      "href": "https://www.amazon.com/s?k=Creative+Selection+Ken+Kocienda"
+    },
+    {
+      "title": "Inspired",
+      "author": "Marty Cagan",
+      "cover": "/shelf/inspired.jpg",
+      "href": "https://www.amazon.com/s?k=Inspired+Marty+Cagan"
+    }
+  ]
+}

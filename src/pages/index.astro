@@ -4,18 +4,11 @@ import AudienceTabs from '../components/AudienceTabs.astro';
 import Promo from '../components/Promo.astro';
 import Journey from '../components/Journey.astro';
 import Words from '../components/Words.astro';
+import Shelf from '../components/Shelf.astro';
 import { work } from '../data/work';
 import { roles } from '../data/roles';
 import { site } from '../data/site';
 
-// Placeholder captions until Huzaifa writes them. Never publish these.
-const along = [
-  'Caption goes here, one line',
-  'Caption goes here, one line',
-  'Caption goes here',
-  'Caption goes here, one line',
-  'Caption goes here, one line',
-];
 ---
 <Base title="Huzaifa Ratlam, Senior Product Designer" description="Senior product designer, 10+ years across fintech, e-government and e-commerce, in startups and large organisations. Led design end to end, and shipped a product with AI in the workflow.">
   <AudienceTabs />
@@ -32,29 +25,6 @@ const along = [
       </a>
     ))}
   </nav>
-
-  <section id="about" class="section" aria-labelledby="about-h">
-    <div class="shell">
-      <h2 id="about-h" class="sr-only">About</h2>
-      <div class="col-lead reveal">
-        <p class="text-h3 text-secondary">
-          Senior product designer, <b class="font-semibold text-primary">10+ years across startups, e&#8209;government, e&#8209;commerce and fintech.</b> The last product I worked on, I designed, built and launched myself.
-        </p>
-        <p class="mt-3 text-h3 text-secondary">
-          AI is part of how I work now, every day. The tools changed. The job, deciding what to build and why, didn't.
-        </p>
-      </div>
-    </div>
-
-    <div class="shell along mt-12 lg:mt-20">
-      {along.map((caption, i) => (
-        <figure class="reveal m-0" data-drift data-rate={i % 2 ? '-0.08' : '0.08'}>
-          <div class="ph"><span>Photo</span></div>
-          <figcaption class="cap">{caption}</figcaption>
-        </figure>
-      ))}
-    </div>
-  </section>
 
   <Journey />
 
@@ -82,6 +52,22 @@ const along = [
     </div>
   </section>
 
+  <section id="about" class="section" aria-labelledby="about-h">
+    <div class="shell">
+      <h2 id="about-h" class="sr-only">About</h2>
+      <div class="col-lead reveal">
+        <p class="text-h3 text-secondary">
+          Senior product designer, <b class="font-semibold text-primary">10+ years across startups, e&#8209;government, e&#8209;commerce and fintech.</b> The last product I worked on, I designed, built and launched myself.
+        </p>
+        <p class="mt-3 text-h3 text-secondary">
+          AI is part of how I work now, every day. The tools changed. The job, deciding what to build and why, didn't.
+        </p>
+      </div>
+    </div>
+
+    <Shelf />
+  </section>
+
   <Words />
 </Base>
 
@@ -90,40 +76,6 @@ const along = [
   .dots.show{opacity:1;pointer-events:auto}
   .dots a.on i{background:var(--color-accent);transform:scale(1.3)}
   .dots a:hover span,.dots a:focus-visible span{opacity:1;transform:none}
-
-  /* "Along the way" was a flush horizontal row of five squares — the most linear thing on the
-     page and impossible to read as composed. Vertical, at unequal spans and starts, it rhymes
-     with the References cards without repeating them. Ratios vary so the column edges do the
-     work rather than five identical tiles. */
-  /* Redone. Five photographs each drifting at their own rate converged as you scrolled — the
-     offsets were large enough that they crowded together instead of reading as depth, and the
-     negative margins meant there was no vertical air left between them.
-     Parallax is the wrong tool for many small elements: it produces jitter, not depth. This is
-     a paced sequence instead — each photograph holds its own row, alternates side, and arrives
-     once on a fade and a short rise. Nothing moves after it has landed, so nothing can collide. */
-  .along{row-gap:0}
-  .along figure{grid-column:1/-1}
-  .along figure + figure{margin-top:72px}
-  .along .ph{aspect-ratio:4/5}
-
-  :global(html.js) .along figure{opacity:0;transform:translateY(28px);
-    transition:opacity .75s var(--ease-out-soft),transform .75s var(--ease-out-soft)}
-  :global(html.js) .along figure.in{opacity:1;transform:none}
-  :global(html.js) .along figcaption{opacity:0;transition:opacity .5s var(--ease-out-soft) .22s}
-  :global(html.js) .along figure.in figcaption{opacity:1}
-
-  @media (min-width:1024px){
-    .along figure{grid-column:4/7;margin-right:calc(-1 * var(--grid-gutter))}            /* line to line */
-    .along figure:nth-child(even){grid-column:9/12}
-    .along figure + figure{margin-top:120px}
-    /* Widths stay equal so the zigzag stays calm; only the ratio varies. */
-    .along figure:nth-child(2) .ph{aspect-ratio:1}
-    .along figure:nth-child(3) .ph{aspect-ratio:3/4}
-    .along figure:nth-child(5) .ph{aspect-ratio:4/3}
-  }
-  @media (prefers-reduced-motion:reduce){
-    :global(html.js) .along figure,:global(html.js) .along figcaption{opacity:1;transform:none;transition:none}
-  }
 
   /* ── Where I've worked ── */
   .roles,.roles-cta{grid-column:1/-1;list-style:none}
@@ -148,35 +100,3 @@ const along = [
     .role{flex-direction:column;align-items:flex-start;gap:6px}
   }
 </style>
-
-<script>
-  // A one-shot reveal, driven by scroll rather than IntersectionObserver — same reason as the
-  // rail's spy: IO stops reporting when the document is not being rendered.
-  function along() {
-    const figs = [...document.querySelectorAll<HTMLElement>('#about .along figure')];
-    if (!figs.length || (figs[0] as any).__init) return;
-    figs.forEach((f) => { (f as any).__init = true; });
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      figs.forEach((f) => f.classList.add('in'));
-      return;
-    }
-    let pending = figs.length;
-    let ticking = false;
-    const check = () => {
-      ticking = false;
-      for (const f of figs) {
-        if (f.classList.contains('in')) continue;
-        if (f.getBoundingClientRect().top < innerHeight * 0.88) { f.classList.add('in'); pending--; }
-      }
-      if (pending <= 0) {
-        removeEventListener('scroll', onScroll);
-        removeEventListener('resize', onScroll);
-      }
-    };
-    const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(check); } };
-    addEventListener('scroll', onScroll, { passive: true });
-    addEventListener('resize', onScroll, { passive: true });
-    check();
-  }
-  document.addEventListener('astro:page-load', along);
-</script>

@@ -964,3 +964,38 @@ Conceptualize heading is "Founding designer at a Dubai agency." with a non-break
 before "agency", and every journey heading is `text-wrap: balance`, so no last line is a
 single word. Audited afterwards at 1440, 1024 and 390: every tape inside its mask box, every
 photograph on a line, no horizontal overflow.
+
+## About: reading and listening — 15 Sep 2026
+
+The five placeholder photographs in About are gone. In their place, two labelled rows in the
+manner of chrisandrews.xyz's "Listening to": a label in columns 4–5, the objects from column 6
+— the prose's own left edge — with the site's mono caption under each (title with the arrow,
+author or artist beneath). Two books and one record; Huzaifa will swap in his own.
+
+**Section order.** About now sits after Background: Intro, Work, Journey, Background, About,
+References, Contact. The person after the career. The rail follows the same list.
+
+**The book** is built from its flat cover, not a rendered image: the cover in front, the
+page block folded back on the right edge, the top edge folded back, the spine behind the
+left edge (the cover's own left strip, stretched and dimmed, so it takes the cover's colour).
+Resting at −28° so the page block shows, turning to −14° on hover. Any cover drops in. First
+pass had the three faces rotated the wrong way, sticking out towards the viewer.
+
+**The record** follows the reference's construction: 160px sleeve, 160px disc peeking 46px
+to the right, turning at 9s linear. The disc is drawn — grooves, a label cut from the album
+art, the centre hole in the page colour — in black, not the accent: the tape is already the
+accent's decorative use and a second one would make it a motif. On hover the DISC slides
+out, not the sleeve, because the sleeve sliding left crosses the label column; click pulls it
+clear. The disc turns only while on screen. Rotation is on `rotate` and the slide on
+`translate`, so the two never fight over `transform`.
+
+**Where the record comes from.** `npm run shelf` reads the link in `src/data/shelf.json`
+(Spotify or YouTube Music), asks the service's public oEmbed endpoint for title and cover,
+takes artist and year from the page's Open Graph tags where they exist, downloads the cover
+to `public/shelf/`, and writes `src/data/listening.generated.json`, which the component
+reads. Anything set in `shelf.json` beyond the URL overrides what was fetched — which is how
+the placeholder (a plain YouTube video, whose metadata is the label's channel name) shows
+clean names and the reference's cover art. Books stay manual: cover file, title, author,
+Amazon link. Both open in a new tab.
+
+**Mobile.** Two books side by side at 150px, the record at 140px as in the reference.

@@ -1,0 +1,155 @@
+---
+// Two rows under the About prose: what I'm reading, what I'm listening to. Labels in columns
+// 4-5, objects from column 6 — the prose's own left edge. Books are built from the flat cover
+// (spine, page block, top edge); the record is drawn, with the album art as its label.
+import shelf from '../data/shelf.json';
+import listening from '../data/listening.generated.json';
+const { books } = shelf;
+const arrow = `<svg class="arr" viewBox="0 0 14.4 14.4" aria-hidden="true"><path d="M1.2 13.2L13.2 1.2M13.2 1.2H1.2M13.2 1.2V13.2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" fill="none"/></svg>`;
+---
+<div class="shell shelf reveal">
+  <p class="shelf-lab">What I'm reading</p>
+  <div class="shelf-set">
+    {books.map((b) => (
+      <figure class="item">
+        <a class="book" href={b.href} target="_blank" rel="noopener" aria-label={`${b.title} by ${b.author} (opens in a new tab)`}>
+          <span class="b3d">
+            <img class="cover" src={b.cover} alt="" loading="lazy" decoding="async" />
+            <span class="spine"><img src={b.cover} alt="" loading="lazy" decoding="async" /></span>
+            <span class="pages"></span>
+            <span class="top"></span>
+          </span>
+        </a>
+        <figcaption class="obj-cap">
+          <a href={b.href} target="_blank" rel="noopener">{b.title}<Fragment set:html={arrow} /><span class="sr-only"> (opens in a new tab)</span></a>
+          <span class="who">{b.author}</span>
+        </figcaption>
+      </figure>
+    ))}
+  </div>
+</div>
+
+<div class="shell shelf reveal">
+  <p class="shelf-lab">What I'm listening to</p>
+  <div class="shelf-set">
+    <figure class="item">
+      <div class="deck" data-deck tabindex="0" role="button" aria-pressed="false" aria-label="Pull the record out of its sleeve">
+        <div class="vinyl"><img src={listening.cover} alt="" loading="lazy" decoding="async" /></div>
+        <div class="sleeve"><img src={listening.cover} alt={`${listening.title} by ${listening.artist}, album cover`} loading="lazy" decoding="async" /></div>
+      </div>
+      <figcaption class="obj-cap">
+        <a href={listening.url} target="_blank" rel="noopener">{listening.title}<Fragment set:html={arrow} /><span class="sr-only"> (opens in a new tab)</span></a>
+        <span class="who">{listening.artist}{listening.year ? ` · ${listening.year}` : ''}</span>
+      </figcaption>
+    </figure>
+  </div>
+</div>
+
+<style>
+  .shelf{row-gap:16px;align-items:start;margin-top:64px}
+  .shelf + .shelf{margin-top:56px}
+  .shelf-lab{grid-column:1/-1;margin:0;font-size:var(--text-meta);font-weight:500;color:var(--color-tertiary)}
+  .shelf-set{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:var(--grid-gutter);align-items:flex-start}
+  .item{margin:0;width:204px}
+
+  /* caption: the site's mono caption, left-aligned under an object */
+  .obj-cap{margin-top:16px;display:flex;flex-direction:column;gap:2px;font-family:var(--font-mono);font-size:var(--text-caption);line-height:1.5}
+  .obj-cap a{color:var(--color-secondary);text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:color .2s var(--ease-out-soft)}
+  .obj-cap a:hover{color:var(--color-primary)}
+  .obj-cap :global(.arr){width:.72em;height:.72em}
+  .obj-cap .who{color:var(--color-tertiary)}
+
+  /* ── the book, from its flat cover ──
+     A box seen from the front-right: the cover in front, the page block on the right edge
+     and the top edge folded back, the spine behind the left edge. Resting at -28°, it turns
+     towards you on hover. The spine is the cover's own left strip, stretched and dimmed, so
+     it takes the cover's colour without a second image. */
+  .book{display:block;width:var(--bw,150px);aspect-ratio:2/3;perspective:1100px;text-decoration:none;--th:24px}
+  .b3d{position:relative;display:block;width:100%;height:100%;transform-style:preserve-3d;transform:rotateY(-28deg);transition:transform .6s var(--ease-out-soft)}
+  .book:hover .b3d,.book:focus-visible .b3d{transform:rotateY(-14deg)}
+  .b3d .cover{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;background:var(--color-surface);
+    box-shadow:0 30px 40px -24px rgb(0 0 0 / .75)}
+  .b3d .spine{position:absolute;left:0;top:0;width:var(--th);height:100%;overflow:hidden;transform:rotateY(90deg);transform-origin:left;background:var(--color-surface)}
+  .b3d .spine img{position:absolute;left:0;top:0;width:calc(var(--bw,150px) * 3);height:100%;object-fit:cover;object-position:left;filter:brightness(.72)}
+  .b3d .pages{position:absolute;right:0;top:3px;bottom:3px;width:var(--th);transform:rotateY(-90deg);transform-origin:right;
+    background:repeating-linear-gradient(to right,#e9e4d8 0 1px,#d9d3c4 1px 2px)}
+  .b3d .top{position:absolute;left:0;right:3px;top:0;height:var(--th);transform:rotateX(-90deg);transform-origin:top;
+    background:repeating-linear-gradient(to bottom,#ece7db 0 1px,#dcd6c7 1px 2px)}
+  /* the fold along the spine */
+  .b3d::after{content:"";position:absolute;left:0;top:0;bottom:0;width:8px;transform:translateZ(1px);pointer-events:none;
+    background:linear-gradient(to right,rgb(0 0 0 / .28),transparent)}
+
+  /* ── the record ──
+     Sleeve in front, the disc peeking 46px out to the right and turning. Hover slides the DISC
+     further out (the sleeve stays put so nothing crosses the label column); click pulls it
+     clear. Rotation is on the `rotate` property and the slide on `translate`, so the two never
+     fight over transform. */
+  .deck{position:relative;width:206px;height:160px;cursor:pointer;outline:0;border-radius:2px}
+  .deck:focus-visible{outline:2px solid var(--color-accent);outline-offset:6px}
+  .vinyl{position:absolute;top:0;left:46px;width:160px;height:160px;border-radius:50%;overflow:hidden;
+    background:radial-gradient(circle,transparent 0 24%,rgb(255 255 255 / .06) 24.5% 25%,transparent 25.5%),
+               repeating-radial-gradient(circle,#131313 0 1.5px,#1c1c1c 1.5px 3px);
+    box-shadow:inset 0 0 0 1px rgb(255 255 255 / .06);
+    transition:translate .42s var(--ease-out-soft)}
+  .vinyl::before{content:"";position:absolute;inset:0;border-radius:50%;
+    background:conic-gradient(from 20deg,transparent 0 40%,rgb(255 255 255 / .07) 47%,transparent 55%,transparent 80%,rgb(255 255 255 / .05) 88%,transparent 100%)}
+  .vinyl img{position:absolute;left:50%;top:50%;width:35%;height:35%;transform:translate(-50%,-50%);border-radius:50%;object-fit:cover}
+  .vinyl::after{content:"";position:absolute;left:50%;top:50%;width:7px;height:7px;transform:translate(-50%,-50%);border-radius:50%;background:var(--color-page)}
+  .deck.live .vinyl{animation:spin 9s linear infinite}
+  .sleeve{position:absolute;top:0;left:0;width:160px;height:160px;background:var(--color-surface);box-shadow:0 14px 30px -16px rgb(0 0 0 / .7)}
+  .sleeve img{width:100%;height:100%;display:block;object-fit:cover}
+  .deck:hover .vinyl,.deck:focus-visible .vinyl{translate:50px 0}
+  .deck.pulled .vinyl,.deck.pulled:hover .vinyl{translate:124px 0}
+  @keyframes spin{to{rotate:360deg}}
+
+  @media (min-width:1024px){
+    .shelf{margin-top:80px}
+    .shelf-lab{grid-column:4/6;padding-top:4px}
+    .shelf-set{grid-column:6/12}
+  }
+  @media (max-width:640px){
+    .item{width:calc(50% - var(--grid-gutter) / 2)}   /* two books side by side on a phone */
+    .book{--bw:min(150px, 100%)}
+    .deck{width:180px;height:140px}
+    .vinyl,.sleeve{width:140px;height:140px}
+    .vinyl{left:40px}
+    .deck:hover .vinyl{translate:44px 0}
+    .deck.pulled .vinyl,.deck.pulled:hover .vinyl{translate:108px 0}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .deck.live .vinyl{animation:none}
+    .b3d,.vinyl{transition:none}
+  }
+</style>
+
+<script>
+  // The disc turns only while it is on screen, so the page carries no motion nobody can see.
+  // Scroll-driven like the rest of the site (IntersectionObserver goes quiet in background
+  // tabs and previews). Click or Enter/Space pulls the record out and back.
+  function shelf() {
+    const deck = document.querySelector<HTMLElement>('[data-deck]');
+    if (!deck || (deck as any).__init) return;
+    (deck as any).__init = true;
+
+    const toggle = () => {
+      const on = deck.classList.toggle('pulled');
+      deck.setAttribute('aria-pressed', String(on));
+    };
+    deck.addEventListener('click', toggle);
+    deck.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+    });
+
+    let ticking = false;
+    const check = () => {
+      ticking = false;
+      const r = deck.getBoundingClientRect();
+      deck.classList.toggle('live', r.bottom > 0 && r.top < innerHeight);
+    };
+    const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(check); } };
+    addEventListener('scroll', onScroll, { passive: true });
+    addEventListener('resize', onScroll, { passive: true });
+    check();
+  }
+  document.addEventListener('astro:page-load', shelf);
+</script>
