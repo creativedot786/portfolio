@@ -952,3 +952,15 @@ five, the sticky wall, the monitor with the agency site, the video-wall office. 
 "We are BSF" wall, a large group in the desert, presenting to a room — all three from a
 folder Huzaifa labelled misc, placed under Dubai 2019–today pending his confirmation. Alt
 text describes the scene; nobody is named until he confirms who is who.
+
+**Corrections after Huzaifa's review, same day.** (1) The tape sits outside the photograph, and
+a CSS mask clips to the element's own box — so every strip on a top-row photograph or a right
+edge was cut. The slot now carries padding for the overhang (`--tape-room`, 20px on mobile
+where the page margin is 24, 28px on desktop) and gives it back with negative margins; the
+dissolve is recomputed so it still reaches opaque at 45% of the board, not of the padded box.
+(2) Fan-O-Matic at one column (90px) was a stamp; it takes two columns on the second row now.
+(3) Corner strips are 60px, not 74 — on the diagonal the same length reads longer. (4) The
+Conceptualize heading is "Founding designer at a Dubai agency." with a non-breaking space
+before "agency", and every journey heading is `text-wrap: balance`, so no last line is a
+single word. Audited afterwards at 1440, 1024 and 390: every tape inside its mask box, every
+photograph on a line, no horizontal overflow.

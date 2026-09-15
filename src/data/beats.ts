@@ -25,7 +25,7 @@ export const beats: Beat[] = [
     body: `Cubix was an agency in Karachi with clients abroad. I designed company pages and websites, and got my first exposure to mobile apps, back when that meant a 320 by 480 pixel iPhone screen.`,
     photos: [
       { src: '/journey/cubix/desk.jpg',        alt: 'At a desk in the Cubix office, a poker game on the screen',      col: '5 / 11', row: 1, ar: '3 / 2', tape: 't' },
-      { src: '/journey/cubix/fan-o-matic.jpg', alt: 'Fan-O-Matic, a Facebook leaderboard app for Walmart',            col: '3 / 4',  row: 1, ar: '3 / 4', tape: 'tl', align: 'end' },
+      { src: '/journey/cubix/fan-o-matic.jpg', alt: 'Fan-O-Matic, a Facebook leaderboard app for Walmart',            col: '3 / 6',  row: 2, ar: '3 / 4', tape: 't' },
       { src: '/journey/cubix/spin-to-win.jpg', alt: 'Spin to Win, a Facebook app for Casinotop10',                   col: '7 / 11', row: 2, ar: '4 / 3', tape: 'tr' },
     ],
   },
@@ -45,7 +45,7 @@ export const beats: Beat[] = [
     id: 'conceptualize',
     place: 'Karachi, then Dubai',
     when: '2014 to 2019',
-    heading: 'Founding designer at a Dubai agency. Then a team to build.',
+    heading: 'Founding designer at a Dubai&nbsp;agency.',
     body: `I joined Conceptualize, a Dubai design agency, as its founding designer, working remotely from Karachi until I moved to Dubai in 2017. As the agency grew I built the design function, hired and ran a team of four, and worked with clients like RTA and Meydan.`,
     photos: [
       { src: '/journey/conceptualize/team.jpg',     alt: 'Five of the Conceptualize team',                              col: '5 / 11', row: 1, ar: '1.02', tape: 't' },

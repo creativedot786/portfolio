@@ -130,7 +130,7 @@ Candidate (not yet approved as final copy):
 > Dar es Salaam, 2012. **At twenty, the only designer in the company.** I took a job in Tanzania
 > because working abroad felt like too good an opportunity to pass up. Branding and websites for
 > local clients. It's where I learned to own a piece of work end to end.
-> Karachi, then Dubai, 2014 to 2019. **Founding designer at a Dubai agency. Then a team to build.**
+> Karachi, then Dubai, 2014 to 2019. **Founding designer at a Dubai agency.**
 > I joined Conceptualize, a Dubai design agency, as its founding designer, working
 > remotely from Karachi until I moved to Dubai in 2017. As the agency grew I built the design
 > function, hired and ran a team of four, and worked with clients like RTA and Meydan.

@@ -37,7 +37,11 @@ import { beats } from '../data/beats';
   .j-list{display:grid;row-gap:96px}
   .beat{position:relative;row-gap:24px}
   .beat-text{grid-column:1/-1;position:relative;z-index:1}
+  .beat-text h3{text-wrap:balance}
 
+  /* The tape overhangs each photograph, and a mask clips to the element's own box — so the
+     slot carries padding for the overhang and gives it back with negative margins. */
+  .beat{--tape-room:20px}   /* 20 on mobile: the page margin is 24, so the overhang stays inside the viewport */
   .beat-photo{
     grid-column:1/-1;
     order:-1;               /* above the copy on mobile; explicit row placement overrides this on desktop */
@@ -45,6 +49,8 @@ import { beats } from '../data/beats';
     width:100%;             /* the board takes the full width on mobile; three photographs at 55% would be stamps */
     z-index:0;
     pointer-events:none;
+    padding:var(--tape-room) var(--tape-room) 0;
+    margin:calc(-1 * var(--tape-room)) calc(-1 * var(--tape-room)) 0;
     /* on mobile the drift can carry it into the heading; its lower edge dissolves so that reads
        as the photograph sitting behind the words rather than colliding with them */
     -webkit-mask:linear-gradient(to bottom, #000 55%, transparent);
@@ -68,21 +74,23 @@ import { beats } from '../data/beats';
         clip-path:polygon(0 18%,2% 0,98% 6%,100% 24%,99% 82%,97% 100%,3% 94%,1% 78%);
         box-shadow:inset 0 0 0 1px color-mix(in srgb, #fff 8%, transparent)}
   .tape.t{left:50%;top:-9px;transform:translateX(-50%) rotate(-2deg)}
-  .tape.tl{left:-22px;top:10px;transform:rotate(-42deg)}
-  .tape.tr{right:-22px;top:10px;transform:rotate(42deg)}
+  /* corner strips are shorter: on the diagonal the same length reads longer */
+  .tape.tl,.tape.tr{width:60px;height:18px}
+  .tape.tl{left:-18px;top:8px;transform:rotate(-42deg)}
+  .tape.tr{right:-18px;top:8px;transform:rotate(42deg)}
   :root[data-theme="cream"] .tape{box-shadow:inset 0 0 0 1px color-mix(in srgb, #000 6%, transparent)}
   @media (min-width:1024px){
     .j-list{row-gap:128px}
-    .beat{min-height:480px;align-items:center}
+    .beat{min-height:480px;align-items:center;--tape-room:28px}
     .beat-text{grid-column:4/9;grid-row:1}
     .beat-photo{
       grid-column:7/12;grid-row:1;
       justify-self:stretch;width:auto;               /* stretch, so the negative margin can widen it */
-      margin-right:calc(-1 * var(--grid-gutter));   /* ends on the column-12 line */
+      margin-right:calc(-1 * var(--grid-gutter) - var(--tape-room));   /* ends on the column-12 line, plus room for the tape */
       align-self:center;
       /* the part under the words dissolves */
-      -webkit-mask:linear-gradient(to right, transparent 0%, #000 45%);
-      mask:linear-gradient(to right, transparent 0%, #000 45%);
+      -webkit-mask:linear-gradient(to right, transparent var(--tape-room), #000 calc(45% + var(--tape-room) * .1));   /* opaque at 45% of the board, not of the padded box */
+      mask:linear-gradient(to right, transparent var(--tape-room), #000 calc(45% + var(--tape-room) * .1));
       /* Reveal: arrives, not appears. Fades in over 500ms while settling from 1.05 to 1 and
          drifting 16px left to rest. Leaves faster, and without the scale, so moving between
          beats reads as a crossfade rather than two things animating. */
