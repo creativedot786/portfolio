@@ -13,10 +13,12 @@ import { beats } from '../data/beats';
           <h3 class="text-h2 mb-3"><span class="sr-only">{b.place}, {b.when}. </span><span set:html={b.heading} /></h3>
           <p class="text-secondary" set:html={b.body} />
         </div>
+        <i class="j-lane" aria-hidden="true"></i>
         <ul class="prints" aria-label={`Photographs, ${b.place}`}>
-          {b.photos.map((ph) => (
+          {b.photos.map((ph, i) => (
             <li class="print">
               <img src={ph.src} alt={ph.alt} loading="lazy" decoding="async" style={ph.focus ? `object-position:${ph.focus}` : undefined} />
+              <span class="cap" aria-hidden="true"><b>{i + 1} / {b.photos.length}</b> {ph.alt}</span>
             </li>
           ))}
         </ul>
@@ -29,51 +31,52 @@ import { beats } from '../data/beats';
 </section>
 
 <style>
-  /* Each beat is its own .shell, so the copy is placed by column: 4-9 on desktop.
-     Desktop with a mouse: no photographs at rest. Move over a beat and one photograph follows the
-     cursor, tilting with the movement and flipping to the next one every 130px travelled. It sits
-     BEHIND the copy, and dims while it is under the words so they stay readable.
-     Phones, tablets and touch screens: the photographs are a row of prints under the copy.
+  /* Each beat is its own .shell, so everything is placed by column.
+     Desktop: the copy in 4-8 (the site's reading measure), column 9 empty, and the photograph's own
+     lane in 10-12. With a mouse there are no photographs at rest: move over a beat and one follows
+     the cursor up and down its lane, leaning with the movement and flipping to the next one every
+     130px travelled. It never sits under the words.
+     Phones, tablets and touch screens: the copy first, then the beat's photographs as a swipe deck
+     of prints, one in front with its caption, the next one showing at the edge.
      Every photograph is the same 4:3 crop, so none of them towers over the others. */
   #journey{position:relative}
   .j-list{display:grid;row-gap:72px}
-  .beat{position:relative;row-gap:24px}
+  .beat{position:relative;row-gap:20px}
   .beat-text{grid-column:1/-1;position:relative;z-index:1}
   .beat-text h3{text-wrap:balance}
+  .j-lane{display:none}
 
-  /* ── prints: phones, tablets, touch ── */
-  .prints{grid-column:1/-1;order:-1;list-style:none;margin:0 calc(-1 * var(--grid-margin));padding:14px var(--grid-margin) 18px;
-          display:flex;overflow-x:auto;scroll-snap-type:x proximity;scroll-padding-inline:var(--grid-margin);scrollbar-width:none;overscroll-behavior-x:contain}
+  /* ── the deck of prints: phones, tablets, touch ── */
+  .prints{grid-column:1/-1;list-style:none;margin:0 calc(-1 * var(--grid-margin));padding:10px var(--grid-margin) 22px;
+          display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:var(--grid-margin);
+          scrollbar-width:none;overscroll-behavior-x:contain}
   .prints::-webkit-scrollbar{display:none}
-  .print{flex:none;width:clamp(124px,36vw,168px);padding:7px 7px 24px;background:#F1EEE6;scroll-snap-align:start;
-         box-shadow:0 14px 24px -14px rgb(0 0 0 / .8);transform:rotate(-3deg)}
-  .print + .print{margin-left:-12px}
-  .print:nth-child(2){transform:rotate(2.5deg);margin-top:6px}
-  .print:nth-child(3){transform:rotate(-1.5deg)}
-  .print:nth-child(4){transform:rotate(3deg);margin-top:4px}
+  .print{flex:none;display:flex;flex-direction:column;width:min(52vw,220px);padding:8px 8px 10px;background:#F1EEE6;scroll-snap-align:start;
+         box-shadow:0 14px 24px -14px rgb(0 0 0 / .8);transform:rotate(-1.5deg)}
+  .print:nth-child(even){transform:rotate(1.5deg);margin-top:4px}
   .print img{display:block;width:100%;aspect-ratio:4/3;height:auto;object-fit:cover;background:var(--color-surface)}
+  .print .cap{margin-top:9px;min-height:2.8em;font-family:var(--font-mono);font-size:11px;line-height:1.4;color:#3A3833;
+              display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+  .print .cap b{font-weight:400;color:#8A857B}
 
   .j-follow{display:none}
 
   @media (min-width:1024px){
-    .j-list{row-gap:56px}
-    .beat{min-height:380px;align-content:center}
-    .beat-text{grid-column:4/10}
-    .prints{grid-column:4/-1;order:0;margin:0;padding:8px 0 18px}
+    .j-list{row-gap:96px}
+    .beat-text{grid-column:4/9}
+    .prints{grid-column:4/-1;margin:0;padding:8px 0 18px}
   }
 
-  /* ── desktop with a mouse: the cursor reveal ── */
+  /* ── desktop with a mouse: the photograph in its lane ── */
   @media (min-width:1024px) and (hover:hover) and (pointer:fine){
+    .j-lane{display:block;grid-column:10/-1;grid-row:1;height:1px;align-self:start;visibility:hidden}
     :global(html.js) .prints{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-    :global(html.js) .beat{cursor:crosshair}
-    :global(html.js) .j-follow{display:block;position:absolute;left:0;top:0;z-index:0;width:280px;margin:0;pointer-events:none;
+    :global(html.js) .j-follow{display:block;position:absolute;left:0;top:0;z-index:0;margin:0;pointer-events:none;
       opacity:0;transition:opacity .25s var(--ease-out-soft);will-change:transform}
     :global(html.js) .j-follow.on{opacity:1}
     .j-follow img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--color-surface);
-      box-shadow:0 30px 50px -24px rgb(0 0 0 / .8);transition:filter .3s var(--ease-out-soft)}
-    .j-follow.under img{filter:brightness(.42) saturate(.8)}
-    .j-follow figcaption{margin-top:8px;font-family:var(--font-mono);font-size:var(--text-caption);line-height:1.4;color:var(--color-tertiary);transition:opacity .3s}
-    .j-follow.under figcaption{opacity:0}
+      box-shadow:0 30px 50px -24px rgb(0 0 0 / .8)}
+    .j-follow figcaption{margin-top:10px;font-family:var(--font-mono);font-size:var(--text-caption);line-height:1.4;color:var(--color-tertiary)}
     .j-follow b{font-weight:400;color:var(--color-accent)}
   }
   @media (prefers-reduced-motion:reduce){
@@ -94,7 +97,6 @@ import { beats } from '../data/beats';
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     (fl as any).__on = true;
     const img = fl.querySelector('img')!, num = fl.querySelector('b')!, cap = fl.querySelector('span')!;
-    const W = 280, H = 210;
 
     // load the photographs once the section is near, so the first flip never shows an empty frame
     new IntersectionObserver((es, o) => {
@@ -102,7 +104,7 @@ import { beats } from '../data/beats';
       sec.querySelectorAll<HTMLImageElement>('.print img').forEach((i) => { new Image().src = i.src; });
     }, { rootMargin: '600px 0px' }).observe(sec);
 
-    let mx = -1, my = -1, x = 0, y = 0, tx = 0, ty = 0, beat: HTMLElement | null = null, k = 0, travel = 0, raf = 0;
+    let mx = -1, my = -1, x = 0, y = 0, tx = 0, ty = 0, W = 300, beat: HTMLElement | null = null, k = 0, travel = 0, raf = 0;
     const photos = () => [...(beat?.querySelectorAll<HTMLImageElement>('.print img') ?? [])];
     const show = (i: number) => {
       const ps = photos(); if (!ps.length) return;
@@ -110,7 +112,17 @@ import { beats } from '../data/beats';
       img.src = p.currentSrc || p.src; img.style.objectPosition = p.style.objectPosition;
       num.textContent = `${k + 1} / ${ps.length}`; cap.textContent = p.alt;
     };
-    const target = () => { const r = sec.getBoundingClientRect(); tx = mx - r.left; ty = my - r.top; };
+    // the target: the middle of the beat's lane (columns 10-12) across, the cursor up and down,
+    // kept within the beat; a small sideways drift towards the cursor so it still feels attached
+    const target = () => {
+      if (!beat) return;
+      const s = sec.getBoundingClientRect(), lane = beat.querySelector('.j-lane')!.getBoundingClientRect(), b = beat.getBoundingClientRect();
+      W = Math.min(lane.width, 320); fl.style.width = W + 'px';
+      const H = W * 0.75, cx = lane.left + lane.width / 2;
+      tx = cx + Math.max(-16, Math.min(16, (mx - cx) * 0.06)) - s.left;
+      const lo = b.top + H * 0.5 - 40, hi = Math.max(lo, b.bottom - H * 0.5 + 40);
+      ty = Math.max(lo, Math.min(hi, my)) - s.top;
+    };
     const which = () => {
       if (mx < 0) return null;
       const el = document.elementFromPoint(mx, my);
@@ -120,18 +132,15 @@ import { beats } from '../data/beats';
       const b = which();
       if (b !== beat) {
         const wasOff = !beat; beat = b; travel = 0;
-        if (beat) { show(0); if (wasOff) { target(); x = tx; y = ty; } fl.classList.add('on'); } else fl.classList.remove('on');
+        if (beat) { show(0); target(); if (wasOff) { x = tx; y = ty; } fl.classList.add('on'); } else fl.classList.remove('on');
       }
       target(); if (!raf) raf = requestAnimationFrame(loop);
     };
     const loop = () => {
-      const vx = tx - x; x += vx * 0.16; y += (ty - y) * 0.16;
-      const rot = Math.max(-9, Math.min(9, vx * 0.12));
-      fl.style.transform = `translate(${x - W * 0.35}px, ${y - H * 0.55}px) rotate(${rot}deg)`;
-      // dim while it is under the words
-      const t = beat?.querySelector('.beat-text')?.getBoundingClientRect(), f = fl.getBoundingClientRect();
-      fl.classList.toggle('under', !!t && f.left < t.right && f.right > t.left && f.top < t.bottom && f.bottom > t.top);
-      raf = Math.abs(vx) > 0.3 || Math.abs(ty - y) > 0.3 ? requestAnimationFrame(loop) : 0;
+      const vx = tx - x, vy = ty - y; x += vx * 0.16; y += vy * 0.16;
+      const rot = Math.max(-7, Math.min(7, vy * 0.05 + vx * 0.2));   // leans with the movement
+      fl.style.transform = `translate(${x - W / 2}px, ${y - W * 0.375}px) rotate(${rot}deg)`;
+      raf = Math.abs(vx) > 0.3 || Math.abs(vy) > 0.3 ? requestAnimationFrame(loop) : 0;
     };
     addEventListener('mousemove', (e) => {
       if (mx >= 0 && beat) { travel += Math.hypot(e.clientX - mx, e.clientY - my); if (travel > 130) { travel = 0; show(k + 1); } }
