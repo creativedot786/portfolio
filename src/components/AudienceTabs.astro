@@ -38,6 +38,8 @@ import SkillPills from './SkillPills.astro';
   @media (max-width:1023px){[data-hero]{padding-bottom:calc(var(--section-space) + 150px)}}
   /* "build with AI" is drawn as particles (src/scripts/particle-word.ts); the text stays, transparent, underneath */
   .stmt :global(.pw){position:relative;display:inline-block;white-space:nowrap;text-decoration:none!important}
+  /* no dotted underline on it before the script has run either */
+  #panel-anyone .stmt :global([data-preview="built-and-launched"]){text-decoration:none!important}
   .stmt :global(.pw.pw-live){color:transparent!important}
   .stmt :global(.w.pw-open){overflow:visible}
   .panel:not(.on) :global(.pw canvas){opacity:0;transition:opacity .2s}

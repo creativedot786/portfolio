@@ -79,11 +79,17 @@
       g.innerHTML = '<div>' + '<i></i>'.repeat(12) + '</div>';
       document.body.appendChild(g);
     }
+    const keys = () => document.querySelectorAll('[data-hc-gkey]');
+    const toggle = () => { const on = root.classList.toggle('hc-show-grid'); keys().forEach((k) => k.setAttribute('aria-pressed', String(on))); };
+    keys().forEach((k) => {
+      if (k.__hc) return; k.__hc = true;
+      k.setAttribute('aria-pressed', String(root.classList.contains('hc-show-grid')));
+      k.addEventListener('click', () => { toggle(); k.blur(); });
+    });
     if (window.__hcGridKey) return;
     window.__hcGridKey = true;
     addEventListener('keydown', (e) => {
-      if ((e.key === 'g' || e.key === 'G') && !e.metaKey && !e.ctrlKey && !e.altKey && !e.target.closest?.('input,textarea,select,[contenteditable]'))
-        root.classList.toggle('hc-show-grid');
+      if ((e.key === 'g' || e.key === 'G') && !e.metaKey && !e.ctrlKey && !e.altKey && !e.target.closest?.('input,textarea,select,[contenteditable]')) toggle();
     });
   }
 
