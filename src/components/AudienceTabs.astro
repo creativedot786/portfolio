@@ -1,7 +1,8 @@
 ---
 import { audiences } from '../data/audiences';
+import SkillPills from './SkillPills.astro';
 ---
-<section id="intro" class="hero section flex flex-col justify-center" style="min-height:100svh" aria-labelledby="hero-heading" data-hero>
+<section id="intro" class="hero section relative flex flex-col justify-center" style="min-height:100svh" aria-labelledby="hero-heading" data-hero>
   <div class="shell">
     <div class="col-title mb-5 lg:mb-6">
       <div class="tabs relative flex gap-[6px] overflow-x-auto max-lg:-mx-3 max-lg:px-3" role="tablist" aria-label="Who are you?" data-tabs>
@@ -27,11 +28,21 @@ import { audiences } from '../data/audiences';
       </div>
     ))}
   </div>
+  <SkillPills />
 </section>
 <style>
   .tabs{scrollbar-width:none}
-  /* the hero sits under the 64px phone top bar, so it fills the rest of the first screen, not all of it */
-  @media (max-width:1023px){[data-hero]{min-height:calc(100svh - 64px)!important}}
+  /* room at the bottom of the first screen for the skills to land in. Phones only: on desktop the
+     headline keeps its place (the rail's links line up with the tabs) and the bottom of the first
+     screen is already clear */
+  @media (max-width:1023px){[data-hero]{padding-bottom:calc(var(--section-space) + 150px)}}
+  /* "build with AI" is drawn as particles (src/scripts/particle-word.ts); the text stays, transparent, underneath */
+  .stmt :global(.pw){position:relative;display:inline-block;white-space:nowrap;text-decoration:none!important}
+  .stmt :global(.pw.pw-live){color:transparent!important}
+  .stmt :global(.w.pw-open){overflow:visible}
+  .panel:not(.on) :global(.pw canvas){opacity:0;transition:opacity .2s}
+  /* the hero sits under the navigation pill's 80px, so it fills the rest of the first screen, not all of it */
+  @media (max-width:1023px){[data-hero]{min-height:calc(100svh - 80px - env(safe-area-inset-top,0px))!important}}
   @media (max-width:1023px){.tabs{-webkit-mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 40px),transparent)}}
   .tabs::-webkit-scrollbar{display:none}
   /* The pill carries a quiet accent tint, so the accent is present in the first interactive
@@ -71,6 +82,7 @@ import { audiences } from '../data/audiences';
   }
 </style>
 <script>
+  import { particleWord } from '../scripts/particle-word';
   function splitWords(el: HTMLElement) {
     if (el.dataset.splitDone) return;
     el.dataset.splitDone = '1';
@@ -108,6 +120,21 @@ import { audiences } from '../data/audiences';
     (root as any).__init = true;
     root.querySelectorAll<HTMLElement>('[data-split]').forEach(splitWords);
 
+    // "build with AI": particles, once the headline has risen
+    const pwPanel = root.querySelector<HTMLElement>('#panel-anyone');
+    const pwEl = pwPanel?.querySelector<HTMLElement>('[data-preview="built-and-launched"]');
+    let pw: { replay: () => void; resume: () => void } | undefined;
+    if (pwEl && pwPanel) {
+      pwEl.classList.add('pw');
+      const begin = () => setTimeout(() => {
+        pwEl.closest('.w')?.classList.add('pw-open');
+        pw = particleWord(pwEl, root, () => pwPanel.classList.contains('on'));
+      }, 900);
+      if (!document.documentElement.classList.contains('intro')) begin();
+      else new MutationObserver((_, o) => { if (!document.documentElement.classList.contains('intro')) { o.disconnect(); begin(); } })
+        .observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    }
+
     const tabs = [...root.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
     const panels = [...root.querySelectorAll<HTMLElement>('[role="tabpanel"]')];
     const ind = root.querySelector<HTMLElement>('.tab-ind')!;
@@ -136,6 +163,7 @@ import { audiences } from '../data/audiences';
       clearTimeout(timer);
       timer = window.setTimeout(() => panels[prev].classList.remove('leaving'), 520);
       panels[i].classList.add('on');
+      if (panels[i] === pwPanel) setTimeout(() => pw?.replay(), 450);   // the letters sparkle in again
       if (focus) tabs[i].focus();
       tabs[i].scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
       place();

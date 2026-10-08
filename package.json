@@ -19,6 +19,7 @@
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.3.1",
     "clsx": "^2.1.1",
+    "matter-js": "^0.20.0",
     "motion": "^13.2.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
@@ -27,5 +28,8 @@
   },
   "allowScripts": {
     "esbuild": true
+  },
+  "devDependencies": {
+    "@types/matter-js": "^0.20.2"
   }
 }

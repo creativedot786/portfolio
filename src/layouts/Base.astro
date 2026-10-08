@@ -44,8 +44,8 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
         if (sessionStorage.getItem('hr-loader') || matchMedia('(prefers-reduced-motion: reduce)').matches) {
           document.documentElement.classList.add('no-loader');
         } else {
-          // First visit: hold the page and the grid until the logo has drawn, then draw the
-          // lines, then let the content in. Set before first paint so nothing flashes.
+          // First visit: hold the page until the logo has drawn, then let the content in.
+          // Set before first paint so nothing flashes.
           document.documentElement.classList.add('intro');
         }
       } catch (e) {}
@@ -73,9 +73,8 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
     <script>
       // ── the intro ──────────────────────────────────────────────
       // 0        the logo draws and fills (Loader.astro)
-      // 900ms    the grid lines draw down the first screen, left to right
-      // 1100ms   the loader dissolves under them
-      // 2000ms   the lines are done; the page and the rail fade in and the hero rises
+      // 1100ms   the loader dissolves
+      // 2000ms   the page and the rail fade in and the hero rises
       // Any later visit in the session, and reduced motion, skip all of it.
       function loader() {
         const l = document.getElementById('loader');
@@ -84,16 +83,14 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
         let seen = false;
         try { seen = !!sessionStorage.getItem('hr-loader'); } catch (e) {}
         if (seen || matchMedia('(prefers-reduced-motion: reduce)').matches) {
-          l.remove(); root.classList.remove('intro'); root.classList.add('lines-done'); return;
+          l.remove(); root.classList.remove('intro'); return;
         }
-        setTimeout(() => root.classList.add('lines'), 900);
         setTimeout(() => {
           l.classList.add('out');
           try { sessionStorage.setItem('hr-loader', '1'); } catch (e) {}
           setTimeout(() => l.remove(), 500);
         }, 1100);
         setTimeout(() => {
-          root.classList.add('lines-done');
           root.classList.remove('intro');
           revealCheck();
         }, 2000);
@@ -102,7 +99,7 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
       // IO is suspended whenever the document is not rendering, and one loop driving reveal,
       // drift and the scrolling flag is simpler than three mechanisms doing similar work.
       function revealCheck() {
-        if (document.documentElement.classList.contains('intro')) return;   // not until the lines are in
+        if (document.documentElement.classList.contains('intro')) return;   // not until the intro is done
         const vh = innerHeight;
         document.querySelectorAll('.reveal:not(.in)').forEach((el) => {
           const r = el.getBoundingClientRect();

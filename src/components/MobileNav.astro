@@ -1,7 +1,8 @@
 ---
-// Phones and tablets: the top bar (logo, Menu) and the full screen menu with the sections and the theme
-// picker. The case study pages carry the same markup, written in by the export script; the CSS and the
-// behaviour are shared files, so the two can't drift apart.
+// Phones and tablets: a floating pill at the top. The logo, and the section you're in, which rolls to the
+// next as you scroll. Tap it and the pill opens downward: the sections on the right, then the four themes.
+// The case study pages carry the same markup, written in by the export script; the CSS and the behaviour
+// are shared files, so the two can't drift apart.
 import Logo from './Logo.astro';
 import { site } from '../data/site';
 import { themes } from '../data/themes';
@@ -9,28 +10,32 @@ import { sections } from '../data/sections';
 import '../chrome/chrome.css';
 ---
 <div class="hc-top-space" aria-hidden="true"></div>
-<header class="hc-top" data-hc-top>
-  <a class="hc-top-logo" href="/#intro" aria-label="Huzaifa Ratlam, top of page"><Logo size={44} /></a>
-  <button class="hc-menu-btn" type="button" aria-expanded="false" aria-controls="hc-sheet" data-hc-open>Menu<i aria-hidden="true"></i></button>
-</header>
-<div class="hc-sheet" id="hc-sheet" role="dialog" aria-modal="true" aria-label="Menu" hidden data-hc-sheet>
-  <div class="hc-sheet-top">
-    <a href="/#intro" aria-label="Huzaifa Ratlam, top of page"><Logo size={44} /></a>
-    <button class="hc-close" type="button">Close</button>
-  </div>
-  <nav class="hc-sheet-nav" aria-label="Sections">
-    {sections.map(([id, label]) => <a href={`#${id}`} data-hc-sec={id}>{label}</a>)}
-    <a href={site.resume} target="_blank" rel="noopener">Resume<svg viewBox="0 0 14.4 14.4" aria-hidden="true"><path d="M1.2 13.2L13.2 1.2M13.2 1.2H1.2M13.2 1.2V13.2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" fill="none"/></svg><span class="sr-only">(opens in a new tab)</span></a>
-  </nav>
-  <div class="hc-sheet-foot">
-    <p class="hc-lab">Theme</p>
-    <div class="hc-swatches" role="radiogroup" aria-label="Theme">
-      {themes.map((t) => (
-        <button type="button" role="radio" data-hc-theme={t.id} aria-checked={t.id === 'brass' ? 'true' : 'false'}
-          style={`--g:${t.ground};--a:${t.accent};--i:${t.ink}`}><i aria-hidden="true"></i>{t.name}</button>
-      ))}
+<div class="hc-mnav-w">
+  <nav class="hc-mnav" aria-label="Sections" data-hc-mnav>
+    <div class="hc-mbar">
+      <div class="hc-mleft"><a class="hc-mlogo" href="/#intro" aria-label="Huzaifa Ratlam, top of page"><Logo size={44} /></a></div>
+      <button class="hc-mtoggle" type="button" aria-expanded="false" aria-controls="hc-mpanel">
+        <span class="sr-only">Menu, now at </span><span class="hc-mlabel"><span>{sections[0][1]}</span></span>
+        <svg class="hc-chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4.5l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
     </div>
-  </div>
+    <div class="hc-mpanel" id="hc-mpanel" inert>
+      <div class="hc-minner">
+        <div class="hc-mlinks">
+          {sections.map(([id, label]) => <a href={`#${id}`} data-hc-sec={id}>{label}</a>)}
+          <a href={site.resume} target="_blank" rel="noopener">Resume<svg viewBox="0 0 14.4 14.4" aria-hidden="true"><path d="M1.2 13.2L13.2 1.2M13.2 1.2H1.2M13.2 1.2V13.2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" fill="none"/></svg><span class="sr-only">(opens in a new tab)</span></a>
+        </div>
+        <div class="hc-mthemes"><span>Theme</span>
+          <div role="radiogroup" aria-label="Theme">
+            {themes.map((t) => (
+              <button type="button" role="radio" data-hc-theme={t.id} aria-checked={t.id === 'brass' ? 'true' : 'false'} aria-label={t.name}
+                style={`--g:${t.ground};--a:${t.accent};--i:${t.ink}`}></button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
 </div>
 <script>
   import '../chrome/chrome.js';

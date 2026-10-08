@@ -1,6 +1,7 @@
 /* Site chrome shared by the home page (src/components/MobileNav.astro) and the case study pages (written in by
    the export script): the phone and tablet top bar with its menu and theme picker, plus, on case studies only,
-   the desktop rail and the loader. Classes are prefixed hc- so they never meet the case studies' own CSS.
+   the desktop rail and the loader. Also the letter roll on the rail links (home and case studies) and the grid
+   that G shows. Classes are prefixed hc- so they never meet the case studies' own CSS.
    Colours read the home page's tokens and fall back to the case studies' ones. */
 :root{
   --hc-page:var(--color-page,var(--page));
@@ -20,60 +21,47 @@
 @view-transition{navigation:auto}
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.35s;animation-timing-function:var(--hc-ease)}
 
-/* ── phone and tablet: top bar ─────────────────────────────────
-   Logo on the left, Menu on the right; on a case study, "All work" next to the logo, so going back
-   is always one tap. The bar slides away as you read down and comes back the moment you scroll up. */
-.hc-top,.hc-top-space,.hc-sheet{display:none}
+/* ── phone and tablet: a floating pill at the top ──────────────
+   Logo on the left; on the right, the section you're in, which rolls to the next as you scroll. On a case
+   study "All work" sits next to the logo, so going back is always one tap. Tap the section and the pill opens
+   downward into a card over the page: the links on the right, at the bar's own size, then the four themes. */
+.hc-mnav-w,.hc-top-space{display:none}
 @media (max-width:1023px){
-  .hc-top-space{display:block;height:calc(var(--hc-bar) + env(safe-area-inset-top,0px))}
-  .hc-top{display:flex;align-items:center;justify-content:space-between;position:fixed;left:0;right:0;top:0;z-index:80;
-    height:calc(var(--hc-bar) + env(safe-area-inset-top,0px));padding:env(safe-area-inset-top,0px) 24px 0;
-    background:color-mix(in srgb,var(--hc-page) 86%,transparent);backdrop-filter:blur(14px) saturate(1.2);-webkit-backdrop-filter:blur(14px) saturate(1.2);
-    border-bottom:1px solid transparent;transition:translate .35s var(--hc-ease),border-color .25s}
-  .hc-top.scrolled{border-bottom-color:var(--hc-line)}
-  .hc-top.away{translate:0 -100%}
-  .hc-top-logo{display:flex}
-  .hc-top-logo svg{display:block;width:var(--hc-logo);height:var(--hc-logo)}
-  .hc-top-l{display:flex;align-items:center;gap:16px}
-  .hc-top-back{font:600 14px var(--hc-body);color:var(--hc-ink2);text-decoration:none;padding:10px 0}
-  .hc-menu-btn{display:inline-flex;align-items:center;gap:10px;height:40px;padding:0 4px 0 12px;border:0;background:none;cursor:pointer;
-    font:600 14px var(--hc-body);color:var(--hc-ink)}
-  .hc-menu-btn i{position:relative;width:18px;height:10px}
-  .hc-menu-btn i::before,.hc-menu-btn i::after{content:"";position:absolute;left:0;right:0;height:1.6px;border-radius:2px;background:currentColor}
-  .hc-menu-btn i::before{top:0}.hc-menu-btn i::after{bottom:0;left:6px}
-
-  /* ── the menu: a full screen sheet with the sections and the theme picker ── */
-  .hc-sheet{display:flex;flex-direction:column;position:fixed;inset:0;z-index:90;background:var(--hc-page);
-    padding:env(safe-area-inset-top,0px) 24px calc(28px + env(safe-area-inset-bottom,0px));overflow-y:auto;
-    opacity:0;transition:opacity .28s var(--hc-ease)}
-  .hc-sheet[hidden]{display:none}
-  .hc-sheet.open{opacity:1}
-  .hc-sheet-top{display:flex;align-items:center;justify-content:space-between;height:var(--hc-bar);flex:none}
-  .hc-sheet-top svg{display:block;width:var(--hc-logo);height:var(--hc-logo)}
-  .hc-close{height:40px;padding:0 4px 0 12px;border:0;background:none;cursor:pointer;font:600 14px var(--hc-body);color:var(--hc-ink)}
-  .hc-sheet-nav{display:flex;flex-direction:column;gap:2px;margin:24px 0 40px}
-  .hc-sheet-nav a{display:flex;align-items:center;gap:12px;padding:7px 0;font:400 34px/1.1 var(--hc-display);letter-spacing:-.01em;color:var(--hc-ink2);text-decoration:none;
-    opacity:0;translate:0 10px;transition:opacity .4s var(--hc-ease),translate .5s var(--hc-ease),color .2s}
-  .hc-sheet.open .hc-sheet-nav a{opacity:1;translate:0 0}
-  .hc-sheet-nav a:nth-child(2){transition-delay:.03s}.hc-sheet-nav a:nth-child(3){transition-delay:.06s}.hc-sheet-nav a:nth-child(4){transition-delay:.09s}
-  .hc-sheet-nav a:nth-child(5){transition-delay:.12s}.hc-sheet-nav a:nth-child(6){transition-delay:.15s}.hc-sheet-nav a:nth-child(7){transition-delay:.18s}
-  .hc-sheet-nav a:nth-child(8){transition-delay:.21s}.hc-sheet-nav a:nth-child(9){transition-delay:.24s}
-  .hc-sheet-nav a.on{color:var(--hc-accent)}
-  .hc-sheet-nav a:active{color:var(--hc-ink)}
-  .hc-sheet-nav a svg{width:.42em;height:.42em;opacity:.75}
-  .hc-sheet-nav .hc-back{font:600 14px var(--hc-body);color:var(--hc-ink2);margin-bottom:12px}
-  .hc-sheet-foot{margin-top:auto;padding-top:24px;border-top:1px solid var(--hc-line)}
-  .hc-lab{margin:0 0 14px;font:600 12px var(--hc-body);letter-spacing:.06em;text-transform:uppercase;color:var(--hc-ink3)}
-  .hc-swatches{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
-  .hc-swatches button{display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px 0;border:0;border-radius:14px;background:none;cursor:pointer;
-    font:600 13px var(--hc-body);color:var(--hc-ink3)}
-  .hc-swatches button i{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--g) 0 50%,var(--a) 50% 100%);
+  .hc-top-space{display:block;height:calc(80px + env(safe-area-inset-top,0px))}
+  .hc-mnav-w{display:block;position:fixed;left:12px;right:12px;top:calc(12px + env(safe-area-inset-top,0px));z-index:80;height:56px}
+  .hc-mnav{position:absolute;left:0;right:0;top:0;display:grid;grid-template-rows:auto 0fr;
+    background:color-mix(in srgb,var(--hc-page) 82%,transparent);backdrop-filter:blur(16px) saturate(1.3);-webkit-backdrop-filter:blur(16px) saturate(1.3);
+    border-radius:28px;box-shadow:inset 0 0 0 1px var(--hc-line),0 18px 40px -24px rgb(0 0 0 / .6);
+    transition:grid-template-rows .5s cubic-bezier(.65,0,.35,1),border-radius .4s cubic-bezier(.65,0,.35,1)}
+  .hc-mnav.open{grid-template-rows:auto 1fr;border-radius:24px}
+  .hc-mbar{display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 8px 0 10px}
+  .hc-mleft{display:flex;align-items:center;gap:12px;min-width:0}
+  .hc-mlogo{display:flex;border-radius:50%}.hc-mlogo svg{display:block;width:var(--hc-logo);height:var(--hc-logo)}
+  .hc-mback{font:600 14px var(--hc-body);color:var(--hc-ink2);text-decoration:none;white-space:nowrap;padding:10px 0}
+  .hc-mtoggle{display:flex;align-items:center;gap:10px;height:44px;padding:0 12px 0 14px;border:0;background:none;color:var(--hc-ink);font:600 14px var(--hc-body);cursor:pointer}
+  .hc-mlabel{position:relative;display:inline-grid;height:1.4em;overflow:hidden;text-align:right}
+  .hc-mlabel span{grid-area:1/1;line-height:1.4em;white-space:nowrap}
+  .hc-chev{width:12px;height:12px;transition:transform .45s cubic-bezier(.65,0,.35,1)}
+  .hc-mnav.open .hc-chev{transform:rotate(180deg)}
+  .hc-mpanel{overflow:hidden;min-height:0}
+  .hc-minner{padding:2px 26px 16px}
+  .hc-mlinks{display:flex;flex-direction:column;align-items:flex-end;border-top:1px solid var(--hc-line);padding-top:8px}
+  .hc-mlinks a{display:inline-flex;align-items:center;gap:7px;padding:9px 0;font:600 14px/1.3 var(--hc-body);color:var(--hc-ink2);text-decoration:none;
+    opacity:0;translate:0 6px;transition:opacity .35s var(--hc-ease),translate .45s var(--hc-ease),color .2s}
+  .hc-mnav.open .hc-mlinks a{opacity:1;translate:0 0}
+  .hc-mlinks a:nth-child(2){transition-delay:.03s}.hc-mlinks a:nth-child(3){transition-delay:.06s}.hc-mlinks a:nth-child(4){transition-delay:.09s}
+  .hc-mlinks a:nth-child(5){transition-delay:.12s}.hc-mlinks a:nth-child(6){transition-delay:.15s}.hc-mlinks a:nth-child(7){transition-delay:.18s}
+  .hc-mlinks a:nth-child(8){transition-delay:.21s}.hc-mlinks a:nth-child(9){transition-delay:.24s}
+  .hc-mlinks a.on{color:var(--hc-accent)}
+  .hc-mlinks a svg{width:.75em;height:.75em;opacity:.7}
+  .hc-mthemes{display:flex;align-items:center;justify-content:flex-end;gap:14px;margin-top:10px;padding-top:12px;border-top:1px solid var(--hc-line)}
+  .hc-mthemes > span{font:600 14px var(--hc-body);color:var(--hc-ink3)}
+  .hc-mthemes > div{display:flex;gap:10px}
+  .hc-mthemes button{width:26px;height:26px;border-radius:50%;border:0;padding:0;cursor:pointer;background:linear-gradient(135deg,var(--g) 0 50%,var(--a) 50% 100%);
     box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--i) 40%,transparent)}
-  .hc-swatches button[aria-checked="true"]{color:var(--hc-ink);background:color-mix(in srgb,var(--hc-ink) 7%,transparent)}
-  .hc-swatches button[aria-checked="true"] i{box-shadow:0 0 0 2px var(--hc-page),0 0 0 3.5px var(--hc-ink)}
-  html.hc-locked{overflow:hidden}
+  .hc-mthemes button[aria-checked="true"]{box-shadow:0 0 0 2px var(--hc-page),0 0 0 3.5px var(--hc-ink)}
 }
-.hc-top :focus-visible,.hc-sheet :focus-visible,.hc-rail :focus-visible{outline:2px solid var(--hc-ink);outline-offset:3px;border-radius:2px}
+.hc-mnav :focus-visible,.hc-rail :focus-visible{outline:2px solid var(--hc-ink);outline-offset:3px;border-radius:2px}
 
 /* ── case studies, desktop: the same rail as the home page, on the same grid ── */
 .hc-rail-layer{position:fixed;inset:0;z-index:60;pointer-events:none}
@@ -120,17 +108,10 @@ html.hc-intro .hc-loader{display:grid}
 .hc-loader.go .f{animation:hc-fill .3s ease .68s forwards}
 @keyframes hc-draw{to{stroke-dashoffset:0}}
 @keyframes hc-fill{to{opacity:1}}
-html.hc-cs.hc-intro body > :not(.hc-loader):not(.lines){opacity:0}
+html.hc-cs.hc-intro body > :not(.hc-loader){opacity:0}
 html.hc-cs body > *{transition:opacity .6s var(--hc-ease)}
-html.hc-intro .lines i{transform:scaleY(0)}
-.lines i{transform-origin:top}
-html.hc-lines .lines i{transform:none;transition:transform .7s var(--hc-ease)}
-html.hc-lines .lines i:nth-child(2){transition-delay:.035s}html.hc-lines .lines i:nth-child(3){transition-delay:.07s}
-html.hc-lines .lines i:nth-child(4){transition-delay:.105s}html.hc-lines .lines i:nth-child(5){transition-delay:.14s}
-html.hc-lines .lines i:nth-child(6){transition-delay:.175s}html.hc-lines .lines i:nth-child(7){transition-delay:.21s}
-html.hc-lines .lines i:nth-child(8){transition-delay:.245s}html.hc-lines .lines i:nth-child(9){transition-delay:.28s}
-html.hc-lines .lines i:nth-child(10){transition-delay:.315s}html.hc-lines .lines i:nth-child(11){transition-delay:.35s}
-html.hc-lines .lines i:nth-child(12){transition-delay:.385s}
+/* the case studies' own grid lines are gone; G shows the grid instead */
+html.hc-cs .lines{display:none}
 
 /* ── case studies: sections reveal as on the home page (html.js .reveal) ── */
 .hc-rv{opacity:0;transform:translateY(12px);transition:opacity .55s var(--hc-ease),transform .55s var(--hc-ease)}
@@ -138,7 +119,7 @@ html.hc-lines .lines i:nth-child(12){transition-delay:.385s}
 
 @media (prefers-reduced-motion:reduce){
   ::view-transition-old(root),::view-transition-new(root){animation:none}
-  .hc-top,.hc-sheet,.hc-sheet-nav a,.hc-pill,.hc-pill button{transition:none}
+  .hc-pill,.hc-pill button{transition:none}
   .hc-loader{display:none!important}
   html.hc-cs.hc-intro body > *{opacity:1}
   .hc-rv{opacity:1;transform:none}
@@ -159,7 +140,8 @@ html.hc-lines .lines i:nth-child(12){transition-delay:.385s}
 .hc-foot a{display:inline-flex;align-items:center;gap:12px;color:inherit;text-decoration:none}
 .hc-foot a svg{width:14px;height:14px;opacity:.75;transition:transform .3s var(--hc-ease),opacity .2s var(--hc-ease)}
 .hc-foot a:hover svg,.hc-foot a:focus-visible svg{transform:translate(2px,-2px);opacity:1}
-.hc-foot .hc-copy{grid-column:4/-1;margin-top:48px}
+.hc-foot .hc-copy{grid-column:4/-1;margin-top:48px;display:flex;align-items:baseline;justify-content:space-between;gap:24px}
+.hc-foot .hc-ghint{font-size:14px;opacity:.6}
 @media (max-width:1023px){
   .hc-fshell{padding-inline:24px}
   .hc-fgrid,.hc-foot .hc-copy{grid-column:1/-1}
@@ -174,4 +156,24 @@ html.hc-lines .lines i:nth-child(12){transition-delay:.385s}
 @media (prefers-reduced-motion:reduce){
   .hc-strip{transform:none}
   .hc-foot-body{opacity:1;transform:none}
+}
+
+/* ── the rail links roll on hover, home and case studies: each letter rises a moment after the last ── */
+.hc-roll{display:inline-flex}
+.hc-c{display:inline-block;height:1.3em;overflow:hidden;vertical-align:top}
+.hc-c > span{display:inline-block;text-shadow:0 1.3em currentColor;transition:transform .55s cubic-bezier(.65,0,.35,1);transition-delay:calc(var(--i) * 14ms)}
+a:hover > .hc-roll .hc-c > span,a:focus-visible > .hc-roll .hc-c > span{transform:translateY(-1.3em)}
+
+/* ── G shows the grid the page is built on: twelve faint columns over everything ── */
+.hc-grid{position:fixed;inset:0;z-index:150;pointer-events:none;opacity:0;transition:opacity .3s var(--hc-ease)}
+.hc-grid > div{width:100%;max-width:1720px;height:100%;margin-inline:auto;padding-inline:48px;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;box-sizing:border-box}
+.hc-grid i{background:color-mix(in srgb,var(--hc-accent) 2.5%,transparent);box-shadow:inset 1px 0 0 color-mix(in srgb,var(--hc-accent) 16%,transparent),inset -1px 0 0 color-mix(in srgb,var(--hc-accent) 16%,transparent)}
+html.hc-show-grid .hc-grid{opacity:1}
+@media (max-width:1023px){.hc-grid > div{padding-inline:24px}}
+.hc-ghint{display:none}
+@media (min-width:1024px) and (hover:hover){.hc-ghint{display:block}}
+.hc-ghint kbd{font:inherit;padding:1px 7px;border-radius:5px;box-shadow:inset 0 0 0 1px currentColor}
+
+@media (prefers-reduced-motion:reduce){
+  .hc-mnav,.hc-mlinks a,.hc-c > span{transition:none}
 }

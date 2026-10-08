@@ -2,15 +2,16 @@
 import { beats } from '../data/beats';
 ---
 <section id="journey" class="section" aria-labelledby="journey-h" data-journey>
-  <div class="shell">
-    <h2 id="journey-h" class="col-title text-h2 mb-8 lg:mb-12 reveal">How I got here</h2>
-  </div>
+  <!-- the heading stays pinned while the beats go by -->
+  <div class="j-head"><div class="shell">
+    <h2 id="journey-h" class="col-title text-h2 reveal">How I got here</h2>
+  </div></div>
 
   <div class="j-list">
-    {beats.map((b) => (
-      <article class="beat shell" data-beat>
-        <div class="beat-text reveal">
-          <h3 class="text-h2 mb-3"><span class="sr-only">{b.place}, {b.when}. </span><span set:html={b.heading} /></h3>
+    {beats.map((b, i) => (
+      <article class="beat shell" data-beat style={`z-index:${i + 1}`}>
+        <div class="beat-text">
+          <h3 class="j-h mb-3"><span class="sr-only">{b.place}, {b.when}. </span><span set:html={b.heading} /></h3>
           <p class="text-secondary" set:html={b.body} />
         </div>
         <i class="j-lane" aria-hidden="true"></i>
@@ -26,24 +27,31 @@ import { beats } from '../data/beats';
     ))}
   </div>
 
-  <!-- desktop: one photograph follows the cursor across a beat, behind the copy -->
+  <!-- desktop: one photograph follows the cursor across a beat, in its own lane -->
   <figure class="j-follow" aria-hidden="true" data-follow><img alt="" /><figcaption></figcaption></figure>
 </section>
 
 <style>
-  /* Each beat is its own .shell, so everything is placed by column.
+  /* The beats stack as you scroll. The heading stays pinned; each beat is a card that sticks under it,
+     and the next one slides up over it while it steps back and fades, gone by the time the next has
+     covered half of it, so two beats never read on top of each other. No backgrounds, no lines.
+     A beat taller than the screen allows sticks only once its bottom is in view (set by the script).
+     Each beat is its own .shell, so everything is placed by column.
      Desktop: the copy in 4-8 (the site's reading measure), column 9 empty, and the photograph's own
      lane in 10-12. With a mouse there are no photographs at rest: move over a beat and one follows
      the cursor up and down its lane, leaning with the movement and flipping to the next one every
-     130px travelled, whether the mouse moves or the page scrolls under it. It never sits under the words.
+     130px travelled, whether the mouse moves or the page scrolls under it.
      Phones, tablets and touch screens: the copy first, then the beat's photographs as a swipe deck
-     of prints, one in front with its caption, the next one showing at the edge.
-     Every photograph is the same 4:3 crop, so none of them towers over the others. */
-  #journey{position:relative}
-  .j-list{display:grid;row-gap:72px}
-  .beat{position:relative;row-gap:20px}
-  .beat-text{grid-column:1/-1;position:relative;z-index:1}
-  .beat-text h3{text-wrap:balance}
+     of prints with their captions. Every photograph is the same 4:3 crop. */
+  #journey{position:relative;--j-head:76px;--j-top:136px}
+  .j-head{position:sticky;top:var(--j-head);z-index:30;padding:8px 0 14px}
+  .j-head h2{margin:0}
+  #journey.loose .j-head{position:relative;top:auto}
+  .j-list{position:relative}
+  .beat{position:sticky;top:var(--top,var(--j-top));align-content:start;row-gap:20px;min-height:560px;padding-block:20px 28px;
+        transform-origin:center top;will-change:transform,opacity}
+  .beat-text{grid-column:1/-1;position:relative}
+  .j-h{font-family:var(--font-display);font-weight:500;font-size:26px;line-height:1.1;letter-spacing:-.012em;text-wrap:balance}
   .j-lane{display:none}
 
   /* ── the deck of prints: phones, tablets, touch ── */
@@ -55,22 +63,27 @@ import { beats } from '../data/beats';
          box-shadow:0 14px 24px -14px rgb(0 0 0 / .8);transform:rotate(-1.5deg)}
   .print:nth-child(even){transform:rotate(1.5deg);margin-top:4px}
   .print img{display:block;width:100%;aspect-ratio:4/3;height:auto;object-fit:cover;background:var(--color-surface)}
-  .print .cap{margin-top:9px;min-height:2.8em;font-family:var(--font-mono);font-size:11px;line-height:1.4;color:#3A3833;
+  .print .cap{margin-top:9px;min-height:2.8em;text-align:left;font-family:var(--font-mono);font-size:11px;line-height:1.4;color:#3A3833;
               display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
 
   .j-follow{display:none}
 
   @media (min-width:1024px){
-    .j-list{row-gap:96px}
+    #journey{--j-head:0px;--j-top:122px}
+    .j-head{padding:40px 0 18px}
+    .beat{min-height:420px;padding-block:28px 40px}
     .beat-text{grid-column:4/9}
+    .j-h{font-size:clamp(30px,2.6vw,38px)}
     .prints{grid-column:4/-1;margin:0;padding:8px 0 18px}
   }
+  /* a beat that has gone back takes no pointer, so the cursor finds the beat in front */
+  .beat.gone{pointer-events:none}
 
   /* ── desktop with a mouse: the photograph in its lane ── */
   @media (min-width:1024px) and (hover:hover) and (pointer:fine){
     .j-lane{display:block;grid-column:10/-1;grid-row:1;height:1px;align-self:start;visibility:hidden}
     :global(html.js) .prints{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-    :global(html.js) .j-follow{display:block;position:absolute;left:0;top:0;z-index:0;margin:0;pointer-events:none;
+    :global(html.js) .j-follow{display:block;position:absolute;left:0;top:0;z-index:20;margin:0;pointer-events:none;
       opacity:0;transition:opacity .25s var(--ease-out-soft);will-change:transform}
     :global(html.js) .j-follow.on{opacity:1}
     .j-follow img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--color-surface);
@@ -78,13 +91,51 @@ import { beats } from '../data/beats';
     .j-follow figcaption{margin-top:10px;font-family:var(--font-mono);font-size:var(--text-caption);line-height:1.4;color:var(--color-tertiary)}
   }
   @media (prefers-reduced-motion:reduce){
-    /* no following: the prints stay */
+    /* no stacking and no following: the beats are a plain list, and the prints stay */
+    .j-head,.beat{position:relative;top:auto}
+    .beat{min-height:0}
     :global(html.js) .prints{position:static;width:auto;height:auto;padding:8px 0 18px;overflow-x:auto;clip:auto;white-space:normal}
     .j-follow{display:none!important}
   }
 </style>
 
 <script>
+  // The stack. Each beat steps back as the next slides over it: by how far the next one still has to
+  // travel to reach it. Driven from scroll, measured each frame, so it holds at any screen size.
+  function journeyStack() {
+    const sec = document.querySelector<HTMLElement>('[data-journey]');
+    if (!sec || (sec as any).__stack || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    (sec as any).__stack = true;
+    const cards = [...sec.querySelectorAll<HTMLElement>('[data-beat]')];
+    // a beat taller than the room under the heading sticks only once its bottom is in view; then the
+    // heading can't stay pinned over it, so it scrolls with the page instead
+    const fit = () => {
+      const base = parseFloat(getComputedStyle(sec).getPropertyValue('--j-top')) || 136;
+      let loose = false;
+      cards.forEach((c) => {
+        const room = innerHeight - c.offsetHeight - 16;
+        if (room < base) { loose = true; c.style.setProperty('--top', Math.round(room) + 'px'); } else c.style.removeProperty('--top');
+      });
+      sec.classList.toggle('loose', loose);
+    };
+    const stack = () => {
+      t = false;
+      cards.forEach((c, i) => {
+        const next = cards[i + 1]; if (!next) return;
+        const gap = next.getBoundingClientRect().top - c.getBoundingClientRect().top;
+        const p = Math.min(1, Math.max(0, 1 - gap / c.offsetHeight)), q = Math.min(1, p * 2);
+        c.style.opacity = String(1 - q);
+        c.style.transform = q ? `translateY(${(-q * 28).toFixed(1)}px) scale(${(1 - q * 0.04).toFixed(4)})` : '';
+        c.classList.toggle('gone', q > 0.5);
+      });
+    };
+    let t = false;
+    addEventListener('scroll', () => { if (!t) { t = true; requestAnimationFrame(stack); } }, { passive: true });
+    addEventListener('resize', () => { fit(); stack(); }, { passive: true });
+    fit(); stack();
+  }
+  document.addEventListener('astro:page-load', journeyStack);
+
   // The photograph that follows the cursor. One element for the whole section, positioned in the
   // section's own coordinates, so it keeps up while the page scrolls under a still mouse.
   function journeyFollow() {
@@ -118,13 +169,14 @@ import { beats } from '../data/beats';
       W = Math.min(lane.width, 320); fl.style.width = W + 'px';
       const H = W * 0.75, cx = lane.left + lane.width / 2;
       tx = cx + Math.max(-16, Math.min(16, (mx - cx) * 0.06)) - s.left;
-      const lo = b.top + H * 0.5 - 40, hi = Math.max(lo, b.bottom - H * 0.5 + 40);
+      const lo = b.top + H * 0.5 + 28, hi = Math.max(lo, b.top + b.height * 0.72);
       ty = Math.max(lo, Math.min(hi, my)) - s.top;
     };
     const which = () => {
       if (mx < 0) return null;
       const el = document.elementFromPoint(mx, my);
-      return (el?.closest('.beat') as HTMLElement | null) ?? null;
+      const b = (el?.closest('.beat') as HTMLElement | null) ?? null;
+      return b && !b.classList.contains('gone') ? b : null;
     };
     const update = () => {
       const b = which();

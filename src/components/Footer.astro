@@ -28,7 +28,10 @@ const arrow = 'inline-flex items-center gap-1.5';
         <p><a class={arrow} href={site.resume} target="_blank" rel="noopener">Resume<svg class="arr w-[14px] h-[14px]" viewBox="0 0 14.4 14.4" aria-hidden="true"><path d="M1.2 13.2L13.2 1.2M13.2 1.2H1.2M13.2 1.2V13.2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" fill="none"/></svg></a></p>
       </div>
     </div></div>
-    <div class="shell"><div class="col-full mt-6 max-md:mt-5 text-body md:text-h3">©{year}</div></div>
+    <div class="shell"><div class="col-full mt-6 max-md:mt-5 flex items-baseline justify-between gap-6">
+      <p class="text-body md:text-h3">©{year}</p>
+      <p class="hc-ghint text-meta opacity-60">Press <kbd>G</kbd> to see the grid</p>
+    </div></div>
   </div>
 </footer>
 <style>

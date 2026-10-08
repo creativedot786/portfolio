@@ -1,6 +1,6 @@
-// Site chrome shared by the home page and the case studies: the top bar on phones and tablets, its menu,
-// the theme picker (the menu's and the case-study rail's), the footer strip, and on case studies the
-// rail alignment, the scroll spy, the intro (the same one as the home page) and the section reveals.
+// Site chrome shared by the home page and the case studies: the navigation pill on phones and tablets,
+// the theme picker (the pill's and the case-study rail's), the footer strip, the grid on G, and on case
+// studies the rail alignment, the scroll spy, the intro (the same one as the home page) and the reveals.
 // Safe to run more than once (Astro's router fires astro:page-load on every page change).
 (() => {
   const THEME_COLORS = { brass: '#0A0B0D', slate: '#27333A', moss: '#12241C', cream: '#F3EDDF' };
@@ -22,58 +22,68 @@
       b.setAttribute('aria-checked', String((b.dataset.hcTheme || b.dataset.themeSet) === id)));
   }
 
-  // ── phones and tablets: the top bar and the menu ──
-  function bar() {
-    const top = document.querySelector('[data-hc-top]');
-    const sheet = document.querySelector('[data-hc-sheet]');
-    const open = document.querySelector('[data-hc-open]');
-    if (top && !top.__hc) {
-      top.__hc = true;
-      // the bar leaves as you read down and returns as soon as you scroll up
-      let last = scrollY, ticking = false;
-      const onScroll = () => {
-        ticking = false;
-        const y = Math.max(0, scrollY);
-        top.classList.toggle('scrolled', y > 8);
-        if (!root.classList.contains('hc-locked')) {
-          if (y > last + 4 && y > 120) top.classList.add('away');
-          else if (y < last - 4 || y < 120) top.classList.remove('away');
-        }
-        last = y;
-      };
-      addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
-      onScroll();
-    }
-    if (sheet && open && !sheet.__hc) {
-      sheet.__hc = true;
-      const links = [...sheet.querySelectorAll('.hc-sheet-nav a')];
-      const show = () => {
-        let cur = '';   // mark the section you are in
-        links.forEach((a) => { const id = a.dataset.hcSec; const t = id && document.getElementById(id); if (t && t.getBoundingClientRect().top < innerHeight * 0.45) cur = id; });
-        links.forEach((a) => a.classList.toggle('on', !!cur && a.dataset.hcSec === cur));
-        markTheme(current());
-        sheet.hidden = false; root.classList.add('hc-locked'); open.setAttribute('aria-expanded', 'true');
-        requestAnimationFrame(() => requestAnimationFrame(() => sheet.classList.add('open')));
-        sheet.querySelector('.hc-close').focus();
-      };
-      const hide = (then) => {
-        sheet.classList.remove('open'); open.setAttribute('aria-expanded', 'false');
-        root.classList.remove('hc-locked');
-        setTimeout(() => { sheet.hidden = true; then && then(); }, RM() ? 0 : 260);
-      };
-      open.addEventListener('click', show);
-      sheet.querySelector('.hc-close').addEventListener('click', () => { hide(); open.focus(); });
-      addEventListener('keydown', (e) => { if (e.key === 'Escape' && !sheet.hidden) { hide(); open.focus(); } });
-      // in-page links: close first, then go, so the page is unlocked when it scrolls
-      links.forEach((a) => a.addEventListener('click', (e) => {
-        const h = a.getAttribute('href') || '';
-        if (h.startsWith('#')) { e.preventDefault(); hide(() => { const t = document.querySelector(h); if (t) t.scrollIntoView({ behavior: RM() ? 'auto' : 'smooth' }); }); }
-        else hide();
-      }));
-    }
+  // a word that rolls out while the next rolls in, the way the scroll went
+  function rollTo(box, text, dir) {
+    const old = box.lastElementChild; if (old && old.textContent === text) return;
+    [...box.children].slice(0, -1).forEach((s) => s.remove());
+    const nu = document.createElement('span'); nu.textContent = text; box.appendChild(nu);
+    if (RM() || !old || !nu.animate) { old && old.remove(); return; }
+    const d = dir < 0 ? -1 : 1, o = { duration: 420, easing: 'cubic-bezier(.65,0,.35,1)' };
+    old.animate([{ transform: 'translateY(0)' }, { transform: `translateY(${-d * 100}%)` }], o).onfinish = () => old.remove();
+    nu.animate([{ transform: `translateY(${d * 100}%)` }, { transform: 'translateY(0)' }], o);
+  }
+
+  // ── phones and tablets: the pill at the top. It shows the section you're in; tap it to open the menu ──
+  function mnav() {
+    const nav = document.querySelector('[data-hc-mnav]');
+    if (!nav || nav.__hc) return;
+    nav.__hc = true;
+    const tog = nav.querySelector('.hc-mtoggle'), panel = nav.querySelector('.hc-mpanel'), label = nav.querySelector('.hc-mlabel');
+    const links = [...nav.querySelectorAll('[data-hc-sec]')];
+    const targets = links.map((a) => document.getElementById(a.dataset.hcSec));
+    const isOpen = () => nav.classList.contains('open');
+    const open = () => { markTheme(current()); nav.classList.add('open'); tog.setAttribute('aria-expanded', 'true'); panel.inert = false; };
+    const close = () => { nav.classList.remove('open'); tog.setAttribute('aria-expanded', 'false'); panel.inert = true; };
+    tog.addEventListener('click', () => (isOpen() ? close() : open()));
+    addEventListener('keydown', (e) => { if (e.key === 'Escape' && isOpen()) { close(); tog.focus(); } });
+    document.addEventListener('click', (e) => { if (isOpen() && !nav.contains(e.target)) close(); });
+    nav.querySelectorAll('a').forEach((a) => a.addEventListener('click', close));
+
+    // the section in view: the one whose top has passed 40% of the screen
+    let cur = -1, last = scrollY, t = false;
+    const pick = () => {
+      t = false;
+      let on = 0;
+      targets.forEach((el, i) => { if (el && el.getBoundingClientRect().top < innerHeight * 0.4) on = i; });
+      if (innerHeight + Math.ceil(scrollY) >= document.documentElement.scrollHeight - 2) on = targets.length - 1;
+      if (on !== cur) { if (links[on]) rollTo(label, links[on].textContent, cur < 0 ? 0 : on - cur); cur = on; links.forEach((a, i) => a.classList.toggle('on', i === on)); }
+      if (Math.abs(scrollY - last) > 40 && isOpen()) close();
+      if (!isOpen()) last = scrollY;
+    };
+    tog.addEventListener('click', () => { last = scrollY; });
+    addEventListener('scroll', () => { if (!t) { t = true; requestAnimationFrame(pick); } }, { passive: true });
+    pick();
+  }
+
+  function themes() {
     document.querySelectorAll('[data-hc-theme]').forEach((b) => {
       if (b.__hc) return; b.__hc = true;
       b.addEventListener('click', () => { if (b.getAttribute('aria-checked') !== 'true') setTheme(b.dataset.hcTheme); b.blur(); });
+    });
+  }
+
+  // ── G shows the grid the page is built on (not while typing). One overlay, made here, for both pages ──
+  function grid() {
+    if (!document.querySelector('.hc-grid')) {
+      const g = document.createElement('div'); g.className = 'hc-grid'; g.setAttribute('aria-hidden', 'true');
+      g.innerHTML = '<div>' + '<i></i>'.repeat(12) + '</div>';
+      document.body.appendChild(g);
+    }
+    if (window.__hcGridKey) return;
+    window.__hcGridKey = true;
+    addEventListener('keydown', (e) => {
+      if ((e.key === 'g' || e.key === 'G') && !e.metaKey && !e.ctrlKey && !e.altKey && !e.target.closest?.('input,textarea,select,[contenteditable]'))
+        root.classList.toggle('hc-show-grid');
     });
   }
 
@@ -175,19 +185,18 @@
     pick();
 
     // The intro, the same one as the home page and on the same terms: it plays once, on the first page
-    // of a visit, whichever page that is. 0 the logo draws; 900ms the grid lines draw down; 1100ms the
-    // loader dissolves; 2000ms the page fades in. After that, pages only cross-fade.
+    // of a visit, whichever page that is. 0 the logo draws; 1100ms the loader dissolves; 2000ms the page
+    // fades in. After that, pages only cross-fade.
     const ld = document.querySelector('[data-hc-loader]');
     if (!root.classList.contains('hc-intro') || !ld) { ld?.remove(); reveal(); return; }
     const p = ld.querySelector('.s');
     try { const len = p.getTotalLength(); p.style.strokeDasharray = len; p.style.strokeDashoffset = len; } catch (e) {}
     ld.classList.add('go');
-    setTimeout(() => root.classList.add('hc-lines'), 900);
     setTimeout(() => { ld.classList.add('out'); try { sessionStorage.setItem('hr-loader', '1'); } catch (e) {} setTimeout(() => ld.remove(), 500); }, 1100);
-    setTimeout(() => { root.classList.remove('hc-intro'); root.classList.add('hc-lines-done'); align(); reveal(); }, 2000);
+    setTimeout(() => { root.classList.remove('hc-intro'); align(); reveal(); }, 2000);
   }
 
-  function init() { markTheme(current()); bar(); footer(); caseStudy(); }
+  function init() { markTheme(current()); mnav(); themes(); grid(); footer(); caseStudy(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
   document.addEventListener('astro:page-load', init);
 })();

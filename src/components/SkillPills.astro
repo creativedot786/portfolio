@@ -1,0 +1,126 @@
+---
+// The skills, falling into the hero with real physics (Matter.js). They drop once the intro is done, fall
+// through the headline and settle along the bottom of the first screen, so where they land follows the
+// browser's height. Each one drops over its own slice of the content column, so together they lie end to
+// end. Desktop: grab, drag and throw them. Phones: the same physics, not draggable, so they never get in
+// the way of a scroll or a tap. Reduced motion: they are simply there, already settled.
+import { skills, always, hot } from '../data/skills';
+---
+<div class="pile-layer" aria-hidden="true">
+  <div class="shell h-full">
+    <div class="pile col-title" data-pile data-skills={JSON.stringify(skills)} data-always={always} data-hot={JSON.stringify(hot)}></div>
+  </div>
+</div>
+<p class="sr-only">What I do: {skills.join(', ')}.</p>
+
+<style>
+  .pile-layer{position:absolute;inset:0;pointer-events:none;z-index:2}
+  .pile{position:relative;height:100%;user-select:none;-webkit-user-select:none}
+  /* labels: hairline boxes in mono capitals, the way the site labels things */
+  .pile :global(.sk){position:absolute;left:0;top:0;display:block;white-space:nowrap;will-change:transform;visibility:hidden;
+    font:500 11.5px/1 var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--color-secondary);
+    padding:10px 12px;border-radius:3px;background:var(--color-page);box-shadow:inset 0 0 0 1px var(--color-line-strong)}
+  .pile :global(.sk.a){color:var(--color-accent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--color-accent) 55%,transparent)}
+  .pile:global(.ready) :global(.sk){visibility:visible}
+  @media (min-width:1024px){ .pile :global(.sk){font-size:13px;padding:12px 15px} }
+  /* desktop with a mouse: only the labels take the pointer, so the rest of the hero stays clickable */
+  @media (hover:hover) and (pointer:fine){
+    .pile :global(.sk){pointer-events:auto;cursor:grab}
+    .pile :global(.sk:active){cursor:grabbing}
+  }
+</style>
+
+<script>
+  import Matter from 'matter-js';
+  const { Engine, Bodies, Composite, Constraint, Body } = Matter;
+
+  function skillPills() {
+    const pile = document.querySelector<HTMLElement>('[data-pile]');
+    if (!pile || (pile as any).__init) return;
+    (pile as any).__init = true;
+    const all: string[] = JSON.parse(pile.dataset.skills || '[]');
+    const always = pile.dataset.always || '';
+    const hot = new Set<string>(JSON.parse(pile.dataset.hot || '[]'));
+    const rm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const canDrag = matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const shuffle = <T,>(a: T[]) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+    const hero = pile.closest('section') as HTMLElement;
+
+    let engine: Matter.Engine | null = null, raf = 0, inView = true, width = 0;
+    let bodies: Matter.Body[] = [];
+    let grab: Matter.Constraint | null = null;
+
+    const paint = () => bodies.forEach((b) => {
+      const { el, w, h } = (b as any).plugin;
+      el.style.transform = `translate(${b.position.x - w / 2}px,${b.position.y - h / 2}px) rotate(${b.angle}rad)`;
+    });
+    const loop = (t0: number) => {
+      let last = t0;
+      const tick = (t: number) => { if (!engine) return; Engine.update(engine, Math.min(32, t - last)); last = t; paint(); raf = inView ? requestAnimationFrame(tick) : 0; };
+      raf = requestAnimationFrame(tick);
+    };
+
+    function drop() {
+      cancelAnimationFrame(raf); raf = 0;
+      if (engine) Engine.clear(engine);
+      width = pile.clientWidth;
+      const desk = innerWidth >= 1024;
+      const pick = [always, ...shuffle(all.filter((s) => s !== always)).slice(0, (desk ? 11 : 6) - 1)];
+      pile.innerHTML = shuffle(pick).map((s) => `<span class="sk${hot.has(s) ? ' a' : ''}">${s}</span>`).join('');
+      const els = [...pile.querySelectorAll<HTMLElement>('.sk')];
+      const W = pile.clientWidth, H = pile.clientHeight;
+      engine = Engine.create({ gravity: { x: 0, y: 1.1 } });
+      const wall = { isStatic: true, friction: 0.6 };
+      Composite.add(engine.world, [
+        Bodies.rectangle(W / 2, H + 40, W * 3, 80, wall),
+        Bodies.rectangle(-40, H / 2 - H, 80, H * 4, wall),
+        Bodies.rectangle(W + 40, H / 2 - H, 80, H * 4, wall),
+      ]);
+      // each label drops over its own slice of the width, so together they lie end to end along the bottom
+      const n = els.length, lanes = shuffle([...Array(n).keys()]);
+      const above = Math.max(0, pile.getBoundingClientRect().top);   // start above the screen, not just above the hero
+      bodies = els.map((el, i) => {
+        const w = el.offsetWidth, h = el.offsetHeight;
+        const cx = ((lanes[i] + 0.5) / n) * W + (Math.random() - 0.5) * (W / n) * 0.6;
+        const b = Bodies.rectangle(Math.min(W - w / 2, Math.max(w / 2, cx)), -above - 60 - i * 45 - Math.random() * 140, w, h,
+          { chamfer: { radius: 3 }, restitution: 0.3, friction: 0.45, frictionAir: 0.012, density: 0.0016, angle: (Math.random() - 0.5) * 1.4 });
+        (b as any).plugin = { el, w, h };
+        (el as any).__body = b;
+        return b;
+      });
+      Composite.add(engine.world, bodies);
+      pile.classList.add('ready');
+      if (rm) { for (let i = 0; i < 900; i++) Engine.update(engine, 1000 / 60); paint(); return; }
+      loop(performance.now());
+    }
+
+    // desktop: grab a label and throw it
+    if (canDrag && !rm) {
+      const toPile = (e: MouseEvent) => { const r = pile.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+      pile.addEventListener('mousedown', (e) => {
+        const el = (e.target as HTMLElement).closest<HTMLElement>('.sk'); if (!el || !engine) return;
+        e.preventDefault();
+        const b: Matter.Body = (el as any).__body, p = toPile(e);
+        const off = Matter.Vector.rotate({ x: p.x - b.position.x, y: p.y - b.position.y }, -b.angle);
+        grab = Constraint.create({ pointA: p, bodyB: b, pointB: off, stiffness: 0.2, damping: 0.1, length: 0 });
+        Composite.add(engine.world, grab);
+        if (!raf) loop(performance.now());
+      });
+      addEventListener('mousemove', (e) => { if (grab) grab.pointA = toPile(e); });
+      addEventListener('mouseup', () => { if (grab && engine) { Composite.remove(engine.world, grab); grab = null; } });
+    }
+
+    // only while the hero is on screen
+    new IntersectionObserver(([e]) => { inView = e.isIntersecting; if (inView && engine && !raf && !rm) loop(performance.now()); }).observe(hero);
+    // a new width (not a phone's toolbar changing the height) means a new drop
+    let rz = 0;
+    addEventListener('resize', () => { clearTimeout(rz); rz = window.setTimeout(() => { if (Math.abs(pile.clientWidth - width) > 2) drop(); }, 300); }, { passive: true });
+
+    // drop once the intro is done
+    const start = () => setTimeout(drop, 350);
+    if (!document.documentElement.classList.contains('intro')) start();
+    else new MutationObserver((_, o) => { if (!document.documentElement.classList.contains('intro')) { o.disconnect(); start(); } })
+      .observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  }
+  document.addEventListener('astro:page-load', skillPills);
+</script>
