@@ -5,7 +5,7 @@ export const site = {
   email: 'huzaifa.creativedot@gmail.com',
   emailShown: 'huzaifa.creativedot[at]gmail.com',
   linkedin: 'https://www.linkedin.com/in/hratlam/',
-  resume: 'https://drive.google.com/file/d/19gwvNJrxTLO-cACN6KQFMENFHfmLyMsk/view?usp=sharing',
+  resume: 'https://drive.google.com/file/d/1-RczJx6zl5FBzJLxZYdE9J4UHJHfSBgn/view?usp=drive_link',
   location: 'Dubai, United Arab Emirates',
   timezone: 'Asia/Dubai',
 };

@@ -15,10 +15,10 @@ import { beats } from '../data/beats';
         </div>
         <i class="j-lane" aria-hidden="true"></i>
         <ul class="prints" aria-label={`Photographs, ${b.place}`}>
-          {b.photos.map((ph, i) => (
+          {b.photos.map((ph) => (
             <li class="print">
               <img src={ph.src} alt={ph.alt} loading="lazy" decoding="async" style={ph.focus ? `object-position:${ph.focus}` : undefined} />
-              <span class="cap" aria-hidden="true"><b>{i + 1} / {b.photos.length}</b> {ph.alt}</span>
+              <span class="cap" aria-hidden="true">{ph.alt}</span>
             </li>
           ))}
         </ul>
@@ -27,7 +27,7 @@ import { beats } from '../data/beats';
   </div>
 
   <!-- desktop: one photograph follows the cursor across a beat, behind the copy -->
-  <figure class="j-follow" aria-hidden="true" data-follow><img alt="" /><figcaption><b></b> <span></span></figcaption></figure>
+  <figure class="j-follow" aria-hidden="true" data-follow><img alt="" /><figcaption></figcaption></figure>
 </section>
 
 <style>
@@ -35,7 +35,7 @@ import { beats } from '../data/beats';
      Desktop: the copy in 4-8 (the site's reading measure), column 9 empty, and the photograph's own
      lane in 10-12. With a mouse there are no photographs at rest: move over a beat and one follows
      the cursor up and down its lane, leaning with the movement and flipping to the next one every
-     130px travelled. It never sits under the words.
+     130px travelled, whether the mouse moves or the page scrolls under it. It never sits under the words.
      Phones, tablets and touch screens: the copy first, then the beat's photographs as a swipe deck
      of prints, one in front with its caption, the next one showing at the edge.
      Every photograph is the same 4:3 crop, so none of them towers over the others. */
@@ -57,7 +57,6 @@ import { beats } from '../data/beats';
   .print img{display:block;width:100%;aspect-ratio:4/3;height:auto;object-fit:cover;background:var(--color-surface)}
   .print .cap{margin-top:9px;min-height:2.8em;font-family:var(--font-mono);font-size:11px;line-height:1.4;color:#3A3833;
               display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
-  .print .cap b{font-weight:400;color:#8A857B}
 
   .j-follow{display:none}
 
@@ -77,7 +76,6 @@ import { beats } from '../data/beats';
     .j-follow img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;background:var(--color-surface);
       box-shadow:0 30px 50px -24px rgb(0 0 0 / .8)}
     .j-follow figcaption{margin-top:10px;font-family:var(--font-mono);font-size:var(--text-caption);line-height:1.4;color:var(--color-tertiary)}
-    .j-follow b{font-weight:400;color:var(--color-accent)}
   }
   @media (prefers-reduced-motion:reduce){
     /* no following: the prints stay */
@@ -96,7 +94,7 @@ import { beats } from '../data/beats';
     if (!matchMedia('(min-width:1024px) and (hover:hover) and (pointer:fine)').matches) return;
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     (fl as any).__on = true;
-    const img = fl.querySelector('img')!, num = fl.querySelector('b')!, cap = fl.querySelector('span')!;
+    const img = fl.querySelector('img')!, cap = fl.querySelector('figcaption')!;
 
     // load the photographs once the section is near, so the first flip never shows an empty frame
     new IntersectionObserver((es, o) => {
@@ -110,7 +108,7 @@ import { beats } from '../data/beats';
       const ps = photos(); if (!ps.length) return;
       k = i % ps.length; const p = ps[k];
       img.src = p.currentSrc || p.src; img.style.objectPosition = p.style.objectPosition;
-      num.textContent = `${k + 1} / ${ps.length}`; cap.textContent = p.alt;
+      cap.textContent = p.alt;
     };
     // the target: the middle of the beat's lane (columns 10-12) across, the cursor up and down,
     // kept within the beat; a small sideways drift towards the cursor so it still feels attached
@@ -146,7 +144,14 @@ import { beats } from '../data/beats';
       if (mx >= 0 && beat) { travel += Math.hypot(e.clientX - mx, e.clientY - my); if (travel > 130) { travel = 0; show(k + 1); } }
       mx = e.clientX; my = e.clientY; update();
     }, { passive: true });
-    addEventListener('scroll', () => { if (mx >= 0) update(); }, { passive: true });
+    // scrolling counts as travel too: a still mouse over a scrolling page still flips the photographs
+    let sy = scrollY;
+    addEventListener('scroll', () => {
+      const dy = Math.abs(scrollY - sy); sy = scrollY;
+      if (mx < 0) return;
+      if (beat) { travel += dy; if (travel > 130) { travel = 0; show(k + 1); } }
+      update();
+    }, { passive: true });
     document.addEventListener('mouseleave', () => { mx = -1; beat = null; fl.classList.remove('on'); });
   }
   document.addEventListener('astro:page-load', journeyFollow);
