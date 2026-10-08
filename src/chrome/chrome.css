@@ -12,7 +12,8 @@
   --hc-ease:cubic-bezier(.2,.7,.2,1);
   --hc-display:"Fraunces Variable","Fraunces",Georgia,serif;
   --hc-body:"Manrope Variable","Manrope",system-ui,sans-serif;
-  --hc-bar:56px;
+  --hc-bar:64px;
+  --hc-logo:44px;   /* the logo in the phone top bar and menu */
 }
 
 /* pages fade into each other when you move between the home page and a case study */
@@ -20,8 +21,8 @@
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.35s;animation-timing-function:var(--hc-ease)}
 
 /* ── phone and tablet: top bar ─────────────────────────────────
-   Logo on the left, Menu on the right. It slides away as you read down and comes back the
-   moment you scroll up. */
+   Logo on the left, Menu on the right; on a case study, "All work" next to the logo, so going back
+   is always one tap. The bar slides away as you read down and comes back the moment you scroll up. */
 .hc-top,.hc-top-space,.hc-sheet{display:none}
 @media (max-width:1023px){
   .hc-top-space{display:block;height:calc(var(--hc-bar) + env(safe-area-inset-top,0px))}
@@ -32,7 +33,9 @@
   .hc-top.scrolled{border-bottom-color:var(--hc-line)}
   .hc-top.away{translate:0 -100%}
   .hc-top-logo{display:flex}
-  .hc-top-logo svg{display:block;width:36px;height:36px}
+  .hc-top-logo svg{display:block;width:var(--hc-logo);height:var(--hc-logo)}
+  .hc-top-l{display:flex;align-items:center;gap:16px}
+  .hc-top-back{font:600 14px var(--hc-body);color:var(--hc-ink2);text-decoration:none;padding:10px 0}
   .hc-menu-btn{display:inline-flex;align-items:center;gap:10px;height:40px;padding:0 4px 0 12px;border:0;background:none;cursor:pointer;
     font:600 14px var(--hc-body);color:var(--hc-ink)}
   .hc-menu-btn i{position:relative;width:18px;height:10px}
@@ -46,7 +49,7 @@
   .hc-sheet[hidden]{display:none}
   .hc-sheet.open{opacity:1}
   .hc-sheet-top{display:flex;align-items:center;justify-content:space-between;height:var(--hc-bar);flex:none}
-  .hc-sheet-top svg{display:block;width:36px;height:36px}
+  .hc-sheet-top svg{display:block;width:var(--hc-logo);height:var(--hc-logo)}
   .hc-close{height:40px;padding:0 4px 0 12px;border:0;background:none;cursor:pointer;font:600 14px var(--hc-body);color:var(--hc-ink)}
   .hc-sheet-nav{display:flex;flex-direction:column;gap:2px;margin:24px 0 40px}
   .hc-sheet-nav a{display:flex;align-items:center;gap:12px;padding:7px 0;font:400 34px/1.1 var(--hc-display);letter-spacing:-.01em;color:var(--hc-ink2);text-decoration:none;
@@ -82,12 +85,13 @@
   pointer-events:none;opacity:0;transition:opacity .28s var(--hc-ease),translate .28s var(--hc-ease)}
 .hc-logo-name b{color:var(--hc-ink);font-weight:600}
 .hc-logo-link:hover .hc-logo-name,.hc-logo-link:focus-visible .hc-logo-name{opacity:1;translate:0 -50%}
-.hc-nav{display:flex;flex-direction:column;gap:2px;margin-top:8px}
+.hc-back-top{align-self:flex-start;font:600 14px/1.3 var(--hc-body);color:var(--hc-ink2);text-decoration:none;padding-block:5px;white-space:nowrap;transition:color .22s var(--hc-ease)}
+.hc-back-top:hover{color:var(--hc-ink)}
+/* the section links line up with the header's eyebrow line (chrome.js measures it) */
+.hc-nav{display:flex;flex-direction:column;gap:2px;margin-top:var(--nav-offset,8px)}
 .hc-nav a{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;font:600 14px/1.3 var(--hc-body);color:var(--hc-ink3);text-decoration:none;padding-block:5px;transition:color .22s var(--hc-ease)}
 .hc-nav a:hover{color:var(--hc-ink2)}
 .hc-nav a.on{color:var(--hc-accent)}
-.hc-nav .hc-back{color:var(--hc-ink2);margin-bottom:14px}
-.hc-nav .hc-back:hover{color:var(--hc-ink)}
 .hc-tools{margin-top:auto;display:flex;flex-direction:column;align-items:flex-start}
 /* the theme control, as on the home page: the chosen swatch at rest, the pill grows upward on hover */
 .hc-theme{position:relative;width:44px;height:44px}
@@ -103,33 +107,51 @@
 .hc-pill button:not([aria-checked="true"]):hover{transform:scale(1.18)}
 @media (max-width:1023px){.hc-rail-layer{display:none}}
 
-/* ── case studies: the logo draws itself while the page gets ready ── */
-.hc-loader{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:var(--hc-page);transition:opacity .45s var(--hc-ease),visibility 0s .45s}
+/* ── case studies: the home page's intro (Loader.astro and Base.astro), on the same terms ──
+   html.hc-intro is set before first paint on the first page of a visit. The page waits, the logo
+   draws, the grid lines draw down, the loader dissolves, then the page fades in. */
+.hc-loader{position:fixed;inset:0;z-index:100;display:none;place-items:center;background:var(--hc-page);transition:opacity .45s var(--hc-ease),visibility 0s .45s}
+html.hc-intro .hc-loader{display:grid}
 .hc-loader.out{opacity:0;visibility:hidden}
 .hc-loader svg{width:88px;height:88px;overflow:visible}
 .hc-loader .s{fill:none;stroke:var(--hc-ink);stroke-width:.5;stroke-linejoin:round;stroke-linecap:round}
 .hc-loader .f{fill:var(--hc-ink);opacity:0}
 .hc-loader.go .s{animation:hc-draw .85s cubic-bezier(.5,0,.2,1) forwards}
 .hc-loader.go .f{animation:hc-fill .3s ease .68s forwards}
-.hc-loader.quick .s{display:none}.hc-loader.quick .f{opacity:1}
 @keyframes hc-draw{to{stroke-dashoffset:0}}
 @keyframes hc-fill{to{opacity:1}}
+html.hc-cs.hc-intro body > :not(.hc-loader):not(.lines){opacity:0}
+html.hc-cs body > *{transition:opacity .6s var(--hc-ease)}
+html.hc-intro .lines i{transform:scaleY(0)}
+.lines i{transform-origin:top}
+html.hc-lines .lines i{transform:none;transition:transform .7s var(--hc-ease)}
+html.hc-lines .lines i:nth-child(2){transition-delay:.035s}html.hc-lines .lines i:nth-child(3){transition-delay:.07s}
+html.hc-lines .lines i:nth-child(4){transition-delay:.105s}html.hc-lines .lines i:nth-child(5){transition-delay:.14s}
+html.hc-lines .lines i:nth-child(6){transition-delay:.175s}html.hc-lines .lines i:nth-child(7){transition-delay:.21s}
+html.hc-lines .lines i:nth-child(8){transition-delay:.245s}html.hc-lines .lines i:nth-child(9){transition-delay:.28s}
+html.hc-lines .lines i:nth-child(10){transition-delay:.315s}html.hc-lines .lines i:nth-child(11){transition-delay:.35s}
+html.hc-lines .lines i:nth-child(12){transition-delay:.385s}
+
+/* ── case studies: sections reveal as on the home page (html.js .reveal) ── */
+.hc-rv{opacity:0;transform:translateY(12px);transition:opacity .55s var(--hc-ease),transform .55s var(--hc-ease)}
+.hc-rv.in{opacity:1;transform:none}
 
 @media (prefers-reduced-motion:reduce){
   ::view-transition-old(root),::view-transition-new(root){animation:none}
   .hc-top,.hc-sheet,.hc-sheet-nav a,.hc-pill,.hc-pill button{transition:none}
-  .hc-loader{display:none}
+  .hc-loader{display:none!important}
+  html.hc-cs.hc-intro body > *{opacity:1}
+  .hc-rv{opacity:1;transform:none}
 }
 
 /* ── case studies: the home page footer (src/components/Footer.astro), rebuilt with hc- classes ──
    The strip of nine bands runs from the page ground to the ink, then the footer sits on the ink. */
 .hc-foot{position:relative;z-index:1;background:var(--hc-ink);color:var(--hc-page);font-family:var(--hc-body)}
 .hc-strip-wrap{background:var(--hc-page)}
-.hc-strip{transform:scaleY(0);transform-origin:top;will-change:transform;transition:transform .8s cubic-bezier(.65,0,.35,1)}
-.hc-strip-wrap.in .hc-strip{transform:scaleY(1)}
+/* chrome.js sets --fp from 0 to 1 as the footer comes up the screen: the bands grow with the scroll */
+.hc-strip{transform:scaleY(var(--fp,1));transform-origin:top;will-change:transform}
 .hc-strip i{display:block;height:56px}
-.hc-foot-body{padding-block:40px;opacity:0;transform:translateY(14px);transition:opacity .6s cubic-bezier(.65,0,.35,1) .25s,transform .6s cubic-bezier(.65,0,.35,1) .25s}
-.hc-strip-wrap.in ~ .hc-foot-body{opacity:1;transform:none}
+.hc-foot-body{padding-block:40px;opacity:clamp(0,calc((var(--fp,1) - .55) / .45),1);transform:translateY(calc((1 - var(--fp,1)) * 14px))}
 .hc-fshell{width:100%;max-width:1720px;margin-inline:auto;padding-inline:48px;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;box-sizing:border-box}
 .hc-fgrid{grid-column:4/-1;display:grid;grid-template-columns:1fr auto;gap:40px 64px}
 .hc-foot p{margin:0;font-size:22px;line-height:1.55;font-variant-numeric:tabular-nums}
@@ -150,6 +172,6 @@
   .hc-foot .hc-copy{margin-top:40px}
 }
 @media (prefers-reduced-motion:reduce){
-  .hc-strip{transform:none;transition:none}
-  .hc-foot-body{opacity:1;transform:none;transition:none}
+  .hc-strip{transform:none}
+  .hc-foot-body{opacity:1;transform:none}
 }

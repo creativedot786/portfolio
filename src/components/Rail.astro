@@ -180,6 +180,8 @@ import { sections } from '../data/sections';
     // Measured rather than hardcoded: the hero is bottom-anchored, so the tab row's position
     // depends on the viewport. The rail is fixed, so this only holds at the top of the page —
     // which is the only place both are visible at once, and is exactly where the alignment reads.
+    // The tab row is measured in PAGE coordinates (+ scrollY): the scroll spy keeps the hash in the
+    // address, so a reload opens partway down, and a viewport measurement then put the nav at the top.
     const navEl = document.querySelector<HTMLElement>('.rail-nav');
     const tabs = document.querySelector<HTMLElement>('[data-tabs]');
     const alignNav = () => {
@@ -193,13 +195,13 @@ import { sections } from '../data/sections';
       if (!link || !tab) return;
       // Align the TEXT, not the boxes. Both are 14px, but the tab is a pill with 12px of padding
       // and the nav link has 5px, so matching box edges leaves the words 7px apart.
-      const tabText = tab.getBoundingClientRect().top + parseFloat(getComputedStyle(tab).paddingTop);
+      const tabText = tab.getBoundingClientRect().top + scrollY + parseFloat(getComputedStyle(tab).paddingTop);
       const linkText = link.getBoundingClientRect().top + parseFloat(getComputedStyle(link).paddingTop);
       const delta = tabText - linkText;
       if (delta > 0) navEl.style.setProperty('--nav-offset', Math.round(delta) + 'px');
       // Converge: one pass can land short if the hero has not finished settling.
       requestAnimationFrame(() => {
-        const t2 = tab.getBoundingClientRect().top + parseFloat(getComputedStyle(tab).paddingTop);
+        const t2 = tab.getBoundingClientRect().top + scrollY + parseFloat(getComputedStyle(tab).paddingTop);
         const l2 = link.getBoundingClientRect().top + parseFloat(getComputedStyle(link).paddingTop);
         const d2 = t2 - l2;
         if (Math.abs(d2) > 1) {
