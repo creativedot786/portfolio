@@ -106,6 +106,19 @@
       setTimeout(() => ld.isConnected && ld.classList.add('out'), 3500); // never hold the page longer than this
     }
   }
+  // case studies: the footer's clock (Dubai time) and the strip that fills in as the footer arrives
+  function foot() {
+    const wrap = document.querySelector('[data-hc-strip]');
+    if (!wrap || wrap.__hc) return;
+    wrap.__hc = true;
+    const clocks = document.querySelectorAll('[data-hc-clock]');
+    const fmt = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true, timeZone: 'Asia/Dubai' });
+    const tick = () => clocks.forEach((c) => { c.textContent = fmt.format(new Date()) + ' (Local Time)'; });
+    tick(); setInterval(tick, 1000);
+    new IntersectionObserver((es) => es.forEach((e) => wrap.classList.toggle('in', e.isIntersecting)), { rootMargin: '0px 0px 220px 0px' }).observe(wrap);
+  }
+  document.addEventListener('DOMContentLoaded', foot); if (document.readyState !== 'loading') foot();
+
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
   document.addEventListener('astro:page-load', init);
 })();
