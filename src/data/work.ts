@@ -1,34 +1,41 @@
-// Titles name the product. The line says what I did and what it changed, in that order.
+// Titles match each case study's own title; the eyebrow is industry · platform, as on the case study.
+// The line is the case study's summary, shortened, with one number from it.
 // `image` is a path under /public. Leave it off and the frame falls back to the placeholder,
 // so case studies can land one at a time without anything looking broken.
-export type Work = { slug: string; industry: 'fintech' | 'gov' | 'commerce'; industryLabel: string; title: string; line: string; image?: string; alt?: string };
+export type Work = { slug: string; industry: 'fintech' | 'gov' | 'commerce'; industryLabel: string; platform: string; href: string; title: string; line: string; image?: string; alt?: string };
 
 export const work: Work[] = [
   {
     slug: 'tradeling-b2b',
+    href: '/work/tradeling/',
     image: '/work/tradeling-b2b.avif',
     alt: 'Three screens from the Tradeling app: a grocer’s tailored home feed, the Axiom electronics storefront with credit and brand shortcuts, and a buy-again and category view',
     industry: 'commerce',
-    industryLabel: 'e-Commerce',
-    title: 'Tradeling B2B Experience',
-    line: 'I broke a one-size-fits-all marketplace into tailored experiences for grocers, electronics retailers and enterprise buyers, and rebuilt the category architecture underneath it. Conversion rose around 38% and sessions ran 21% longer.',
+    industryLabel: 'B2B Marketplace',
+    platform: 'Mobile App',
+    title: 'Increasing conversion rate and digital adoption by personalising the app experience',
+    line: 'Most business customers on Tradeling ordered through sales agents, not the app. I redesigned it so each type of business gets its own home page. Conversion rose around 38%, and GMV from the app around 30%.',
   },
   {
     slug: 'tradeling-lending',
+    href: '/work/qfunder/',
     image: '/work/tradeling-lending.jpg',
     alt: 'The Q Funder landing page, Tradeling’s SME lending product, offering UAE working capital loans up to AED 1M in 24 hours with no collateral',
     industry: 'fintech',
     industryLabel: 'Fintech',
-    title: 'Tradeling Fintech, SME Lending in UAE',
-    line: 'Tradeling set out to fund SMEs in 24 hours, in a market where credit takes weeks. I worked with the PM on how to get there, from what to build versus buy to where automation could replace manual checks, then led end-to-end design for the MVP: landing page, onboarding, verification and the loan dashboard. We shipped in two months.',
+    platform: 'Web Portal',
+    title: 'Reimagining quick loans for small businesses in the UAE',
+    line: 'QFunder is Tradeling’s new fintech vertical. Banks rarely lend to small businesses, and when they do, it takes weeks. We built an MVP to test a faster way: apply online in minutes, get funded in 24 hours. We built and tested it in two months.',
   },
   {
     slug: 'tamm',
+    href: '/work/tamm/',
     image: '/work/tamm.webp',
     alt: 'Three screens from the TAMM app: a personalised home with quick actions for fines and bills, a documents and saved services view, and featured services with public holidays',
     industry: 'gov',
     industryLabel: 'e-Government',
-    title: 'TAMM, Abu Dhabi Govt. Services',
-    line: 'I rebuilt the information architecture around what residents actually need, designed the core journeys for applying for government services on mobile, and built the design system behind them.',
+    platform: 'Mobile App',
+    title: 'Building one home for Abu Dhabi’s government services',
+    line: 'TAMM is Abu Dhabi’s initiative to bring government services into one ecosystem. The services were fragmented, so we built one unified digital system where citizens, residents, businesses and visitors complete them in one place. Downloads went from 1K to 19K between January and June.',
   },
 ];

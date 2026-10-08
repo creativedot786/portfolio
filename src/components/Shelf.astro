@@ -21,7 +21,7 @@ const arrow = `<svg class="arr" viewBox="0 0 14.4 14.4" aria-hidden="true"><path
           </span>
         </a>
         <figcaption class="obj-cap">
-          <a href={b.href} target="_blank" rel="noopener">{b.title}<Fragment set:html={arrow} /><span class="sr-only"> (opens in a new tab)</span></a>
+          <a href={b.href} target="_blank" rel="noopener">{b.title.split(' ').slice(0, -1).join(' ')} <span class="nw">{b.title.split(' ').at(-1)}<Fragment set:html={arrow} /></span><span class="sr-only"> (opens in a new tab)</span></a>
           <span class="who">{b.author}</span>
         </figcaption>
       </figure>
@@ -38,7 +38,7 @@ const arrow = `<svg class="arr" viewBox="0 0 14.4 14.4" aria-hidden="true"><path
         <div class="sleeve"><img src={listening.cover} alt={`${listening.title} by ${listening.artist}, album cover`} loading="lazy" decoding="async" /></div>
       </div>
       <figcaption class="obj-cap">
-        <a href={listening.url} target="_blank" rel="noopener">{listening.title}<Fragment set:html={arrow} /><span class="sr-only"> (opens in a new tab)</span></a>
+        <a href={listening.url} target="_blank" rel="noopener">{listening.title.split(' ').slice(0, -1).join(' ')} <span class="nw">{listening.title.split(' ').at(-1)}<Fragment set:html={arrow} /></span><span class="sr-only"> (opens in a new tab)</span></a>
         <span class="who">{listening.artist}{listening.year ? ` · ${listening.year}` : ''}</span>
       </figcaption>
     </figure>
@@ -54,10 +54,12 @@ const arrow = `<svg class="arr" viewBox="0 0 14.4 14.4" aria-hidden="true"><path
 
   /* caption: the site's mono caption, left-aligned under an object */
   .obj-cap{margin-top:16px;display:flex;flex-direction:column;gap:2px;font-family:var(--font-mono);font-size:var(--text-caption);line-height:1.5}
-  .obj-cap a{color:var(--color-secondary);text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:color .2s var(--ease-out-soft)}
+  .obj-cap a{color:var(--color-secondary);text-decoration:none;transition:color .2s var(--ease-out-soft)}
   .obj-cap a:hover{color:var(--color-primary)}
-  .obj-cap :global(.arr){width:.72em;height:.72em}
+  /* inline, not flex: when a title wraps, the arrow follows its last word instead of floating to the right */
+  .obj-cap :global(.arr){display:inline-block;width:.72em;height:.72em;margin-left:6px;vertical-align:-.04em}
   .obj-cap .who{color:var(--color-tertiary)}
+  .obj-cap .nw{white-space:nowrap}   /* the last word and the arrow wrap together */
 
   /* ── the book, from its flat cover ──
      A box seen from the front-right: the cover in front, the page block on the right edge

@@ -7,12 +7,12 @@ const { item } = Astro.props;
 <section class="promo section" id={`work-${item.slug}`} data-promo aria-labelledby={`promo-${item.slug}`}>
   <div class="shell gap-y-5 lg:items-center">
     <div class="promo-text col-text">
-      <p class="text-meta font-bold mb-3 text-accent">{item.industryLabel}</p>
-      <h3 id={`promo-${item.slug}`} class="text-h2 mb-3 max-w-[16ch]">{item.title}</h3>
+      <p class="text-meta font-bold mb-3 text-accent">{item.industryLabel} · {item.platform}</p>
+      <h3 id={`promo-${item.slug}`} class="text-h2 mb-3 max-w-[20ch]"><a class="promo-link" href={item.href} data-astro-reload>{item.title}</a></h3>
       <p class="text-body text-secondary">{item.line}</p>
-      <p class="mt-3 text-meta text-tertiary">Case study coming</p>
+      <p class="mt-3"><a class="promo-cta" href={item.href} data-astro-reload tabindex="-1" aria-hidden="true">Read the case study<svg class="arr" viewBox="0 0 14.4 14.4" aria-hidden="true"><path d="M1.2 13.2L13.2 1.2M13.2 1.2H1.2M13.2 1.2V13.2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" fill="none"/></svg></a></p>
     </div>
-    <div class="col-media">
+    <a class="col-media block max-lg:order-first" href={item.href} data-astro-reload tabindex="-1" aria-hidden="true">
       {item.image ? (
         <img
           class="promo-img block w-full aspect-[16/10] object-cover bg-surface"
@@ -27,10 +27,18 @@ const { item } = Astro.props;
       ) : (
         <div class="ph promo-img w-full aspect-[16/10]" data-cursor-expand><span>Case study image</span></div>
       )}
-    </div>
+    </a>
   </div>
 </section>
 <style>
+  /* the title is the link; the image and the call to action point to the same page for mouse and touch.
+     data-astro-reload: case studies are standalone pages, so they load in full rather than through the view-transition router */
+  .promo-link{color:inherit;text-decoration:none}
+  .promo-cta{display:inline-flex;align-items:center;gap:7px;font-weight:600;font-size:var(--text-meta);color:var(--color-secondary);text-decoration:none;transition:color .2s var(--ease-out-soft)}
+  .promo-cta svg{width:.72em;height:.72em}
+  .promo-cta:hover,.promo:has(.promo-link:hover) .promo-cta{color:var(--color-primary)}
+  /* the shared arrow nudge (global.css) also runs when the title or the image is hovered */
+  .promo:has(.promo-link:hover,.col-media:hover) .promo-cta :global(.arr){transform:translate(2px,-2px);opacity:1}
   :global(html.js) .promo-text > *{opacity:0;transform:translateY(14px);transition:opacity .6s var(--ease-out-soft),transform .6s var(--ease-out-soft)}
   :global(html.js) .promo-text > *:nth-child(2){transition-delay:70ms}
   :global(html.js) .promo-text > *:nth-child(3){transition-delay:140ms}

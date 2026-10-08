@@ -2,18 +2,7 @@
 import Logo from './Logo.astro';
 import { site } from '../data/site';
 import { themes } from '../data/themes';
-
-// The seven sections, in scroll order. This list is the single source for the rail, the
-// scroll-spy and the hash — add a section here and nothing else needs touching.
-const sections: [string, string][] = [
-  ['intro', 'Intro'],
-  ['work', 'Work'],
-  ['journey', 'Journey'],
-  ['background', 'Background'],
-  ['about', 'About'],
-  ['references', 'References'],
-  ['contact', 'Contact'],
-];
+import { sections } from '../data/sections';
 ---
 <div class="rail-layer" data-rail>
   <div class="shell">

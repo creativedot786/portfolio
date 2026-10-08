@@ -85,6 +85,7 @@ const lede = (t: string) => t.split(/\n\s*\n/)[0].trim();
     top:.46em;
     margin-left:-.12em;
   }
+  @media (max-width:1023px){ .qm-open{left:-.2em} }   /* -.36em ran past the 24px page margin and was cut */
   .attrib{margin-top:22px}
   .attrib a{
     font-family:var(--font-mono);

@@ -18,8 +18,8 @@ import { audiences } from '../data/audiences';
     {audiences.map((a, i) => (
       <div class={`panel shell invisible ${i === 0 ? 'on' : ''}`} role="tabpanel" id={`panel-${a.id}`} aria-labelledby={`tab-${a.id}`}>
         {i === 0
-          ? <h1 id="hero-heading" class="stmt col-title text-display text-primary tracking-[-.022em] mb-5 lg:mb-6 [text-wrap:balance]" data-split set:html={a.heading} />
-          : <h2 class="stmt col-title text-display text-primary tracking-[-.022em] mb-5 lg:mb-6 [text-wrap:balance]" data-split set:html={a.heading} />}
+          ? <h1 id="hero-heading" class="stmt col-title text-display text-primary tracking-[-.022em] mb-2 lg:mb-6 [text-wrap:balance]" data-split set:html={a.heading} />
+          : <h2 class="stmt col-title text-display text-primary tracking-[-.022em] mb-2 lg:mb-6 [text-wrap:balance]" data-split set:html={a.heading} />}
         <div class="lead-wrap col-lead">
           <p class="text-h3 text-secondary" set:html={a.body} />
           {a.close && <p class="mt-3 font-bold text-primary">{a.close}</p>}
@@ -30,6 +30,8 @@ import { audiences } from '../data/audiences';
 </section>
 <style>
   .tabs{scrollbar-width:none}
+  /* the hero sits under the 56px phone top bar, so it fills the rest of the first screen, not all of it */
+  @media (max-width:1023px){[data-hero]{min-height:calc(100svh - 56px)!important}}
   @media (max-width:1023px){.tabs{-webkit-mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 40px),transparent)}}
   .tabs::-webkit-scrollbar{display:none}
   /* The pill carries a quiet accent tint, so the accent is present in the first interactive

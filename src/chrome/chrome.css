@@ -1,0 +1,122 @@
+/* Site chrome shared by the home page (src/components/MobileNav.astro) and the case study pages (written in by
+   the export script): the phone and tablet top bar with its menu and theme picker, plus, on case studies only,
+   the desktop rail and the loader. Classes are prefixed hc- so they never meet the case studies' own CSS.
+   Colours read the home page's tokens and fall back to the case studies' ones. */
+:root{
+  --hc-page:var(--color-page,var(--page));
+  --hc-ink:var(--color-primary,var(--primary));
+  --hc-accent:var(--color-accent,var(--accent));
+  --hc-ink2:color-mix(in srgb,var(--hc-ink) 72%,transparent);
+  --hc-ink3:color-mix(in srgb,var(--hc-ink) 49%,transparent);
+  --hc-line:color-mix(in srgb,var(--hc-ink) 14%,transparent);
+  --hc-ease:cubic-bezier(.2,.7,.2,1);
+  --hc-display:"Fraunces Variable","Fraunces",Georgia,serif;
+  --hc-body:"Manrope Variable","Manrope",system-ui,sans-serif;
+  --hc-bar:56px;
+}
+
+/* pages fade into each other when you move between the home page and a case study */
+@view-transition{navigation:auto}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.35s;animation-timing-function:var(--hc-ease)}
+
+/* ── phone and tablet: top bar ─────────────────────────────────
+   Logo on the left, Menu on the right. It slides away as you read down and comes back the
+   moment you scroll up. */
+.hc-top,.hc-top-space,.hc-sheet{display:none}
+@media (max-width:1023px){
+  .hc-top-space{display:block;height:calc(var(--hc-bar) + env(safe-area-inset-top,0px))}
+  .hc-top{display:flex;align-items:center;justify-content:space-between;position:fixed;left:0;right:0;top:0;z-index:80;
+    height:calc(var(--hc-bar) + env(safe-area-inset-top,0px));padding:env(safe-area-inset-top,0px) 24px 0;
+    background:color-mix(in srgb,var(--hc-page) 86%,transparent);backdrop-filter:blur(14px) saturate(1.2);-webkit-backdrop-filter:blur(14px) saturate(1.2);
+    border-bottom:1px solid transparent;transition:translate .35s var(--hc-ease),border-color .25s}
+  .hc-top.scrolled{border-bottom-color:var(--hc-line)}
+  .hc-top.away{translate:0 -100%}
+  .hc-top-logo{display:flex}
+  .hc-top-logo svg{display:block;width:36px;height:36px}
+  .hc-menu-btn{display:inline-flex;align-items:center;gap:10px;height:40px;padding:0 4px 0 12px;border:0;background:none;cursor:pointer;
+    font:600 14px var(--hc-body);color:var(--hc-ink)}
+  .hc-menu-btn i{position:relative;width:18px;height:10px}
+  .hc-menu-btn i::before,.hc-menu-btn i::after{content:"";position:absolute;left:0;right:0;height:1.6px;border-radius:2px;background:currentColor}
+  .hc-menu-btn i::before{top:0}.hc-menu-btn i::after{bottom:0;left:6px}
+
+  /* ── the menu: a full screen sheet with the sections and the theme picker ── */
+  .hc-sheet{display:flex;flex-direction:column;position:fixed;inset:0;z-index:90;background:var(--hc-page);
+    padding:env(safe-area-inset-top,0px) 24px calc(28px + env(safe-area-inset-bottom,0px));overflow-y:auto;
+    opacity:0;transition:opacity .28s var(--hc-ease)}
+  .hc-sheet[hidden]{display:none}
+  .hc-sheet.open{opacity:1}
+  .hc-sheet-top{display:flex;align-items:center;justify-content:space-between;height:var(--hc-bar);flex:none}
+  .hc-sheet-top svg{display:block;width:36px;height:36px}
+  .hc-close{height:40px;padding:0 4px 0 12px;border:0;background:none;cursor:pointer;font:600 14px var(--hc-body);color:var(--hc-ink)}
+  .hc-sheet-nav{display:flex;flex-direction:column;gap:2px;margin:24px 0 40px}
+  .hc-sheet-nav a{display:flex;align-items:center;gap:12px;padding:7px 0;font:400 34px/1.1 var(--hc-display);letter-spacing:-.01em;color:var(--hc-ink2);text-decoration:none;
+    opacity:0;translate:0 10px;transition:opacity .4s var(--hc-ease),translate .5s var(--hc-ease),color .2s}
+  .hc-sheet.open .hc-sheet-nav a{opacity:1;translate:0 0}
+  .hc-sheet-nav a:nth-child(2){transition-delay:.03s}.hc-sheet-nav a:nth-child(3){transition-delay:.06s}.hc-sheet-nav a:nth-child(4){transition-delay:.09s}
+  .hc-sheet-nav a:nth-child(5){transition-delay:.12s}.hc-sheet-nav a:nth-child(6){transition-delay:.15s}.hc-sheet-nav a:nth-child(7){transition-delay:.18s}
+  .hc-sheet-nav a:nth-child(8){transition-delay:.21s}.hc-sheet-nav a:nth-child(9){transition-delay:.24s}
+  .hc-sheet-nav a.on{color:var(--hc-accent)}
+  .hc-sheet-nav a:active{color:var(--hc-ink)}
+  .hc-sheet-nav a svg{width:.42em;height:.42em;opacity:.75}
+  .hc-sheet-nav .hc-back{font:600 14px var(--hc-body);color:var(--hc-ink2);margin-bottom:12px}
+  .hc-sheet-foot{margin-top:auto;padding-top:24px;border-top:1px solid var(--hc-line)}
+  .hc-lab{margin:0 0 14px;font:600 12px var(--hc-body);letter-spacing:.06em;text-transform:uppercase;color:var(--hc-ink3)}
+  .hc-swatches{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+  .hc-swatches button{display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px 0;border:0;border-radius:14px;background:none;cursor:pointer;
+    font:600 13px var(--hc-body);color:var(--hc-ink3)}
+  .hc-swatches button i{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--g) 0 50%,var(--a) 50% 100%);
+    box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--i) 40%,transparent)}
+  .hc-swatches button[aria-checked="true"]{color:var(--hc-ink);background:color-mix(in srgb,var(--hc-ink) 7%,transparent)}
+  .hc-swatches button[aria-checked="true"] i{box-shadow:0 0 0 2px var(--hc-page),0 0 0 3.5px var(--hc-ink)}
+  html.hc-locked{overflow:hidden}
+}
+.hc-top :focus-visible,.hc-sheet :focus-visible,.hc-rail :focus-visible{outline:2px solid var(--hc-ink);outline-offset:3px;border-radius:2px}
+
+/* ── case studies, desktop: the same rail as the home page, on the same grid ── */
+.hc-rail-layer{position:fixed;inset:0;z-index:60;pointer-events:none}
+.hc-shell{width:100%;max-width:1720px;height:100%;margin-inline:auto;padding-inline:48px;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;box-sizing:border-box}
+.hc-rail{grid-column:1;pointer-events:auto;display:flex;flex-direction:column;gap:24px;height:100%;padding-block:40px;box-sizing:border-box}
+.hc-logo-link{position:relative;display:inline-flex;align-items:center;align-self:flex-start;border-radius:999px}
+.hc-logo-link svg{display:block;width:64px;height:64px}
+.hc-logo-name{position:absolute;left:calc(100% + 16px);top:50%;translate:-8px -50%;white-space:nowrap;font:500 18px var(--hc-body);color:var(--hc-ink2);
+  pointer-events:none;opacity:0;transition:opacity .28s var(--hc-ease),translate .28s var(--hc-ease)}
+.hc-logo-name b{color:var(--hc-ink);font-weight:600}
+.hc-logo-link:hover .hc-logo-name,.hc-logo-link:focus-visible .hc-logo-name{opacity:1;translate:0 -50%}
+.hc-nav{display:flex;flex-direction:column;gap:2px;margin-top:8px}
+.hc-nav a{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;font:600 14px/1.3 var(--hc-body);color:var(--hc-ink3);text-decoration:none;padding-block:5px;transition:color .22s var(--hc-ease)}
+.hc-nav a:hover{color:var(--hc-ink2)}
+.hc-nav a.on{color:var(--hc-accent)}
+.hc-nav .hc-back{color:var(--hc-ink2);margin-bottom:14px}
+.hc-nav .hc-back:hover{color:var(--hc-ink)}
+.hc-tools{margin-top:auto;display:flex;flex-direction:column;align-items:flex-start}
+/* the theme control, as on the home page: the chosen swatch at rest, the pill grows upward on hover */
+.hc-theme{position:relative;width:44px;height:44px}
+.hc-pill{position:absolute;left:0;bottom:0;width:44px;height:44px;box-sizing:border-box;padding:10px 0;border-radius:22px;overflow:hidden;
+  display:flex;flex-direction:column-reverse;align-items:center;gap:12px;background:color-mix(in srgb,var(--hc-ink) 8%,transparent);
+  backdrop-filter:blur(14px) saturate(1.3);-webkit-backdrop-filter:blur(14px) saturate(1.3);transition:height .3s var(--hc-ease),background .25s var(--hc-ease)}
+.hc-theme:hover .hc-pill,.hc-theme:focus-within .hc-pill{height:calc(44px + 3 * 36px);background:color-mix(in srgb,var(--hc-ink) 12%,transparent)}
+.hc-pill button{flex:none;width:24px;height:24px;border-radius:999px;border:0;padding:0;cursor:pointer;
+  background:linear-gradient(135deg,var(--g) 0 50%,var(--a) 50% 100%);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--i) 40%,transparent);
+  opacity:0;translate:0 6px;transition:transform .2s var(--hc-ease),opacity .22s var(--hc-ease),translate .22s var(--hc-ease)}
+.hc-pill button[aria-checked="true"]{order:-1;opacity:1;translate:0 0;cursor:default}
+.hc-theme:hover .hc-pill button,.hc-theme:focus-within .hc-pill button{opacity:1;translate:0 0}
+.hc-pill button:not([aria-checked="true"]):hover{transform:scale(1.18)}
+@media (max-width:1023px){.hc-rail-layer{display:none}}
+
+/* ── case studies: the logo draws itself while the page gets ready ── */
+.hc-loader{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:var(--hc-page);transition:opacity .45s var(--hc-ease),visibility 0s .45s}
+.hc-loader.out{opacity:0;visibility:hidden}
+.hc-loader svg{width:88px;height:88px;overflow:visible}
+.hc-loader .s{fill:none;stroke:var(--hc-ink);stroke-width:.5;stroke-linejoin:round;stroke-linecap:round}
+.hc-loader .f{fill:var(--hc-ink);opacity:0}
+.hc-loader.go .s{animation:hc-draw .85s cubic-bezier(.5,0,.2,1) forwards}
+.hc-loader.go .f{animation:hc-fill .3s ease .68s forwards}
+.hc-loader.quick .s{display:none}.hc-loader.quick .f{opacity:1}
+@keyframes hc-draw{to{stroke-dashoffset:0}}
+@keyframes hc-fill{to{opacity:1}}
+
+@media (prefers-reduced-motion:reduce){
+  ::view-transition-old(root),::view-transition-new(root){animation:none}
+  .hc-top,.hc-sheet,.hc-sheet-nav a,.hc-pill,.hc-pill button{transition:none}
+  .hc-loader{display:none}
+}
