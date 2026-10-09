@@ -173,7 +173,10 @@ import SkillPills from './SkillPills.astro';
       panels[i].classList.add('on');
       if (panels[i] === pwPanel) setTimeout(() => pw?.replay(), 450);   // the letters sparkle in again
       if (focus) tabs[i].focus();
-      tabs[i].scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+      // centre the tab in its own row; scroll only the row, never the page (scrollIntoView also scrolls the
+      // page, which pulled readers back up to the hero while they were further down)
+      const t = tabs[i];
+      row.scrollTo({ left: t.offsetLeft - (row.clientWidth - t.offsetWidth) / 2, behavior: rm ? 'auto' : 'smooth' });
       place();
       if (!byUser) schedule();
     };
