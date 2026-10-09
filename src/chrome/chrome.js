@@ -72,6 +72,27 @@
     });
   }
 
+  // ── text links opt in to the rail's letter roll with data-roll: each word becomes letters (hidden from
+  // screen readers, which read the original text instead). Words stay apart, so long links still wrap ──
+  function rolls() {
+    const esc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+    document.querySelectorAll('[data-roll]').forEach((el) => {
+      if (el.__roll) return; el.__roll = true;
+      let i = 0;
+      const walk = (node) => [...node.childNodes].forEach((n) => {
+        if (n.nodeType === 3) {
+          const t = n.textContent; if (!t.trim()) return;
+          const wrap = document.createElement('span'), vis = document.createElement('span'), sr = document.createElement('span');
+          vis.setAttribute('aria-hidden', 'true');
+          vis.innerHTML = t.trim().split(/(\s+)/).map((w) => /^\s+$/.test(w) ? ' ' : `<span class="hc-roll">${[...w].map((ch) => `<span class="hc-c" style="--i:${i++}"><span>${esc(ch)}</span></span>`).join('')}</span>`).join('');
+          sr.className = 'hc-sr'; sr.textContent = t.trim();
+          wrap.append(vis, sr); n.replaceWith(wrap);
+        } else if (n.nodeType === 1 && !n.matches('svg,.sr-only,.hc-sr')) walk(n);
+      });
+      walk(el);
+    });
+  }
+
   // ── G shows the grid the page is built on (not while typing). One overlay, made here, for both pages ──
   function grid() {
     if (!document.querySelector('.hc-grid')) {
@@ -202,7 +223,7 @@
     setTimeout(() => { root.classList.remove('hc-intro'); align(); reveal(); }, 2000);
   }
 
-  function init() { markTheme(current()); mnav(); themes(); grid(); footer(); caseStudy(); }
+  function init() { markTheme(current()); rolls(); mnav(); themes(); grid(); footer(); caseStudy(); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
   document.addEventListener('astro:page-load', init);
 })();

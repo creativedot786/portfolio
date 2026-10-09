@@ -1,10 +1,20 @@
 // Titles match each case study's own title; the eyebrow is industry · platform, as on the case study.
 // The line is the case study's summary, shortened, with one number from it.
 // `image` is a path under /public. Leave it off and the frame falls back to the placeholder,
-// so case studies can land one at a time without anything looking broken.
-export type Work = { slug: string; industry: 'fintech' | 'gov' | 'commerce'; industryLabel: string; platform: string; href: string; title: string; line: string; image?: string; alt?: string };
+// so case studies can land one at a time without anything looking broken. Scout has no still:
+// its card plays a short loop instead (ScoutPromo.astro).
+export type Work = { slug: string; industry: 'fintech' | 'gov' | 'commerce' | 'proptech'; industryLabel: string; platform: string; href: string; title: string; line: string; image?: string; alt?: string };
 
 export const work: Work[] = [
+  {
+    slug: 'scout',
+    href: '/work/scout/',
+    industry: 'proptech',
+    industryLabel: 'PropTech · Agentic AI',
+    platform: 'Mobile web',
+    title: 'An agentic AI property search that shows what it understood',
+    line: 'Scout is a conversational way to find a home to rent in Dubai, explored for Property Finder. It keeps a short memory of what it understood, marks what it guessed, and shows only the homes that match. A real model, built with Claude Code in a few hours.',
+  },
   {
     slug: 'tradeling-b2b',
     href: '/work/tradeling/',

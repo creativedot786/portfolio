@@ -21,7 +21,7 @@ const arrow = `<svg class="arr" viewBox="0 0 14.4 14.4" aria-hidden="true"><path
           </span>
         </a>
         <figcaption class="obj-cap">
-          <a href={b.href} target="_blank" rel="noopener">{b.title.split(' ').slice(0, -1).join(' ')} <span class="nw">{b.title.split(' ').at(-1)}<Fragment set:html={arrow} /></span><span class="sr-only"> (opens in a new tab)</span></a>
+          <a href={b.href} target="_blank" rel="noopener" data-roll>{b.title.split(' ').slice(0, -1).join(' ')} <span class="nw">{b.title.split(' ').at(-1)}<Fragment set:html={arrow} /></span><span class="sr-only"> (opens in a new tab)</span></a>
           <span class="who">{b.author}</span>
         </figcaption>
       </figure>
@@ -38,7 +38,7 @@ const arrow = `<svg class="arr" viewBox="0 0 14.4 14.4" aria-hidden="true"><path
         <div class="sleeve"><img src={listening.cover} alt={`${listening.title} by ${listening.artist}, album cover`} loading="lazy" decoding="async" /></div>
       </div>
       <figcaption class="obj-cap">
-        <a href={listening.url} target="_blank" rel="noopener">{listening.title.split(' ').slice(0, -1).join(' ')} <span class="nw">{listening.title.split(' ').at(-1)}<Fragment set:html={arrow} /></span><span class="sr-only"> (opens in a new tab)</span></a>
+        <a href={listening.url} target="_blank" rel="noopener" data-roll>{listening.title.split(' ').slice(0, -1).join(' ')} <span class="nw">{listening.title.split(' ').at(-1)}<Fragment set:html={arrow} /></span><span class="sr-only"> (opens in a new tab)</span></a>
         <span class="who">{listening.artist}{listening.year ? ` · ${listening.year}` : ''}</span>
       </figcaption>
     </figure>

@@ -1,0 +1,142 @@
+---
+// The Scout card's picture on the home page: a short loop instead of a still. Scout's orb (the prototype's
+// own shader) sits on the left and breathes; on the right, Scout's first screen gives way to one real turn
+// from the recorded session: the message, the memory bar filling in, Scout's reply, the home it found.
+// The orb speeds up while Scout thinks, as it does in the product. It plays when most of the card is in
+// view and starts over when it comes back. At rest it shows Scout's first screen. Reduced motion: the finished turn, still.
+---
+<div class="sp promo-img" data-scout-promo data-cursor-expand role="img"
+  aria-label="Scout, an AI property search. Someone asks for a 2-bed near their office in DIFC, around 130k a year, with a dog. Scout notes what it understood, then finds a pet-friendly 2-bed at Executive Towers, Business Bay, for AED 138,000.">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="sp-pf" viewBox="0 0 100 150"><circle cx="50" cy="50" r="50" fill="#EF5E4E"/><path d="M0 50 H50 V100 A50 50 0 0 1 0 50 Z" fill="#fff"/><path d="M0 100 H50 A50 50 0 0 1 0 150 Z" fill="#EF5E4E"/></symbol></svg>
+  <div class="sp-orb" aria-hidden="true"><canvas></canvas></div>
+  <div class="sp-chat" aria-hidden="true">
+    <div class="sp-hello"><b>What are you looking for?</b><span>Tell me what you need. I'll do the searching.</span></div>
+    <div class="sp-msg u">2-bed near my office in DIFC, around 130k a year. I have a dog</div>
+    <div class="sp-brief"><svg class="pf" viewBox="0 0 100 150"><use href="#sp-pf"/></svg><span>2-bed</span><i>·</i><span class="as">near DIFC</span><i>·</i><span>~130k/year</span><i>·</i><span>pet-friendly</span></div>
+    <div class="sp-msg s"><span class="av"><svg class="pf" viewBox="0 0 100 150"><use href="#sp-pf"/></svg></span><span class="b"><span class="dots"><i></i><i></i><i></i></span><span class="t">Closest is Business Bay, one minute's drive away: a pet-friendly 2-bed at Executive Towers, 138k, 640m from the metro.</span></span></div>
+    <div class="sp-card"><img src="/work/scout-home.jpg" alt="" width="480" height="320" loading="lazy" decoding="async" /><span class="m"><b>AED 138,000<small> / year</small></b><span>Executive Towers, Business Bay</span><span class="tags"><em class="over">Over budget</em><em>Pets allowed</em></span></span></div>
+  </div>
+</div>
+
+<style>
+  /* Scout's own light palette, in every theme: it's the product, shown as it is */
+  .sp{--bg:#F7F5F2;--ink:#1B1B1F;--ink2:#5B5B63;--ink3:#8E8E96;--coral:#EF5E4E;--soft:#FBE9E5;--scout:#F0EDE8;--line:rgba(27,27,31,.08);
+    position:relative;display:block;width:100%;aspect-ratio:16/10;overflow:hidden;background:var(--bg);color:var(--ink);
+    font-family:"Inter",-apple-system,BlinkMacSystemFont,system-ui,sans-serif;container-type:inline-size}
+  .sp-orb{position:absolute;left:2cqw;top:50%;width:36cqw;height:36cqw;transform:translateY(-50%)}
+  .sp-orb canvas{display:block;width:100%;height:100%}
+  .sp-chat{position:absolute;left:40cqw;right:4cqw;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:1.7cqw;font-size:2.3cqw;line-height:1.4}
+  .sp-chat > *{transition:opacity .6s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.7,.2,1)}
+  .sp-hello{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);text-align:left}
+  .sp-hello b{display:block;font-size:4cqw;font-weight:600;letter-spacing:-.02em;margin-bottom:1cqw}
+  .sp-hello span{color:var(--ink2);font-size:2.3cqw}
+  .sp-msg{max-width:100%}
+  .sp-msg.u{align-self:flex-end;max-width:88%;background:var(--coral);color:#fff;padding:1.4cqw 2cqw;border-radius:2.6cqw 2.6cqw .8cqw 2.6cqw}
+  .sp-msg.s{display:flex;align-items:flex-end;gap:.9cqw}
+  .sp-msg .av{flex:none;width:3.6cqw;height:3.6cqw;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 0 0 1px var(--line)}
+  .sp-msg .av .pf{width:1.5cqw;height:2.25cqw}
+  .sp-msg .b{display:grid;background:var(--scout);padding:1.4cqw 2cqw;border-radius:2.6cqw 2.6cqw 2.6cqw .8cqw}
+  .sp-msg .b > *{grid-area:1/1;transition:opacity .4s}
+  .dots{display:inline-flex;gap:.5cqw;align-items:center;height:1.4em}
+  .dots i{width:.9cqw;height:.9cqw;border-radius:50%;background:var(--ink3);animation:sp-blink 1.2s infinite}
+  .dots i:nth-child(2){animation-delay:.2s}.dots i:nth-child(3){animation-delay:.4s}
+  .sp-brief{order:9;display:flex;align-items:center;gap:.7cqw;white-space:nowrap;overflow:hidden;background:#fff;border-radius:2cqw;padding:1.3cqw 1.7cqw;box-shadow:0 0 0 1px var(--line);font-size:2.05cqw}
+  .sp-brief .pf{flex:none;width:1.4cqw;height:2.1cqw}
+  .sp-brief i{font-style:normal;color:#C4C4CA}
+  .sp-brief .as{color:var(--ink2)}.sp-brief .as::after{content:"?";color:var(--coral);font-weight:600}
+  .sp-brief span{border-radius:.4cqw;transition:background 1.2s .9s,box-shadow 1.2s .9s}
+  .sp.s4 .sp-brief span{background:var(--soft);box-shadow:0 0 0 .35cqw var(--soft)}
+  .sp.s5 .sp-brief span,.sp.s6 .sp-brief span{background:transparent;box-shadow:none}
+  .sp-card{display:flex;align-items:center;gap:1.6cqw;background:#fff;border-radius:2.2cqw;padding:1.1cqw 2cqw 1.1cqw 1.1cqw;box-shadow:0 0 0 1px var(--line),0 1.6cqw 3.2cqw -2cqw rgba(0,0,0,.35);margin-left:4.6cqw}
+  .sp-card img{flex:none;width:13cqw;height:9.5cqw;object-fit:cover;border-radius:1.4cqw}
+  .sp-card .m{display:flex;flex-direction:column;gap:.4cqw;min-width:0;color:var(--ink2);font-size:2cqw}
+  .sp-card b{color:var(--ink);font-size:2.5cqw;font-weight:700}
+  .sp-card small{font-weight:400;color:var(--ink3);font-size:1.7cqw}
+  .tags{display:flex;gap:.5cqw;margin-top:.4cqw}
+  .tags em{font-style:normal;font-size:1.65cqw;padding:.4cqw 1cqw;border-radius:2cqw;background:var(--bg);box-shadow:0 0 0 1px var(--line)}
+  .tags em.over{background:#FFF4E5;box-shadow:0 0 0 1px #F5C88A;color:#8A5A12}
+
+  /* the loop: s1 the first screen, s2 the message, s3 Scout thinks, s4 the memory fills in, s5 the reply, s6 the home */
+  :global(html.js) .sp-hello,:global(html.js) .sp-msg,:global(html.js) .sp-brief,:global(html.js) .sp-card{opacity:0;transform:translateY(1.2cqw)}
+  :global(html.js) .sp-hello{transform:translateY(-50%) translateY(1.2cqw)}
+  :global(html.js) .sp.s1 .sp-hello{opacity:1;transform:translateY(-50%)}
+  :global(html.js) .sp:is(.s2,.s3,.s4,.s5,.s6) .sp-msg.u{opacity:1;transform:none}
+  :global(html.js) .sp:is(.s3,.s4,.s5,.s6) .sp-msg.s{opacity:1;transform:none}
+  :global(html.js) .sp:is(.s4,.s5,.s6) .sp-brief{opacity:1;transform:none}
+  :global(html.js) .sp.s6 .sp-card{opacity:1;transform:none}
+  :global(html.js) .sp .sp-msg.s .t{opacity:0}
+  :global(html.js) .sp:is(.s5,.s6) .sp-msg.s .t{opacity:1}
+  :global(html.js) .sp:is(.s5,.s6) .sp-msg.s .dots{opacity:0}
+  :global(html.js) .sp.out .sp-chat > *{opacity:0!important}
+
+  /* phones: the orb on top, the conversation under it, so the words stay readable */
+  @media (max-width:599px){
+    .sp{aspect-ratio:1/1}
+    .sp-orb{left:50%;top:4cqw;width:34cqw;height:34cqw;transform:translateX(-50%)}
+    .sp-chat{left:5cqw;right:5cqw;top:auto;bottom:5cqw;transform:none;font-size:3.5cqw;gap:2.2cqw;min-height:52cqw;justify-content:flex-end}
+    .sp-hello{top:2cqw;bottom:auto;transform:none;text-align:center}
+    :global(html.js) .sp-hello{transform:translateY(2cqw)}
+    :global(html.js) .sp.s1 .sp-hello{transform:none}
+    .sp-hello b{font-size:6cqw;margin-bottom:1.4cqw}.sp-hello span{font-size:3.6cqw}
+    .sp-msg.u{padding:2.2cqw 3cqw;border-radius:4cqw 4cqw 1.2cqw 4cqw}
+    .sp-msg .av{width:6cqw;height:6cqw}.sp-msg .av .pf{width:2.4cqw;height:3.6cqw}
+    .sp-msg .b{padding:2.2cqw 3cqw;border-radius:4cqw 4cqw 4cqw 1.2cqw}
+    .dots{gap:1cqw}.dots i{width:1.4cqw;height:1.4cqw}
+    .sp-brief{font-size:3.2cqw;padding:2cqw 2.6cqw;border-radius:3.2cqw;gap:1.4cqw}
+    .sp-brief .pf{width:2.2cqw;height:3.3cqw}
+    .sp-card{display:none}
+  }
+  @keyframes sp-blink{0%,100%{opacity:.25}50%{opacity:1}}
+  @media (prefers-reduced-motion:reduce){
+    .dots i{animation:none}
+    .sp-chat > *{transition:none}
+  }
+</style>
+
+<script>
+  // The loop. Timings are the chat's own pace: a message, a beat while Scout thinks, then the answer.
+  function scoutPromo() {
+    const sp = document.querySelector<HTMLElement>('[data-scout-promo]');
+    if (!sp || (sp as any).__on) return;
+    (sp as any).__on = true;
+    const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const canvas = sp.querySelector('canvas')!;
+    let orb: any = null, timers: number[] = [], state = 'idle';
+    const stage = (n: number) => { sp.className = sp.className.replace(/\bs\d\b/g, '').replace(/\bout\b/, '').trim() + (n ? ' s' + n : ''); };
+
+    // the orb: three.js and the shader load only when the card is near
+    const startOrb = async () => {
+      if (orb) return;
+      const [THREE, { createOrb }] = await Promise.all([import('three'), import('../scripts/scout-orb')]);
+      const size = Math.round(canvas.getBoundingClientRect().width) || 300;
+      orb = createOrb(THREE, canvas, { size });
+      if (state !== 'playing' && !RM) orb.pause();
+    };
+    new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { o.disconnect(); startOrb().catch(() => {}); } }, { rootMargin: '400px 0px' }).observe(sp);
+
+    if (RM) { stage(6); return; }
+    const at = (ms: number, fn: () => void) => timers.push(window.setTimeout(fn, ms));
+    const play = () => {
+      state = 'playing'; orb?.resume();
+      const loop = () => {
+        stage(1);
+        at(2200, () => stage(2));
+        at(3200, () => { stage(3); orb?.setState(2); });
+        at(4400, () => stage(4));
+        at(5600, () => { stage(5); orb?.setState(0); });
+        at(7000, () => stage(6));
+        at(11500, () => sp.classList.add('out'));
+        at(12300, loop);
+      };
+      loop();
+    };
+    const reset = () => { timers.forEach(clearTimeout); timers = []; state = 'idle'; stage(1); orb?.setState(0); orb?.pause(); };
+    const seen = () => { const r = sp.getBoundingClientRect(); const h = Math.min(r.height, innerHeight); return h ? Math.max(0, Math.min(r.bottom, innerHeight) - Math.max(r.top, 0)) / h : 0; };
+    const check = () => { const v = seen(); if (state === 'idle' && v >= 0.8) play(); else if (state !== 'idle' && v < 0.3) reset(); };
+    let tk = false;
+    addEventListener('scroll', () => { if (!tk) { tk = true; requestAnimationFrame(() => { tk = false; check(); }); } }, { passive: true });
+    document.addEventListener('visibilitychange', () => { if (document.hidden) reset(); else check(); });
+    stage(1); check();
+  }
+  document.addEventListener('astro:page-load', scoutPromo);
+</script>
