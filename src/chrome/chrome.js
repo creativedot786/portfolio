@@ -215,6 +215,22 @@
     // of a visit, whichever page that is. 0 the logo draws; 1100ms the loader dissolves; 2000ms the page
     // fades in. After that, pages only cross-fade.
     const ld = document.querySelector('[data-hc-loader]');
+    // any later page: the loader is there only while the page is still loading (it fades in after a moment,
+    // in CSS); once everything has loaded, or after 4s at most, it fades away
+    if (root.classList.contains('hc-wait') && ld) {
+      const p0 = ld.querySelector('.s');
+      try { const len = p0.getTotalLength(); p0.style.strokeDasharray = len; p0.style.strokeDashoffset = len; } catch (e) {}
+      ld.classList.add('go');
+      let gone = false;
+      const done = () => {
+        if (gone) return; gone = true;
+        const o = getComputedStyle(ld).opacity;
+        const fin = () => { ld.remove(); root.classList.remove('hc-wait'); };
+        if (+o < .05) fin(); else ld.animate([{ opacity: o }, { opacity: 0 }], { duration: 400, easing: 'ease-out' }).onfinish = fin;
+      };
+      if (document.readyState === 'complete') done(); else { addEventListener('load', done); setTimeout(done, 4000); }
+      reveal(); return;
+    }
     if (!root.classList.contains('hc-intro') || !ld) { ld?.remove(); reveal(); return; }
     const p = ld.querySelector('.s');
     try { const len = p.getTotalLength(); p.style.strokeDasharray = len; p.style.strokeDashoffset = len; } catch (e) {}

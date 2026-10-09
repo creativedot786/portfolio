@@ -1,4 +1,4 @@
-<html lang="en" class="no-notes"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Reimagining quick loans for small businesses in the UAE · Huzaifa Ratlam</title><meta name="description" content="QFunder is Tradeling’s new fintech vertical. We built an MVP to test a faster way for small businesses to borrow: apply online in minutes, get funded in 24 hours."><link rel="canonical" href="https://huzaifaratlam.com/work/qfunder/"><link rel="icon" href="/favicon.ico" sizes="32x32"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="theme-color" content="#0A0B0D"><script>(function(){var r=document.documentElement;r.classList.add("hc-cs");try{var t=localStorage.getItem("hr-theme");if(t&&t!=="brass"){r.setAttribute("data-t",t);r.setAttribute("data-theme",t)}}catch(e){}try{if(!sessionStorage.getItem("hr-loader")&&!matchMedia("(prefers-reduced-motion: reduce)").matches)r.classList.add("hc-intro")}catch(e){}})()</script><style>:root{box-sizing:border-box}body{margin:0;padding:0}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}</style>
+<html lang="en" class="no-notes"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Reimagining quick loans for small businesses in the UAE · Huzaifa Ratlam</title><meta name="description" content="QFunder is Tradeling’s new fintech vertical. We built an MVP to test a faster way for small businesses to borrow: apply online in minutes, get funded in 24 hours."><link rel="canonical" href="https://huzaifaratlam.com/work/qfunder/"><link rel="icon" href="/favicon.ico" sizes="32x32"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="theme-color" content="#0A0B0D"><script>(function(){var r=document.documentElement;r.classList.add("hc-cs");try{var t=localStorage.getItem("hr-theme");if(t&&t!=="brass"){r.setAttribute("data-t",t);r.setAttribute("data-theme",t)}}catch(e){}try{if(!matchMedia("(prefers-reduced-motion: reduce)").matches)r.classList.add(sessionStorage.getItem("hr-loader")?"hc-wait":"hc-intro")}catch(e){}})()</script><style>:root{box-sizing:border-box}body{margin:0;padding:0}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}</style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Manrope:wght@400;500;600;700&display=swap">
 <style>:root{--page:#0A0B0D;--primary:#EDEBE4;--accent:#D9A441;--mix:49%;color-scheme:dark}
 :root[data-t="slate"]{--page:#27333A;--primary:#E6ECEF;--accent:#FF8A6B;--mix:56%}
@@ -1078,7 +1078,7 @@ footer small{grid-column:4/-1;margin-top:40px;font:400 13px var(--mono);opacity:
 
 /* ── case studies: the home page's intro (Loader.astro and Base.astro), on the same terms ──
    html.hc-intro is set before first paint on the first page of a visit. The page waits, the logo
-   draws, the grid lines draw down, the loader dissolves, then the page fades in. */
+   draws, the loader dissolves, then the page fades in. */
 .hc-loader{position:fixed;inset:0;z-index:100;display:none;place-items:center;background:var(--hc-page);transition:opacity .45s var(--hc-ease),visibility 0s .45s}
 html.hc-intro .hc-loader{display:grid}
 .hc-loader.out{opacity:0;visibility:hidden}
@@ -1089,6 +1089,10 @@ html.hc-intro .hc-loader{display:grid}
 .hc-loader.go .f{animation:hc-fill .3s ease .68s forwards}
 @keyframes hc-draw{to{stroke-dashoffset:0}}
 @keyframes hc-fill{to{opacity:1}}
+/* any later page: if it is still loading after a quarter of a second, the logo fades in over it until it's
+   ready; a fast load shows nothing (chrome.js lets it go) */
+html.hc-wait .hc-loader{display:grid;opacity:0;pointer-events:none;animation:hc-wait .3s ease .25s forwards}
+@keyframes hc-wait{to{opacity:1;pointer-events:auto}}
 html.hc-cs.hc-intro body > :not(.hc-loader){opacity:0}
 html.hc-cs body > *{transition:opacity .6s var(--hc-ease)}
 /* the case studies' own grid lines are gone; G shows the grid instead */
@@ -1931,6 +1935,22 @@ new ResizeObserver(()=>{if(window.__qhHold)return;fit();if(done||!started)still(
     // of a visit, whichever page that is. 0 the logo draws; 1100ms the loader dissolves; 2000ms the page
     // fades in. After that, pages only cross-fade.
     const ld = document.querySelector('[data-hc-loader]');
+    // any later page: the loader is there only while the page is still loading (it fades in after a moment,
+    // in CSS); once everything has loaded, or after 4s at most, it fades away
+    if (root.classList.contains('hc-wait') && ld) {
+      const p0 = ld.querySelector('.s');
+      try { const len = p0.getTotalLength(); p0.style.strokeDasharray = len; p0.style.strokeDashoffset = len; } catch (e) {}
+      ld.classList.add('go');
+      let gone = false;
+      const done = () => {
+        if (gone) return; gone = true;
+        const o = getComputedStyle(ld).opacity;
+        const fin = () => { ld.remove(); root.classList.remove('hc-wait'); };
+        if (+o < .05) fin(); else ld.animate([{ opacity: o }, { opacity: 0 }], { duration: 400, easing: 'ease-out' }).onfinish = fin;
+      };
+      if (document.readyState === 'complete') done(); else { addEventListener('load', done); setTimeout(done, 4000); }
+      reveal(); return;
+    }
     if (!root.classList.contains('hc-intro') || !ld) { ld?.remove(); reveal(); return; }
     const p = ld.querySelector('.s');
     try { const len = p.getTotalLength(); p.style.strokeDasharray = len; p.style.strokeDashoffset = len; } catch (e) {}

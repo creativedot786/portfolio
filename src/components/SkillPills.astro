@@ -46,7 +46,9 @@ import { skills, always, hot } from '../data/skills';
     const shuffle = <T,>(a: T[]) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
     const hero = pile.closest('section') as HTMLElement;
 
-    let engine: Matter.Engine | null = null, raf = 0, inView = true, width = 0;
+    let engine: Matter.Engine | null = null, raf = 0, inView = true, width = 0, still = 0;
+    // once the first drop has come to rest, the hero's tabs may start (AudienceTabs listens for this)
+    const settled = () => { if ((window as any).__pillsSettled) return; (window as any).__pillsSettled = true; dispatchEvent(new Event('hr:pills-settled')); };
     let bodies: Matter.Body[] = [];
     let grab: Matter.Constraint | null = null;
 
@@ -56,7 +58,12 @@ import { skills, always, hot } from '../data/skills';
     });
     const loop = (t0: number) => {
       let last = t0;
-      const tick = (t: number) => { if (!engine) return; Engine.update(engine, Math.min(32, t - last)); last = t; paint(); raf = inView ? requestAnimationFrame(tick) : 0; };
+      const tick = (t: number) => {
+        if (!engine) return; Engine.update(engine, Math.min(32, t - last)); last = t; paint();
+        // at rest: nothing has moved for about two thirds of a second
+        if (!(window as any).__pillsSettled) { still = bodies.every((b) => b.speed < .12 && Math.abs(b.angularSpeed) < .01) ? still + 1 : 0; if (still > 40) settled(); }
+        raf = inView ? requestAnimationFrame(tick) : 0;
+      };
       raf = requestAnimationFrame(tick);
     };
 
@@ -90,7 +97,7 @@ import { skills, always, hot } from '../data/skills';
       });
       Composite.add(engine.world, bodies);
       pile.classList.add('ready');
-      if (rm) { for (let i = 0; i < 900; i++) Engine.update(engine, 1000 / 60); paint(); return; }
+      if (rm) { for (let i = 0; i < 900; i++) Engine.update(engine, 1000 / 60); paint(); settled(); return; }
       loop(performance.now());
     }
 

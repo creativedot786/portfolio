@@ -97,7 +97,7 @@
 
 /* ── case studies: the home page's intro (Loader.astro and Base.astro), on the same terms ──
    html.hc-intro is set before first paint on the first page of a visit. The page waits, the logo
-   draws, the grid lines draw down, the loader dissolves, then the page fades in. */
+   draws, the loader dissolves, then the page fades in. */
 .hc-loader{position:fixed;inset:0;z-index:100;display:none;place-items:center;background:var(--hc-page);transition:opacity .45s var(--hc-ease),visibility 0s .45s}
 html.hc-intro .hc-loader{display:grid}
 .hc-loader.out{opacity:0;visibility:hidden}
@@ -108,6 +108,10 @@ html.hc-intro .hc-loader{display:grid}
 .hc-loader.go .f{animation:hc-fill .3s ease .68s forwards}
 @keyframes hc-draw{to{stroke-dashoffset:0}}
 @keyframes hc-fill{to{opacity:1}}
+/* any later page: if it is still loading after a quarter of a second, the logo fades in over it until it's
+   ready; a fast load shows nothing (chrome.js lets it go) */
+html.hc-wait .hc-loader{display:grid;opacity:0;pointer-events:none;animation:hc-wait .3s ease .25s forwards}
+@keyframes hc-wait{to{opacity:1;pointer-events:auto}}
 html.hc-cs.hc-intro body > :not(.hc-loader){opacity:0}
 html.hc-cs body > *{transition:opacity .6s var(--hc-ease)}
 /* the case studies' own grid lines are gone; G shows the grid instead */

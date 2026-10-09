@@ -146,12 +146,18 @@ import SkillPills from './SkillPills.astro';
     root.style.setProperty('--auto', AUTO + 'ms');
 
     let cur = 0, timer = 0, autoTimer = 0, userTook = false, overTabs = false, inView = true;
+    // the tabs don't start turning until the skill pills have dropped and settled (SkillPills.astro); if they
+    // never get there (scrolled away mid-fall, say), they start anyway after a while
+    let ready = !!(window as any).__pillsSettled;
+    const go = () => { if (ready) return; ready = true; schedule(); };
+    addEventListener('hr:pills-settled', go, { once: true });
+    window.setTimeout(go, 9000);
 
     const place = () => { const t = tabs[cur]; ind.style.left = t.offsetLeft + 'px'; ind.style.width = t.offsetWidth + 'px'; };
     const stopAuto = () => { clearTimeout(autoTimer); ind.classList.remove('run'); };
     const schedule = () => {
       stopAuto();
-      if (rm || userTook || overTabs || !inView || document.hidden) return;
+      if (rm || !ready || userTook || overTabs || !inView || document.hidden) return;
       void ind.offsetWidth;
       ind.classList.add('run');
       autoTimer = window.setTimeout(() => activate((cur + 1) % tabs.length), AUTO);

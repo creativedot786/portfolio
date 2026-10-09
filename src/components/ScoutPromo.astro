@@ -5,7 +5,8 @@
 // straightens, in one smooth move, with the phone fading in around the orb. Then one real turn from the
 // recorded session: the message; Scout thinks; what Scout understood rises out of the phone (the dots behind
 // it brighten softly); Scout's reply; what Scout found rises out too. It plays when most of the card is in view and starts over when it
-// comes back. At rest it shows the first screen. Reduced motion: the finished turn, still.
+// comes back. At rest it shows the intro's first frame, and each loop ends by moving back to it, so it never
+// cuts. Reduced motion: the finished turn, still.
 ---
 <div class="sp promo-img" data-scout-promo data-cursor-expand role="img"
   aria-label="Scout, an AI property search on a phone. Someone asks for a 2-bed near their office in DIFC, around 130k a year, with a dog. Beside the phone, Scout's memory shows what it understood: 2-bed, near DIFC (a guess), about 130k a year, pet-friendly. Then the home it found: a 2-bed at Executive Towers, Business Bay, AED 138,000, pets allowed.">
@@ -192,30 +193,49 @@
       PULL.push({ offset: t, transform: `translateY(${(5 * (1 - z)).toFixed(2)}%) scale(${(1.6 - .6 * z).toFixed(4)}) rotateX(${(16 * tilt).toFixed(2)}deg) rotateZ(${(-3 * tilt).toFixed(2)}deg)` });
     }
     PULL[48].transform = 'none';
-    const intro = () => {
-      [lift, skin, glass, ...late].forEach((e) => e.getAnimations().forEach((a) => a.cancel()));
-      lift.animate(PULL, { duration: 2600, delay: 700, easing: 'linear', fill: 'backwards' });
-      [skin, glass].forEach((e) => e.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 1000, delay: 900, easing: 'ease-out', fill: 'backwards' }));
-      late.forEach((e) => e.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 600, delay: 2500, fill: 'backwards' }));
+    let introAnims: Animation[] = [];
+    const clear = () => [lift, skin, glass, ...late].forEach((e) => e.getAnimations().forEach((a) => a.cancel()));
+    // the intro is built paused, so the card can rest on its first frame (the orb alone) until it plays
+    const intro = (paused = false) => {
+      clear();
+      introAnims = [
+        lift.animate(PULL, { duration: 2600, delay: 700, easing: 'linear', fill: 'backwards' }),
+        ...[skin, glass].map((e) => e.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 1000, delay: 900, easing: 'ease-out', fill: 'backwards' })),
+        ...late.map((e) => e.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 600, delay: 2500, fill: 'backwards' })),
+      ];
+      if (paused) introAnims.forEach((a) => a.pause());
+    };
+    // the way back, so the loop has no cut: once the chat has cleared and the phone is back in the middle,
+    // the words fade, the phone fades and the camera moves back in to the orb, landing exactly on the intro's
+    // first frame
+    const outro = () => {
+      clear();
+      late.forEach((e) => e.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 400, fill: 'forwards' }));
+      [skin, glass].forEach((e) => e.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 900, delay: 300, easing: 'ease-in', fill: 'forwards' }));
+      lift.animate([{ transform: 'none' }, { transform: PULL[0].transform as string }], { duration: 1300, easing: 'cubic-bezier(.6,0,.4,1)', fill: 'forwards' });
     };
 
     if (RM) { stage(6); return; }
+    intro(true);   // at rest: the orb alone, ready to pull back
     const at = (ms: number, fn: () => void) => timers.push(window.setTimeout(fn, ms));
     const play = () => {
       state = 'playing';
-      const loop = () => {
-        stage(1); intro();
+      const loop = (first: boolean) => {
+        stage(1);
+        if (first) introAnims.forEach((a) => a.play()); else intro();
         at(4400, () => stage(2));
         at(5500, () => stage(3));
         at(6700, () => { stage(4); glow(); });
         at(8300, () => stage(5));
         at(9700, () => stage(6));
-        at(14200, () => sp.classList.add('out'));
-        at(15000, loop);
+        at(13600, () => sp.classList.add('out'));      // the chat, the memory and the home fade
+        at(14300, () => stage(1));                     // the first screen returns; the phone slides back to the middle
+        at(15400, outro);                              // and the camera moves back in to the orb
+        at(16900, () => loop(false));
       };
-      loop();
+      loop(true);
     };
-    const reset = () => { timers.forEach(clearTimeout); timers = []; state = 'idle'; [lift, skin, glass, ...late].forEach((e) => e.getAnimations().forEach((a) => a.cancel())); stage(1); };
+    const reset = () => { timers.forEach(clearTimeout); timers = []; state = 'idle'; stage(1); intro(true); };
     const seen = () => { const r = sp.getBoundingClientRect(); const h = Math.min(r.height, innerHeight); return h ? Math.max(0, Math.min(r.bottom, innerHeight) - Math.max(r.top, 0)) / h : 0; };
     const check = () => { const v = seen(); vis = v > 0; if (state === 'idle' && v >= 0.8) play(); else if (state !== 'idle' && v < 0.3) reset(); syncOrb(); };
     let tk = false;

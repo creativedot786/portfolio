@@ -45,6 +45,8 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
       try {
         if (sessionStorage.getItem('hr-loader') || matchMedia('(prefers-reduced-motion: reduce)').matches) {
           document.documentElement.classList.add('no-loader');
+          // Any later visit: the loader shows only if the page is still loading after a moment.
+          if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('ld-wait');
         } else {
           // First visit: hold the page until the logo has drawn, then let the content in.
           // Set before first paint so nothing flashes.
@@ -77,7 +79,9 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
       // 0        the logo draws and fills (Loader.astro)
       // 1100ms   the loader dissolves
       // 2000ms   the page and the rail fade in and the hero rises
-      // Any later visit in the session, and reduced motion, skip all of it.
+      // Any later visit in the session skips it; the loader then shows only while the page is still loading
+      // (it fades in after a moment, in CSS) and fades away once everything has loaded, or after 4s at most.
+      // Reduced motion skips it all.
       function loader() {
         const l = document.getElementById('loader');
         const root = document.documentElement;
@@ -85,7 +89,17 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
         let seen = false;
         try { seen = !!sessionStorage.getItem('hr-loader'); } catch (e) {}
         if (seen || matchMedia('(prefers-reduced-motion: reduce)').matches) {
-          l.remove(); root.classList.remove('intro'); return;
+          root.classList.remove('intro');
+          if (!root.classList.contains('ld-wait')) { l.remove(); return; }
+          let gone = false;
+          const done = () => {
+            if (gone) return; gone = true;
+            const o = getComputedStyle(l).opacity;
+            const fin = () => { l.remove(); root.classList.remove('ld-wait'); };
+            if (+o < .05) fin(); else l.animate([{ opacity: o }, { opacity: 0 }], { duration: 400, easing: 'ease-out' }).onfinish = fin;
+          };
+          if (document.readyState === 'complete') done(); else { addEventListener('load', done); setTimeout(done, 4000); }
+          return;
         }
         setTimeout(() => {
           l.classList.add('out');
