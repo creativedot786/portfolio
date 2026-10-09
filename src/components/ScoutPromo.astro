@@ -1,47 +1,53 @@
 ---
-// The Scout card's picture on the home page: a short loop instead of a still. Scout's phone, large and cut
-// off by the bottom edge, on a ground tinted with the site's accent (so it follows the theme). It opens on
-// Scout's first screen with the orb (the prototype's own shader). Then one real turn from the recorded
-// session: the message; the phone moves aside and the memory bar floats out beside it with what Scout
-// understood; Scout's reply; the home it found. It plays when most of the card is in view and starts over
-// when it comes back. At rest it shows the first screen. Reduced motion: the finished turn, still.
+// The Scout card's picture on the home page: a short loop, like a product intro. On a field of fine dots in
+// the theme's ink (the same particle idea as "build with AI" in the hero), it opens on Scout's orb (the
+// prototype's own shader) in a disc of the screen's light. The phone builds around it, pulling back from a
+// slight tilt in one smooth move. Then one real turn from the recorded session: the message; a ripple through
+// the dots while Scout thinks; the memory bar rises out of the phone with what Scout understood; Scout's
+// reply; the home it found rises out too. It plays when most of the card is in view and starts over when it
+// comes back. At rest it shows the first screen. Reduced motion: the finished turn, still.
 ---
 <div class="sp promo-img" data-scout-promo data-cursor-expand role="img"
-  aria-label="Scout, an AI property search on a phone. Someone asks for a 2-bed near their office in DIFC, around 130k a year, with a dog. Beside the phone, Scout's memory shows what it understood: 2-bed, near DIFC (a guess), about 130k a year, pet-friendly. Scout then finds a pet-friendly 2-bed at Executive Towers, Business Bay, for AED 138,000.">
+  aria-label="Scout, an AI property search on a phone. Someone asks for a 2-bed near their office in DIFC, around 130k a year, with a dog. Beside the phone, Scout's memory shows what it understood: 2-bed, near DIFC (a guess), about 130k a year, pet-friendly. Then the home it found: a 2-bed at Executive Towers, Business Bay, AED 138,000, pets allowed.">
   <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="sp-pf" viewBox="0 0 100 150"><circle cx="50" cy="50" r="50" fill="#EF5E4E"/><path d="M0 50 H50 V100 A50 50 0 0 1 0 50 Z" fill="#fff"/><path d="M0 100 H50 A50 50 0 0 1 0 150 Z" fill="#EF5E4E"/></symbol><symbol id="sp-paw" viewBox="0 0 24 24"><g fill="currentColor"><circle cx="6" cy="9" r="2"/><circle cx="10" cy="5" r="2"/><circle cx="14" cy="5" r="2"/><circle cx="18" cy="9" r="2"/><path d="M12 9c-3 0-6 3-6 6a3 3 0 0 0 3 3c1 0 2-.5 3-.5s2 .5 3 .5a3 3 0 0 0 3-3c0-3-3-6-6-6z"/></g></symbol></svg>
+  <canvas class="sp-dots" aria-hidden="true"></canvas>
 
-  <div class="sp-phone" aria-hidden="true"><div class="sp-scr">
+  <div class="sp-phone" aria-hidden="true"><div class="sp-lift"><div class="sp-skin"></div><div class="sp-glass"></div><div class="sp-scr">
     <div class="sp-top"><span class="br"><svg class="pf" viewBox="0 0 100 150"><use href="#sp-pf"/></svg>Scout</span><span class="mn"><i></i><i></i><i></i></span></div>
     <div class="sp-first"><div class="orb"><canvas width="330" height="330"></canvas></div><b>What are you looking for?</b><span>Tell me what you need. I'll do the searching.</span></div>
     <div class="sp-thread">
       <div class="m u">2-bed near my office in DIFC, around 130k a year. I have a dog</div>
       <div class="m s"><span class="av"><svg class="pf" viewBox="0 0 100 150"><use href="#sp-pf"/></svg></span><span class="b"><span class="dots"><i></i><i></i><i></i></span><span class="t">Closest is Business Bay, one minute's drive away: a pet-friendly 2-bed at Executive Towers, 138k, 640m from the metro.</span></span></div>
-      <div class="card"><img src="/work/scout-home.jpg" alt="" width="480" height="320" loading="lazy" decoding="async" /><span class="bd"><b>AED 138,000<small> / year</small></b><span>2 bed · 3 bath · 1,420 sq ft</span><span>Executive Towers, Business Bay</span><span class="tags"><em class="over">Over budget</em><em><svg viewBox="0 0 24 24"><use href="#sp-paw"/></svg>Pets allowed</em></span></span></div>
     </div>
-  </div></div>
+  </div></div></div>
 
   <div class="sp-mem" aria-hidden="true">
     <span class="lab">What Scout understood</span>
     <span class="bar"><svg class="pf" viewBox="0 0 100 150"><use href="#sp-pf"/></svg><span>2-bed</span><i>·</i><span class="as">near DIFC</span><i>·</i><span>~130k/year</span><i>·</i><span>pet-friendly</span></span>
   </div>
+  <div class="sp-res" aria-hidden="true"><img src="/work/scout-home.jpg" alt="" width="480" height="320" loading="lazy" decoding="async" /><span class="bd"><b>AED 138,000<small> / year</small></b><span>2 bed · 3 bath · 1,420 sq ft</span><span class="w">Executive Towers, Business Bay</span><span class="tags"><em class="over">Over budget</em><em><svg viewBox="0 0 24 24"><use href="#sp-paw"/></svg>Pets allowed</em></span></span></div>
 </div>
 
 <style>
-  /* the ground takes the theme's accent; the phone keeps Scout's own light palette, as the product does */
-  .sp{--bg:#F7F5F2;--ink:#1B1B1F;--ink2:#5B5B63;--ink3:#8E8E96;--coral:#EF5E4E;--soft:#FBE9E5;--scout:#F0EDE8;--line:rgba(27,27,31,.08);
+  /* the ground is the theme's own surface; the phone keeps Scout's light palette, as the product does */
+  .sp{--bg:#F7F5F2;--ink:#1B1B1F;--ink2:#5B5B63;--ink3:#8E8E96;--coral:#EF5E4E;--soft:#FBE9E5;--scout:#F0EDE8;--pline:rgba(27,27,31,.08);
     --ease:cubic-bezier(.2,.7,.2,1);
-    position:relative;display:block;width:100%;aspect-ratio:16/10;overflow:hidden;
-    background:color-mix(in srgb,var(--color-accent) 14%,var(--color-page));
+    position:relative;display:block;width:100%;aspect-ratio:16/10;overflow:hidden;background:var(--color-surface);
     font-family:"Inter",-apple-system,BlinkMacSystemFont,system-ui,sans-serif;container-type:inline-size}
+  .sp-dots{position:absolute;inset:0;width:100%;height:100%;display:block}
 
-  /* the phone: centred, cut off by the bottom edge; it moves aside when the memory comes out */
-  .sp-phone{position:absolute;left:50%;top:6cqw;width:40cqw;aspect-ratio:330/680;padding:1.25cqw;border-radius:6.4cqw;background:#141416;
-    box-shadow:0 0 0 1px rgba(255,255,255,.06),0 4cqw 8cqw -3cqw rgba(0,0,0,.55);transform:translateX(-50%);transition:transform .9s var(--ease)}
+  /* the phone: a positioning wrapper that moves aside; the lift carries the intro (script) */
+  .sp-phone{position:absolute;left:50%;top:6cqw;width:40cqw;aspect-ratio:330/680;transform:translateX(-50%);transition:transform .9s var(--ease);perspective:140cqw}
   .sp.wide .sp-phone{transform:translateX(7cqw)}
-  .sp-scr{position:relative;height:100%;border-radius:5.2cqw;background:var(--bg);color:var(--ink);overflow:hidden;container-type:inline-size}
+  .sp-lift{position:relative;height:100%;padding:1.25cqw;transform-origin:50% 24%;will-change:transform}
+  .sp-skin{position:absolute;inset:0;border-radius:6.4cqw;background:#141416;box-shadow:0 0 0 1px rgba(255,255,255,.06),0 4cqw 8cqw -3cqw rgba(0,0,0,.55)}
+  /* the screen's light: in the intro it starts as a disc around the orb and grows into the screen */
+  .sp-glass{position:absolute;inset:1.25cqw;border-radius:5.2cqw;background:var(--bg)}
+  .sp-scr{position:relative;height:100%;border-radius:5.2cqw;color:var(--ink);overflow:hidden;container-type:inline-size}
   /* inside the screen, sizes follow the prototype at 312px wide: 1px there is .32cqw here */
   .sp-top{display:flex;align-items:center;justify-content:space-between;padding:5.8cqw 5cqw 2.6cqw 5.8cqw}
   .sp-top .br{display:flex;align-items:center;gap:2.2cqw;font-weight:600;font-size:5.4cqw;letter-spacing:-.01em}
+  .pf{display:block}
   .sp-top .pf{width:5.1cqw;height:7.7cqw}
   .sp-top .mn{display:flex;gap:1.3cqw}.sp-top .mn i{width:1.6cqw;height:1.6cqw;border-radius:50%;background:var(--ink3)}
   .sp-first{position:absolute;left:0;right:0;top:20cqw;display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 6cqw;transition:opacity .5s var(--ease),transform .5s var(--ease)}
@@ -53,25 +59,16 @@
   .sp-thread > *{transition:opacity .55s var(--ease),transform .55s var(--ease)}
   .m.u{align-self:flex-end;max-width:84%;background:var(--coral);color:#fff;padding:2.9cqw 3.8cqw;border-radius:5.4cqw 5.4cqw 1.6cqw 5.4cqw}
   .m.s{display:flex;align-items:flex-end;gap:2.2cqw;max-width:92%}
-  .m .av{flex:none;width:7.7cqw;height:7.7cqw;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 0 0 1px var(--line)}
+  .m .av{flex:none;width:7.7cqw;height:7.7cqw;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 0 0 1px var(--pline)}
   .m .av .pf{width:3.2cqw;height:4.8cqw}
   .m .b{display:grid;background:var(--scout);padding:2.9cqw 3.8cqw;border-radius:5.4cqw 5.4cqw 5.4cqw 1.6cqw}
   .m .b > *{grid-area:1/1;transition:opacity .4s}
   .dots{display:inline-flex;gap:1.3cqw;align-items:center}
   .dots i{width:1.9cqw;height:1.9cqw;border-radius:50%;background:var(--ink3);animation:sp-blink 1.2s infinite}
   .dots i:nth-child(2){animation-delay:.2s}.dots i:nth-child(3){animation-delay:.4s}
-  .card{display:flex;flex-direction:column;width:66cqw;margin-left:9.9cqw;background:#fff;border-radius:4.5cqw;overflow:hidden;box-shadow:0 0 0 1px var(--line),0 3cqw 6cqw -4cqw rgba(0,0,0,.3)}
-  .card img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
-  .card .bd{display:flex;flex-direction:column;gap:.6cqw;padding:3.2cqw 3.8cqw 3.8cqw;font-size:3.8cqw;color:var(--ink2)}
-  .card b{font-size:4.8cqw;font-weight:700;color:var(--ink)}.card small{font-size:3.7cqw;font-weight:400;color:var(--ink3)}
-  .card .bd > span:nth-of-type(2){color:var(--ink)}
-  .tags{display:flex;gap:1.3cqw;margin-top:1.6cqw}
-  .tags em{display:inline-flex;align-items:center;gap:1cqw;font-style:normal;font-size:3.4cqw;padding:.7cqw 2.2cqw;border-radius:5cqw;background:var(--bg);box-shadow:0 0 0 1px var(--line)}
-  .tags em.over{background:#FFF4E5;box-shadow:0 0 0 1px #F5C88A;color:#8A5A12}
-  .tags svg{width:3.4cqw;height:3.4cqw}
 
-  /* the memory, out of the phone and beside it */
-  .sp-mem{position:absolute;left:4cqw;top:44%;display:flex;flex-direction:column;gap:1.2cqw;transition:opacity .7s var(--ease),transform .7s var(--ease)}
+  /* what Scout understood, and the home it found: both rise out of the phone */
+  .sp-mem{position:absolute;left:4cqw;top:22%;display:flex;flex-direction:column;gap:1.2cqw;transition:opacity .7s var(--ease),transform .7s var(--ease)}
   .sp-mem .lab{font:400 1.6cqw/1.2 var(--font-mono,ui-monospace,monospace);color:color-mix(in srgb,var(--color-primary) 70%,transparent)}
   .sp-mem .bar{display:flex;align-items:center;gap:1cqw;white-space:nowrap;background:#fff;color:var(--ink);border-radius:2cqw;padding:1.4cqw 1.8cqw;font-size:1.9cqw;box-shadow:0 2cqw 5cqw -2cqw rgba(0,0,0,.45)}
   .sp-mem .pf{flex:none;width:1.35cqw;height:2cqw}
@@ -79,35 +76,51 @@
   .sp-mem .as{color:var(--ink2)}.sp-mem .as::after{content:"?";color:var(--coral);font-weight:600}
   .sp-mem .bar span{border-radius:.5cqw;transition:background 1.2s 1.4s,box-shadow 1.2s 1.4s}
   .sp.s4 .sp-mem .bar span{background:var(--soft);box-shadow:0 0 0 .4cqw var(--soft)}
+  .sp-res{position:absolute;left:4cqw;top:50%;display:flex;align-items:center;gap:1.6cqw;width:47cqw;padding:1.1cqw 1.8cqw 1.1cqw 1.1cqw;background:#fff;color:var(--ink2);border-radius:2.2cqw;
+    box-shadow:0 2.4cqw 5cqw -2cqw rgba(0,0,0,.5);transform-origin:right center;transition:opacity .6s var(--ease),transform .9s var(--ease)}
+  .sp-res img{flex:none;width:12cqw;height:9cqw;object-fit:cover;border-radius:1.4cqw}
+  .sp-res .bd{display:flex;flex-direction:column;gap:.35cqw;min-width:0;font-size:1.75cqw}
+  .sp-res b{color:var(--ink);font-size:2.3cqw;font-weight:700}.sp-res small{font-weight:400;color:var(--ink3);font-size:1.6cqw}
+  .sp-res .w{color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tags{display:flex;gap:.6cqw;margin-top:.5cqw}
+  .tags em{display:inline-flex;align-items:center;gap:.5cqw;white-space:nowrap;font-style:normal;font-size:1.5cqw;padding:.35cqw 1cqw;border-radius:5cqw;background:var(--bg);box-shadow:0 0 0 1px var(--pline)}
+  .tags em.over{background:#FFF4E5;box-shadow:0 0 0 1px #F5C88A;color:#8A5A12}
+  .tags svg{width:1.5cqw;height:1.5cqw}
 
   /* the loop: s1 the first screen, s2 the message, s3 Scout thinks, s4 the memory comes out, s5 the reply, s6 the home */
-  :global(html.js) .sp .m,:global(html.js) .sp .card{opacity:0;transform:translateY(3cqw)}
+  :global(html.js) .sp .m{opacity:0;transform:translateY(3cqw)}
   :global(html.js) .sp .sp-mem{opacity:0;transform:translateX(-2cqw)}
-  :global(html.js) .sp:is(.s2,.s3,.s4,.s5,.s6) .sp-first{opacity:0;transform:translateY(-4cqw);pointer-events:none}
-  :global(html.js) .sp:is(.s2,.s3,.s4,.s5,.s6) .m.u{opacity:1;transform:none}
-  :global(html.js) .sp:is(.s3,.s4,.s5,.s6) .m.s{opacity:1;transform:none}
-  :global(html.js) .sp:is(.s4,.s5,.s6) .sp-mem{opacity:1;transform:none}
-  :global(html.js) .sp.s6 .card{opacity:1;transform:none}
+  :global(html.js) .sp .sp-res{opacity:0;transform:translate(22cqw,3cqw) scale(.9)}
+  :global(html.js) .sp:is(.s2,.s3,.s4,.s5,.s6) .sp-first{opacity:0;transform:translateY(-4cqw)}
+  :global(html.js) .sp:is(.s2,.s3,.s4,.s5,.s6) .m.u,:global(html.js) .sp:is(.s3,.s4,.s5,.s6) .m.s{opacity:1;transform:none}
+  :global(html.js) .sp:is(.s4,.s5,.s6) .sp-mem,:global(html.js) .sp.s6 .sp-res{opacity:1;transform:none}
   :global(html.js) .sp .m.s .t{opacity:0}
   :global(html.js) .sp:is(.s5,.s6) .m.s .t{opacity:1}
   :global(html.js) .sp:is(.s5,.s6) .m.s .dots{opacity:0}
-  :global(html.js) .sp.out .sp-thread > *,:global(html.js) .sp.out .sp-mem{opacity:0!important}
+  :global(html.js) .sp.out .sp-thread > *,:global(html.js) .sp.out .sp-mem,:global(html.js) .sp.out .sp-res{opacity:0!important}
 
-  /* phones: square, the phone centred and cut off, the memory over its lower half; no label or home card, so it stays clear */
+  /* phones: square, the phone centred and cut off; the home and the memory float over its lower half */
   @media (max-width:599px){
     .sp{aspect-ratio:1/1}
-    .sp-phone{top:7cqw;width:66cqw;padding:1.9cqw;border-radius:9.6cqw}
+    .sp-phone{top:7cqw;width:66cqw}
     .sp.wide .sp-phone{transform:translateX(-50%)}
-    .sp-scr{border-radius:7.8cqw}
-    .sp-mem{left:4cqw;right:4cqw;top:auto;bottom:6cqw;align-items:center}
-    .sp-mem .lab,.card{display:none}
+    .sp-lift{padding:1.9cqw}
+    .sp-skin{border-radius:9.6cqw}.sp-glass{inset:1.9cqw;border-radius:7.8cqw}.sp-scr{border-radius:7.8cqw}
+    .sp-mem{left:4cqw;right:4cqw;top:auto;bottom:5cqw;align-items:center}
+    .sp-mem .lab{display:none}
     .sp-mem .bar{font-size:3.4cqw;padding:2.4cqw 3.2cqw;border-radius:3.6cqw;gap:1.6cqw}
     .sp-mem .pf{width:2.4cqw;height:3.6cqw}
+    .sp-res{left:6cqw;right:6cqw;width:auto;top:auto;bottom:21cqw;gap:2.6cqw;padding:1.8cqw 3cqw 1.8cqw 1.8cqw;border-radius:3.6cqw;transform-origin:center bottom}
+    :global(html.js) .sp .sp-res{transform:translate(0,6cqw) scale(.94)}
+    :global(html.js) .sp.s6 .sp-res{transform:none}
+    .sp-res img{width:18cqw;height:13cqw;border-radius:2.2cqw}
+    .sp-res .bd{font-size:2.9cqw}.sp-res b{font-size:3.7cqw}.sp-res small{font-size:2.6cqw}
+    .tags em{font-size:2.5cqw;padding:.5cqw 1.5cqw}.tags svg{width:2.5cqw;height:2.5cqw}
   }
   @keyframes sp-blink{0%,100%{opacity:.25}50%{opacity:1}}
   @media (prefers-reduced-motion:reduce){
     .dots i{animation:none}
-    .sp-phone,.sp-first,.sp-thread > *,.sp-mem{transition:none}
+    .sp-phone,.sp-first,.sp-thread > *,.sp-mem,.sp-res{transition:none}
   }
 </style>
 
@@ -118,9 +131,39 @@
     if (!sp || (sp as any).__on) return;
     (sp as any).__on = true;
     const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const canvas = sp.querySelector('canvas')!;
+    const canvas = sp.querySelector<HTMLCanvasElement>('.sp-first canvas')!;
+    const lift = sp.querySelector<HTMLElement>('.sp-lift')!, skin = sp.querySelector<HTMLElement>('.sp-skin')!, glass = sp.querySelector<HTMLElement>('.sp-glass')!;
+    const late = [sp.querySelector<HTMLElement>('.sp-top')!, ...sp.querySelectorAll<HTMLElement>('.sp-first > :not(.orb)')];
     let orb: any = null, timers: number[] = [], state = 'idle', n = 1, vis = false;
-    // the orb runs while the first screen is showing and the card is on screen; it never sits there undrawn
+
+    // ── the dots: a grid in the theme's ink; a ripple is a ring that brightens and swells the dots it passes ──
+    const cv = sp.querySelector<HTMLCanvasElement>('.sp-dots')!, ctx = cv.getContext('2d')!;
+    let W = 0, H = 0, rgb = [237, 235, 228], raf = 0, glowAt: any = null;
+    const waves: { x: number; y: number; t: number }[] = [];
+    const ink = () => { const d = document.createElement('i'); d.style.color = 'var(--color-primary)'; sp.appendChild(d); const m = getComputedStyle(d).color.match(/[\d.]+/g) || []; d.remove(); return m.slice(0, 3).map(Number); };
+    const size = () => { const r = sp.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1); W = r.width; H = r.height; cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); };
+    const draw = (now: number) => {
+      ctx.clearRect(0, 0, W, H);
+      const step = Math.max(9, W / 64), r0 = Math.max(.7, W / 900);
+      for (let y = step / 2; y < H; y += step) for (let x = step / 2; x < W; x += step) {
+        let a = .14, s = 1;
+        for (const w of waves) { const t = (now - w.t) / 1000, d = Math.abs(Math.hypot(x - w.x, y - w.y) - t * W * .38), k = Math.max(0, 1 - d / (step * 2.2)) * Math.max(0, 1 - t / 2.6); a += k * .45; s += k * 1.2; }
+        if (glowAt) { const t = (now - glowAt.t) / 1000, d = Math.hypot((x - glowAt.x) / glowAt.w, (y - glowAt.y) / glowAt.h), k = Math.max(0, 1 - d) * Math.min(1, t * 2) * Math.max(0, 1 - Math.max(0, t - 1.2) / 1.6); a += k * .35; s += k * .6; }
+        ctx.fillStyle = `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${Math.min(.7, a)})`;
+        ctx.beginPath(); ctx.arc(x, y, r0 * s, 0, 6.2832); ctx.fill();
+      }
+      for (let i = waves.length - 1; i >= 0; i--) if ((now - waves[i].t) / 1000 > 2.6) waves.splice(i, 1);
+      if (glowAt && (now - glowAt.t) / 1000 > 2.8) glowAt = null;
+      raf = waves.length || glowAt ? requestAnimationFrame(draw) : 0;
+    };
+    const kick = () => { if (!raf) raf = requestAnimationFrame(draw); };
+    const repaint = () => { rgb = ink(); size(); draw(performance.now()); };
+    new ResizeObserver(repaint).observe(sp);
+    new MutationObserver(repaint).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    const ripple = () => { const p = sp.querySelector('.sp-phone')!.getBoundingClientRect(), r = sp.getBoundingClientRect(); waves.push({ x: p.left - r.left + p.width / 2, y: p.top - r.top + p.width * .55, t: performance.now() }); kick(); };
+    const glow = () => { const b = sp.querySelector('.sp-mem .bar')!.getBoundingClientRect(), r = sp.getBoundingClientRect(); glowAt = { x: b.left - r.left + b.width / 2, y: b.top - r.top + b.height / 2, w: b.width * .9, h: b.height * 2.4, t: performance.now() }; kick(); };
+
+    // ── the orb runs while the first screen is showing and the card is on screen; it never sits there undrawn ──
     const syncOrb = () => { if (!orb) return; if (n <= 1 && vis && !document.hidden) orb.resume(); else orb.pause(); };
     const stage = (k: number) => {
       n = k;
@@ -129,9 +172,7 @@
       if (k >= 4) sp.classList.add('wide');
       syncOrb();
     };
-
-    // the orb: three.js and the shader load only when the card is near. Rendered at the prototype's own
-    // size (220), then scaled by the page, so it looks as it does in the product.
+    // three.js and the shader load only when the card is near; rendered at the prototype's own size (220)
     const startOrb = async () => {
       if (orb) return;
       const [THREE, { createOrb }] = await Promise.all([import('three'), import('../scripts/scout-orb')]);
@@ -140,25 +181,33 @@
     };
     new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { o.disconnect(); startOrb().catch(() => {}); } }, { rootMargin: '400px 0px' }).observe(sp);
 
-    if (RM) {   // the finished turn, still; the orb is drawn once, still, on the first screen it would have had
-      stage(6); return;
-    }
+    // ── the intro: the orb in a disc of its own light, then one continuous move from larger and tilted to
+    // upright, the phone fading in around it. It ends exactly where the phone rests, so nothing jumps. ──
+    const intro = () => {
+      [lift, skin, glass, ...late].forEach((e) => e.getAnimations().forEach((a) => a.cancel()));
+      lift.animate([{ transform: 'translateY(5%) scale(1.5) rotateX(14deg) rotateZ(-4deg)' }, { transform: 'none' }], { duration: 1700, delay: 700, easing: 'cubic-bezier(.22,.8,.24,1)', fill: 'backwards' });
+      skin.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 900, delay: 900, easing: 'ease-out', fill: 'backwards' });
+      glass.animate([{ clipPath: 'circle(22% at 50% 24%)' }, { clipPath: 'circle(150% at 50% 24%)' }], { duration: 1500, delay: 700, easing: 'cubic-bezier(.22,.8,.24,1)', fill: 'backwards' });
+      late.forEach((e) => e.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 600, delay: 1900, fill: 'backwards' }));
+    };
+
+    if (RM) { stage(6); return; }
     const at = (ms: number, fn: () => void) => timers.push(window.setTimeout(fn, ms));
     const play = () => {
       state = 'playing';
       const loop = () => {
-        stage(1);
-        at(3000, () => stage(2));
-        at(4100, () => stage(3));
-        at(5300, () => stage(4));
-        at(6900, () => stage(5));
-        at(8300, () => stage(6));
-        at(13000, () => sp.classList.add('out'));
-        at(13800, loop);
+        stage(1); intro();
+        at(3800, () => stage(2));
+        at(4900, () => { stage(3); ripple(); });
+        at(6100, () => { stage(4); glow(); });
+        at(7700, () => stage(5));
+        at(9100, () => stage(6));
+        at(13600, () => sp.classList.add('out'));
+        at(14400, loop);
       };
       loop();
     };
-    const reset = () => { timers.forEach(clearTimeout); timers = []; state = 'idle'; stage(1); };
+    const reset = () => { timers.forEach(clearTimeout); timers = []; state = 'idle'; [lift, skin, glass, ...late].forEach((e) => e.getAnimations().forEach((a) => a.cancel())); stage(1); };
     const seen = () => { const r = sp.getBoundingClientRect(); const h = Math.min(r.height, innerHeight); return h ? Math.max(0, Math.min(r.bottom, innerHeight) - Math.max(r.top, 0)) / h : 0; };
     const check = () => { const v = seen(); vis = v > 0; if (state === 'idle' && v >= 0.8) play(); else if (state !== 'idle' && v < 0.3) reset(); syncOrb(); };
     let tk = false;
