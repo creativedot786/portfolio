@@ -84,7 +84,8 @@
           const t = n.textContent; if (!t.trim()) return;
           const wrap = document.createElement('span'), vis = document.createElement('span'), sr = document.createElement('span');
           vis.setAttribute('aria-hidden', 'true');
-          vis.innerHTML = t.trim().split(/(\s+)/).map((w) => /^\s+$/.test(w) ? ' ' : `<span class="hc-roll">${[...w].map((ch) => `<span class="hc-c" style="--i:${i++}"><span>${esc(ch)}</span></span>`).join('')}</span>`).join('');
+          // keep a space at either edge: a link's text can be split around other elements ("Creative <span>Confidence")
+          vis.innerHTML = (/^\s/.test(t) ? ' ' : '') + t.trim().split(/(\s+)/).map((w) => /^\s+$/.test(w) ? ' ' : `<span class="hc-roll">${[...w].map((ch) => `<span class="hc-c" style="--i:${i++}"><span>${esc(ch)}</span></span>`).join('')}</span>`).join('') + (/\s$/.test(t) ? ' ' : '');
           sr.className = 'hc-sr'; sr.textContent = t.trim();
           wrap.append(vis, sr); n.replaceWith(wrap);
         } else if (n.nodeType === 1 && !n.matches('svg,.sr-only,.hc-sr')) walk(n);
