@@ -11,7 +11,7 @@ export const work: Work[] = [
     href: '/work/scout/',
     industry: 'proptech',
     industryLabel: 'PropTech · Agentic AI',
-    platform: 'Mobile web',
+    platform: 'Mobile App',
     title: 'An agentic AI property search that shows what it understood',
     line: 'Scout is a conversational way to find a home to rent in Dubai, explored for Property Finder. It keeps a short memory of what it understood, marks what it guessed, and shows only the homes that match. A real model, built with Claude Code in a few hours.',
   },
