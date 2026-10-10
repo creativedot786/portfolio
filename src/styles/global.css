@@ -143,25 +143,6 @@
   html.js .reveal:nth-child(4) { transition-delay: 180ms }
 
 
-  /* Hover-preview trigger word. Dotted at rest, sitting close to the baseline so it
-     never collides with the line below. Text and dots both take the accent on hover. */
-  [data-preview]{
-    color: var(--color-primary);
-    text-decoration-line: underline;
-    text-decoration-style: dotted;
-    text-decoration-thickness: max(2px, 0.04em);
-    /* The accent at rest. The word itself stays ink, so the sentence still reads as one thought —
-     the accent MARKS the keyword rather than filling it. */
-  text-decoration-color: var(--color-accent);
-    text-underline-offset: max(3px, 0.08em);
-    cursor: help;
-    transition: color .25s var(--ease-out-soft), text-decoration-color .25s var(--ease-out-soft);
-  }
-  [data-preview]:hover, [data-preview]:focus-visible{
-    color: var(--color-accent);
-    text-decoration-color: var(--color-accent);
-  }
-
   /* 21st multifollow cursor. Upstream positions the rings absolutely inside a Stage div;
      making that div a full-viewport fixed layer is what takes it site-wide.
      The component ships no CSS of its own, so this is the only styling it needs. */

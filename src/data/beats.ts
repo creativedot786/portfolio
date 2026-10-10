@@ -5,9 +5,8 @@
 export type BeatPhoto = { src: string; alt: string; focus?: string };
 export type Beat = { id: string; place: string; when: string; heading: string; body: string; photos: BeatPhoto[] };
 
-// Same hover-preview mechanism as the hero. Keys live in previews.ts.
-const ind = (key: 'fintech' | 'e-government' | 'e-commerce', href: string, text: string) =>
-  `<a href="${href}" target="_blank" rel="noopener" data-preview="${key}">${text}<span class="sr-only"> (opens in a new tab)</span></a>`;
+// Emphasis, as in the hero: the name in ink against the muted line.
+const em = (text: string) => `<em class="not-italic text-primary">${text}</em>`;
 
 export const beats: Beat[] = [
   {
@@ -52,7 +51,7 @@ export const beats: Beat[] = [
     place: 'Dubai',
     when: '2019 to today',
     heading: 'From agency to product, one at a time.',
-    body: `In 2019 I joined the team behind ${ind('e-government', 'https://www.tamm.abudhabi/', 'TAMM')}. Since then: a digital bank at ${ind('fintech', 'https://bsf.sa/english/home', 'Banque Saudi Fransi')}, an on-demand home services app at Rizek, and ${ind('e-commerce', 'https://tradeling.com', 'Tradeling')}, a B2B marketplace, where AI became part of the daily workflow.`,
+    body: `In 2019 I joined the team behind ${em('TAMM')}. Since then: a digital bank at ${em('Banque Saudi Fransi')}, an on-demand home services app at Rizek, and ${em('Tradeling')}, a B2B marketplace, where AI became part of the daily workflow.`,
     photos: [
       { src: '/journey/dubai/bsf.jpg', alt: 'First day at Banque Saudi Fransi, in front of the “We are BSF” wall', focus: 'center 40%' },
       { src: '/journey/dubai/desert.jpg', alt: 'A TAMM team outing in the desert' },

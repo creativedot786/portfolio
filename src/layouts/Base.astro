@@ -8,7 +8,6 @@ import MobileNav from '../components/MobileNav.astro';
 import Footer from '../components/Footer.astro';
 import Loader from '../components/Loader.astro';
 import { CursorMultifollow } from '../components/ui/motion-cursor-multifollow';
-import { HoverPreview } from '../components/ui/hover-preview';
 import { site } from '../data/site';
 
 interface Props { title: string; description: string }
@@ -73,7 +72,6 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
     <main id="main"><slot /></main>
     <Footer />
     <CursorMultifollow client:idle />
-    <HoverPreview client:idle />
     <script>
       // ── the intro ──────────────────────────────────────────────
       // 0        the logo draws and fills (Loader.astro)

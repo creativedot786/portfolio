@@ -38,8 +38,6 @@ import SkillPills from './SkillPills.astro';
   @media (max-width:1023px){[data-hero]{padding-bottom:calc(var(--section-space) + 150px)}}
   /* "build with AI" is drawn as particles (src/scripts/particle-word.ts); the text stays, transparent, underneath */
   .stmt :global(.pw){position:relative;display:inline-block;white-space:nowrap;text-decoration:none!important}
-  /* no dotted underline on it before the script has run either */
-  #panel-anyone .stmt :global([data-preview="built-and-launched"]){text-decoration:none!important}
   .stmt :global(.pw.pw-live){color:transparent!important}
   .stmt :global(.w.pw-open){overflow:visible}
   .panel:not(.on) :global(.pw canvas){opacity:0;transition:opacity .2s}
@@ -97,10 +95,9 @@ import SkillPills from './SkillPills.astro';
       w.appendChild(inner); return { w, inner };
     };
     [...el.childNodes].forEach((node) => {
-      // A preview word is kept whole: splitting it into separate spans would drop its
-      // data-preview attribute and give one phrase three hover triggers.
+      // The particle phrase is kept whole: the particles draw it as one piece.
       const isEm = node.nodeType === 1 && (node as HTMLElement).tagName === 'EM'
-        && !(node as HTMLElement).dataset.preview;
+        && !('pw' in (node as HTMLElement).dataset);
       if (node.nodeType === 3 || isEm) {
         const cls = isEm ? (node as HTMLElement).className : undefined;
         (node.textContent || '').split(/(\s+)/).forEach((p) => {
@@ -124,7 +121,7 @@ import SkillPills from './SkillPills.astro';
 
     // "build with AI": particles, once the headline has risen
     const pwPanel = root.querySelector<HTMLElement>('#panel-anyone');
-    const pwEl = pwPanel?.querySelector<HTMLElement>('[data-preview="built-and-launched"]');
+    const pwEl = pwPanel?.querySelector<HTMLElement>('[data-pw]');
     let pw: { replay: () => void; resume: () => void } | undefined;
     if (pwEl && pwPanel) {
       pwEl.classList.add('pw');
