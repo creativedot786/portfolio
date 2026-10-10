@@ -1,0 +1,156 @@
+---
+// The Tradeling card's picture on the home page: one continuous shot, like an app trailer. The three real
+// homes (Grocery, Independent Retailer, Default) sit in a slow 3D carousel of dark iPhones. The front one
+// drifts up the frame while it holds, as if the camera were tracking down its screen; then it steps back and
+// the next swings forward from behind. One statement at a time. Three swaps return to the start, so the
+// loop never cuts. Behind it, a halftone shader in the theme's own ink and surface. It plays when most of the
+// card is in view and starts over when it comes back. Reduced motion: the first frame, still.
+const homes = [
+  { k: 'g', alt: 'Grocery' },
+  { k: 'e', alt: 'Independent Retailer' },
+  { k: 'd', alt: 'Default' },
+];
+const say = [
+  'Introducing hyper-personalisation.',
+  'Every business sees only what it sells.',
+  '~38% more conversion, as more orders moved into the app.',
+];
+---
+<div class="tp promo-img" data-tradeling-promo data-cursor-expand role="img"
+  aria-label="The Tradeling app's home on three iPhones in turn: Grocery, Independent Retailer and Default. Introducing hyper-personalisation: every business sees only what it sells, and conversion rose about 38% as more orders moved into the app.">
+  <canvas class="bg" aria-hidden="true"></canvas>
+  <div class="stage" aria-hidden="true"><div class="ring">
+    {homes.map((h) => (
+      <div class="iph"><div class="drift">
+        <span class="edge l"></span><span class="edge r"></span><div class="body"></div>
+        <div class="glass"><img src={`/work/tradeling-promo/${h.k}.jpg`} alt="" width="553" height="1200" loading="lazy" decoding="async" /></div>
+        <div class="glare"></div><span class="island"></span><i class="btn a"></i><i class="btn b"></i><i class="btn c"></i>
+      </div></div>
+    ))}
+  </div></div>
+  <div class="say" aria-hidden="true">{say.map((s, i) => <p class={i === 0 ? 'on' : ''}>{s}</p>)}</div>
+</div>
+
+<style>
+  .tp{position:relative;display:block;width:100%;aspect-ratio:16/10;overflow:hidden;background:var(--color-surface);container-type:inline-size}
+  .bg{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .stage{position:absolute;inset:0;perspective:120cqw;perspective-origin:64% 40%}
+  .ring{position:absolute;inset:0;transform-style:preserve-3d}
+
+  /* the iPhone: dark titanium edge, black glass, the Dynamic Island, and depth when it turns */
+  .iph{--w:22cqw;position:absolute;left:64cqw;top:11cqw;width:var(--w);aspect-ratio:71.6/146.6;margin-left:calc(var(--w) / -2);transform-style:preserve-3d;
+    transition:transform 1.4s cubic-bezier(.65,0,.35,1),opacity 1.4s cubic-bezier(.65,0,.35,1),filter 1.4s cubic-bezier(.65,0,.35,1)}
+  .drift{position:absolute;inset:0;transform-style:preserve-3d}
+  .body{position:absolute;inset:0;border-radius:17%/8.3%;background:#0c0c0e;
+    box-shadow:inset 0 0 0 .14cqw #4a4a4f,inset 0 0 0 .32cqw #1b1b1e,inset 0 0 0 .5cqw #0a0a0b,0 3cqw 6cqw -2cqw rgba(0,0,0,.6)}
+  .glass{position:absolute;inset:1.75% 3.6%;border-radius:14%/6.8%;overflow:hidden;background:#000}
+  .glass img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
+  .island{position:absolute;top:2.1%;left:50%;width:31%;height:3.3%;transform:translateX(-50%);border-radius:99px;background:#000;z-index:2}
+  .glare{position:absolute;inset:1.75% 3.6%;border-radius:14%/6.8%;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,.09) 0%,rgba(255,255,255,0) 32%)}
+  .edge{position:absolute;top:4%;bottom:4%;width:1.4cqw;background:linear-gradient(90deg,#2a2a2e,#141416 45%,#2a2a2e);border-radius:.7cqw}
+  .edge.r{right:0;transform:translateX(50%) rotateY(90deg)}
+  .edge.l{left:0;transform:translateX(-50%) rotateY(-90deg)}
+  .btn{position:absolute;width:.3cqw;border-radius:.2cqw;background:#2b2b2f}
+  .btn.a{left:-.25cqw;top:20%;height:5%}.btn.b{left:-.25cqw;top:27%;height:9%}.btn.c{right:-.25cqw;top:25%;height:12%}
+
+  /* one statement at a time: the old line leaves first, then the new one arrives, so two never overlap */
+  .say{position:absolute;left:5cqw;top:50%;width:29cqw;transform:translateY(-50%);z-index:5}
+  .say p{position:absolute;left:0;top:0;margin:0;transform:translateY(-50%);font-family:var(--font-display);font-weight:400;font-size:3.3cqw;line-height:1.14;letter-spacing:-.012em;
+    color:var(--color-primary);text-wrap:balance;opacity:0;filter:blur(.4cqw);translate:0 -.8cqw;transition:opacity .35s ease,filter .35s ease,translate .4s ease}
+  .say p.on{opacity:1;filter:none;translate:0 0;transition:opacity .8s ease .45s,filter .8s ease .45s,translate 1s cubic-bezier(.2,.7,.2,1) .45s}
+
+  /* phones: square, the statement on top, the carousel under it */
+  @media (max-width:599px){
+    .tp{aspect-ratio:1/1}
+    .stage{perspective-origin:50% 40%}
+    .iph{--w:40cqw;left:50cqw;top:38cqw}
+    .say{left:6cqw;right:6cqw;width:auto;top:13cqw}
+    .say p{font-size:6cqw}
+  }
+  @media (prefers-reduced-motion:reduce){ .iph,.say p{transition:none} }
+</style>
+
+<script>
+  function tradelingPromo() {
+    const tp = document.querySelector<HTMLElement>('[data-tradeling-promo]');
+    if (!tp || (tp as any).__on) return;
+    (tp as any).__on = true;
+    const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const BEAT = 4600;   // how long each home holds at the front, swap included
+    const phs = [...tp.querySelectorAll<HTMLElement>('.iph')], says = [...tp.querySelectorAll<HTMLElement>('.say p')];
+
+    // ── the halftone shader: dots in the theme's ink, sized by slow, warped noise ──
+    const cv = tp.querySelector<HTMLCanvasElement>('canvas.bg')!;
+    const gl = cv.getContext('webgl', { antialias: false });
+    let draw = (_t: number) => {};
+    if (gl) {
+      const VS = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
+      const FS = `precision highp float;uniform vec2 r;uniform float t;uniform vec3 ink,bg;
+        float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+        float n(vec2 p){vec2 i=floor(p),f=fract(p);vec2 u=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1,0)),u.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),u.x),u.y);}
+        float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*n(p);p=p*2.03+vec2(1.7,9.2);a*=.5;}return v;}
+        void main(){vec2 fc=gl_FragCoord.xy;float cell=max(5.,r.x/90.);vec2 g=floor(fc/cell),c=(g+.5)*cell,q=c/r.x*3.;
+          float w=fbm(q*1.3+vec2(t*.035,-t*.02));float v=fbm(q+vec2(w*1.6+t*.025,w*.9-t*.018));
+          float rad=cell*.48*smoothstep(.38,.78,v);float a=1.-smoothstep(rad-.9,rad+.3,length(fc-c));
+          gl_FragColor=vec4(mix(bg,ink,a*.15),1.);}`;
+      const sh = (type: number, src: string) => { const s = gl.createShader(type)!; gl.shaderSource(s, src); gl.compileShader(s); return s; };
+      const pr = gl.createProgram()!; gl.attachShader(pr, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, FS)); gl.linkProgram(pr); gl.useProgram(pr);
+      gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer()); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+      const loc = gl.getAttribLocation(pr, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+      const U = (k: string) => gl.getUniformLocation(pr, k);
+      // theme colours can compute as rgb() or color(srgb …), so let a 1×1 canvas resolve them to bytes
+      const px = document.createElement('canvas').getContext('2d', { willReadFrequently: true })!;
+      const rgb = (v: string) => { const d = document.createElement('i'); d.style.color = v; tp.appendChild(d); const c = getComputedStyle(d).color; d.remove();
+        px.clearRect(0, 0, 1, 1); px.fillStyle = c; px.fillRect(0, 0, 1, 1); return [...px.getImageData(0, 0, 1, 1).data.slice(0, 3)].map((x) => x / 255); };
+      let ink = rgb('var(--color-primary)'), bg = rgb('var(--color-surface)');
+      const size = () => { const r = tp.getBoundingClientRect(), d = Math.min(2, devicePixelRatio || 1); cv.width = r.width * d; cv.height = r.height * d; gl.viewport(0, 0, cv.width, cv.height); };
+      draw = (t: number) => { gl.uniform2f(U('r'), cv.width, cv.height); gl.uniform1f(U('t'), t); gl.uniform3fv(U('ink'), ink); gl.uniform3fv(U('bg'), bg); gl.drawArrays(gl.TRIANGLES, 0, 3); };
+      new ResizeObserver(() => { size(); draw(clock); }).observe(tp);
+      new MutationObserver(() => { ink = rgb('var(--color-primary)'); bg = rgb('var(--color-surface)'); draw(clock); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+      size();
+    }
+    // the shader runs only while the card is on screen
+    let clock = 0, last = 0, raf = 0, vis = false;
+    const tick = (now: number) => { if (last) clock += Math.min(.05, (now - last) / 1000); last = now; draw(clock); raf = vis && !document.hidden && !RM ? requestAnimationFrame(tick) : 0; };
+    const runShader = () => { if (!raf && vis && !document.hidden) { last = 0; raf = requestAnimationFrame(tick); } };
+
+    // ── the carousel: three slots, front, back left, back right; each beat everyone moves one slot round ──
+    const SLOTS = () => innerWidth < 600
+      ? [{ x: 0, z: 0, ry: 0, s: 1.12, o: 1 }, { x: -30, z: -34, ry: 30, s: .9, o: .55 }, { x: 30, z: -34, ry: -30, s: .9, o: .55 }]
+      : [{ x: 0, z: 0, ry: -8, s: 1.2, o: 1 }, { x: -20, z: -30, ry: 30, s: .92, o: .5 }, { x: 18, z: -36, ry: -30, s: .92, o: .5 }];
+    const place = (p: HTMLElement, sl: any) => {
+      p.style.transform = `translate3d(${sl.x}cqw,0,${sl.z}cqw) rotateY(${sl.ry}deg) scale(${sl.s})`;
+      p.style.opacity = String(sl.o); p.style.filter = sl.o < 1 ? 'brightness(.7)' : ''; p.style.zIndex = sl.z === 0 ? '3' : '1';
+    };
+    let k = 0, drift: Animation | null = null, timer = 0, state = 'idle';
+    const show = (front: number, animate: boolean) => {
+      phs.forEach((p) => { if (!animate) p.style.transition = 'none'; });
+      phs.forEach((p, i) => place(p, SLOTS()[(i - front + 3) % 3]));
+      says.forEach((s, i) => s.classList.toggle('on', i === front));
+      if (!animate) { void tp.offsetWidth; phs.forEach((p) => { p.style.transition = ''; }); }
+    };
+    const beat = () => {
+      show(k, true);
+      // the front phone drifts up the frame while it holds; the last one eases back as it leaves
+      if (drift) { const el = (drift.effect as KeyframeEffect).target as HTMLElement, cur = getComputedStyle(el).transform; drift.cancel(); el.animate([{ transform: cur }, { transform: 'none' }], { duration: 1400, easing: 'cubic-bezier(.65,0,.35,1)' }); }
+      drift = phs[k].querySelector<HTMLElement>('.drift')!.animate([{ transform: 'translateY(3%)' }, { transform: 'translateY(-6%)' }], { duration: BEAT, delay: 500, easing: 'cubic-bezier(.4,0,.6,1)', fill: 'both' });
+      k = (k + 1) % 3;
+    };
+    const play = () => { state = 'playing'; beat(); timer = window.setInterval(beat, BEAT); };
+    const reset = () => { state = 'idle'; clearInterval(timer); drift?.cancel(); drift = null; k = 0; show(0, false); };
+
+    show(0, false);
+    if (RM) { vis = true; draw(0); return; }
+    const seen = () => { const r = tp.getBoundingClientRect(); const h = Math.min(r.height, innerHeight); return h ? Math.max(0, Math.min(r.bottom, innerHeight) - Math.max(r.top, 0)) / h : 0; };
+    const check = () => {
+      const v = seen(); vis = v > 0; runShader();
+      if (state === 'idle' && v >= 0.8) play(); else if (state !== 'idle' && v < 0.3) reset();
+    };
+    let tk = false;
+    addEventListener('scroll', () => { if (!tk) { tk = true; requestAnimationFrame(() => { tk = false; check(); }); } }, { passive: true });
+    addEventListener('resize', () => { if (state === 'idle') show(0, false); }, { passive: true });
+    document.addEventListener('visibilitychange', () => { if (document.hidden) reset(); else check(); });
+    check(); draw(0);
+  }
+  document.addEventListener('astro:page-load', tradelingPromo);
+</script>
