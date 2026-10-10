@@ -4,8 +4,7 @@
 // prototype's own shader), alone. The camera pulls back: it zooms out, tilts back as the phone lands and
 // straightens, in one smooth move, with the phone fading in around the orb. Then one real turn from the
 // recorded session: the message; Scout thinks; what Scout understood rises out of the phone (the dots behind
-// it brighten softly); Scout's reply; what Scout found rises out too. It plays when most of the card is in view and starts over when it
-// comes back. At rest it shows the intro's first frame, and each loop ends by moving back to it, so it never
+// it brighten softly); Scout's reply; what Scout found rises out too. It plays as soon as a good part of the card is in view and starts over once it has left the screen. At rest it shows the intro's first frame, and each loop ends by moving back to it, so it never
 // cuts. Reduced motion: the finished turn, still.
 ---
 <div class="sp promo-img" data-scout-promo data-cursor-expand role="img"
@@ -199,9 +198,9 @@
     const intro = (paused = false) => {
       clear();
       introAnims = [
-        lift.animate(PULL, { duration: 2600, delay: 700, easing: 'linear', fill: 'backwards' }),
-        ...[skin, glass].map((e) => e.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 1000, delay: 900, easing: 'ease-out', fill: 'backwards' })),
-        ...late.map((e) => e.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 600, delay: 2500, fill: 'backwards' })),
+        lift.animate(PULL, { duration: 2600, delay: 200, easing: 'linear', fill: 'backwards' }),
+        ...[skin, glass].map((e) => e.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 1000, delay: 400, easing: 'ease-out', fill: 'backwards' })),
+        ...late.map((e) => e.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 600, delay: 2000, fill: 'backwards' })),
       ];
       if (paused) introAnims.forEach((a) => a.pause());
     };
@@ -223,21 +222,21 @@
       const loop = (first: boolean) => {
         stage(1);
         if (first) introAnims.forEach((a) => a.play()); else intro();
-        at(4400, () => stage(2));
-        at(5500, () => stage(3));
-        at(6700, () => { stage(4); glow(); });
-        at(8300, () => stage(5));
-        at(9700, () => stage(6));
-        at(13600, () => sp.classList.add('out'));      // the chat, the memory and the home fade
-        at(14300, () => stage(1));                     // the first screen returns; the phone slides back to the middle
-        at(15400, outro);                              // and the camera moves back in to the orb
-        at(16900, () => loop(false));
+        at(3900, () => stage(2));
+        at(5000, () => stage(3));
+        at(6200, () => { stage(4); glow(); });
+        at(7800, () => stage(5));
+        at(9200, () => stage(6));
+        at(13100, () => sp.classList.add('out'));      // the chat, the memory and the home fade
+        at(13800, () => stage(1));                     // the first screen returns; the phone slides back to the middle
+        at(14900, outro);                              // and the camera moves back in to the orb
+        at(16400, () => loop(false));
       };
       loop(true);
     };
     const reset = () => { timers.forEach(clearTimeout); timers = []; state = 'idle'; stage(1); intro(true); };
     const seen = () => { const r = sp.getBoundingClientRect(); const h = Math.min(r.height, innerHeight); return h ? Math.max(0, Math.min(r.bottom, innerHeight) - Math.max(r.top, 0)) / h : 0; };
-    const check = () => { const v = seen(); vis = v > 0; if (state === 'idle' && v >= 0.8) play(); else if (state !== 'idle' && v < 0.3) reset(); syncOrb(); };
+    const check = () => { const v = seen(); vis = v > 0; if (state === 'idle' && v >= 0.4) play(); else if (state !== 'idle' && v === 0) reset(); syncOrb(); };
     let tk = false;
     addEventListener('scroll', () => { if (!tk) { tk = true; requestAnimationFrame(() => { tk = false; check(); }); } }, { passive: true });
     document.addEventListener('visibilitychange', () => { if (document.hidden) reset(); else check(); });

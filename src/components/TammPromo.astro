@@ -5,8 +5,7 @@
 // their places. They were cut from the real home, so once they have landed the page simply carries on: it
 // scrolls down through documents, favourites, featured services and public holidays, then glides back to the
 // top as if Home was tapped, which is where the loop starts again. Behind it, a faint eight-pointed star
-// lattice, after the carved screens of the city's buildings, catching a slow light. It plays when most of the
-// card is in view and starts over when it comes back. Reduced motion: the finished home, still.
+// lattice, after the carved screens of the city's buildings, catching a slow light. It plays as soon as a good part of the card is in view and starts over once it has left the screen. Reduced motion: the finished home, still.
 
 // each widget's place in the home, in the app's own pixels (1125 wide): left, top, right, bottom of the scroll strip
 const PC = { w: [43, 95, 1082, 475], c: [47, 744, 1077, 1105], i: [47, 1140, 1077, 1501] } as const;
@@ -145,13 +144,13 @@ const at = ([l, t, r, b]: readonly number[]) =>
       ORDER.forEach((k) => { pcs[k].style.transform = ''; pcs[k].style.filter = ''; });
       // they float a moment, then fly in one after another and land in focus; each slot clears as its widget lands
       ORDER.forEach((k, n) => {
-        const delay = 700 + n * 240, dur = 1500;
+        const delay = 200 + n * 240, dur = 1500;
         anims.push(pcs[k].animate([{ transform: away(k), filter: blur(k) }, { transform: 'none', filter: 'blur(0)' }],
           { duration: dur, delay, easing: 'cubic-bezier(.22,.68,.18,1)', fill: 'backwards' }));
         anims.push(slots[k].animate([{ opacity: 1 }, { opacity: 0 }], { duration: 10, delay: delay + dur - 10, fill: 'both' }));
       });
       // once all have landed, the page beneath carries on; the widgets were cut from it, so nothing changes
-      const done = 700 + (ORDER.length - 1) * 240 + 1500;
+      const done = 200 + (ORDER.length - 1) * 240 + 1500;
       ORDER.forEach((k) => anims.push(pcs[k].animate([{ opacity: 1 }, { opacity: 0 }], { duration: 10, delay: done + 100, fill: 'both' })));
       const o = { duration: LOOP, iterations: Infinity, delay: done + 300 };
       // the home scrolls in steps, then a tap on Home glides it back to the top
@@ -167,7 +166,7 @@ const at = ([l, t, r, b]: readonly number[]) =>
     const seen = () => { const r = tm.getBoundingClientRect(); const h = Math.min(r.height, innerHeight); return h ? Math.max(0, Math.min(r.bottom, innerHeight) - Math.max(r.top, 0)) / h : 0; };
     const check = () => {
       const v = seen(); vis = v > 0; runShader();
-      if (state === 'idle' && v >= 0.8) play(); else if (state !== 'idle' && v < 0.3) reset();
+      if (state === 'idle' && v >= 0.4) play(); else if (state !== 'idle' && v === 0) reset();
     };
     let tk = false;
     addEventListener('scroll', () => { if (!tk) { tk = true; requestAnimationFrame(() => { tk = false; check(); }); } }, { passive: true });

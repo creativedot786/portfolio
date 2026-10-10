@@ -3,8 +3,7 @@
 // homes (Grocery, Independent Retailer, Default) sit in a slow 3D carousel of dark iPhones. The front one
 // drifts up the frame while it holds, as if the camera were tracking down its screen; then it steps back and
 // the next swings forward from behind. One statement at a time. Three swaps return to the start, so the
-// loop never cuts. Behind it, soft light and shade on the theme's page colour, with a fine grain. It plays when most of the
-// card is in view and starts over when it comes back. Reduced motion: the first frame, still.
+// loop never cuts. Behind it, soft light and shade on the theme's page colour, with a fine grain. It plays as soon as a good part of the card is in view and starts over once it has left the screen. Reduced motion: the first frame, still.
 const homes = [
   { k: 'g', alt: 'Grocery' },
   { k: 'e', alt: 'Independent Retailer' },
@@ -39,7 +38,7 @@ const say = [
 
   /* the iPhone: dark titanium edge, black glass, the Dynamic Island, and depth when it turns */
   .iph{--w:23.5cqw;position:absolute;left:64cqw;top:9.5cqw;width:var(--w);aspect-ratio:71.6/146.6;margin-left:calc(var(--w) / -2);transform-style:preserve-3d;
-    transition:transform 1.4s cubic-bezier(.65,0,.35,1),opacity 1.4s cubic-bezier(.65,0,.35,1),filter 1.4s cubic-bezier(.65,0,.35,1)}
+    transition:transform 1.2s cubic-bezier(.65,0,.35,1),opacity 1.2s cubic-bezier(.65,0,.35,1),filter 1.2s cubic-bezier(.65,0,.35,1)}
   .drift{position:absolute;inset:0;transform-style:preserve-3d}
   .body{position:absolute;inset:0;border-radius:17%/8.3%;background:#0c0c0e;
     box-shadow:inset 0 0 0 .14cqw #4a4a4f,inset 0 0 0 .32cqw #1b1b1e,inset 0 0 0 .5cqw #0a0a0b,0 3cqw 6cqw -2cqw rgba(0,0,0,.6)}
@@ -76,7 +75,7 @@ const say = [
     if (!tp || (tp as any).__on) return;
     (tp as any).__on = true;
     const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const BEAT = 4600;   // how long each home holds at the front, swap included
+    const BEAT = 3800;   // how long each home holds at the front, swap included
     const phs = [...tp.querySelectorAll<HTMLElement>('.iph')], says = [...tp.querySelectorAll<HTMLElement>('.say p')];
 
     // ── the soft-light shader: slow light and shade drifting across the surface, with fine grain ──
@@ -132,23 +131,25 @@ const say = [
     const beat = () => {
       show(k, true);
       // the front phone drifts up the frame while it holds; the last one eases back as it leaves
-      if (drift) { const el = (drift.effect as KeyframeEffect).target as HTMLElement, cur = getComputedStyle(el).transform; drift.cancel(); el.animate([{ transform: cur }, { transform: 'none' }], { duration: 1400, easing: 'cubic-bezier(.65,0,.35,1)' }); }
-      drift = phs[k].querySelector<HTMLElement>('.drift')!.animate([{ transform: 'translateY(3%)' }, { transform: 'translateY(-6%)' }], { duration: BEAT, delay: 500, easing: 'cubic-bezier(.4,0,.6,1)', fill: 'both' });
+      if (drift) { const el = (drift.effect as KeyframeEffect).target as HTMLElement, cur = getComputedStyle(el).transform; drift.cancel(); el.animate([{ transform: cur }, { transform: 'none' }], { duration: 1200, easing: 'cubic-bezier(.65,0,.35,1)' }); }
+      drift = phs[k].querySelector<HTMLElement>('.drift')!.animate([{ transform: 'translateY(3%)' }, { transform: 'translateY(-6%)' }], { duration: BEAT, easing: 'cubic-bezier(.4,0,.6,1)', fill: 'both' });
       k = (k + 1) % 3;
     };
+    // at rest the carousel waits one turn back, with no statement, so the first thing it does in view is turn
+    const rest = () => { show(2, false); says.forEach((s) => s.classList.remove('on')); };
     const play = () => { state = 'playing'; beat(); timer = window.setInterval(beat, BEAT); };
-    const reset = () => { state = 'idle'; clearInterval(timer); drift?.cancel(); drift = null; k = 0; show(0, false); };
+    const reset = () => { state = 'idle'; clearInterval(timer); drift?.cancel(); drift = null; k = 0; rest(); };
 
-    show(0, false);
-    if (RM) { vis = true; draw(0); return; }
+    if (RM) { show(0, false); vis = true; draw(0); return; }
+    rest();
     const seen = () => { const r = tp.getBoundingClientRect(); const h = Math.min(r.height, innerHeight); return h ? Math.max(0, Math.min(r.bottom, innerHeight) - Math.max(r.top, 0)) / h : 0; };
     const check = () => {
       const v = seen(); vis = v > 0; runShader();
-      if (state === 'idle' && v >= 0.8) play(); else if (state !== 'idle' && v < 0.3) reset();
+      if (state === 'idle' && v >= 0.4) play(); else if (state !== 'idle' && v === 0) reset();
     };
     let tk = false;
     addEventListener('scroll', () => { if (!tk) { tk = true; requestAnimationFrame(() => { tk = false; check(); }); } }, { passive: true });
-    addEventListener('resize', () => { if (state === 'idle') show(0, false); }, { passive: true });
+    addEventListener('resize', () => { if (state === 'idle') rest(); }, { passive: true });
     document.addEventListener('visibilitychange', () => { if (document.hidden) reset(); else check(); });
     check(); draw(0);
   }

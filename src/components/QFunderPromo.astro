@@ -4,8 +4,7 @@
 // dark laptop, the keyboard cut by the frame. From there it holds with a slight sway: the home page scrolls to
 // the loan calculator, changes to the dashboard the way a browser changes pages, the dashboard scrolls to the
 // financial solutions, and it changes back. The loop never zooms, and its last frame is its first. Behind it,
-// slow silk folds in the theme's own colours. It plays when most of the card is in view and starts over when it
-// comes back. Reduced motion: the settled frame, still.
+// slow silk folds in the theme's own colours. It plays as soon as a good part of the card is in view and starts over once it has left the screen. Reduced motion: the settled frame, still.
 ---
 <div class="qp promo-img" data-qfunder-promo data-cursor-expand role="img"
   aria-label="The QFunder website on a dark laptop: the home page, UAE's fastest business funding, scrolls down to the loan calculator, then the business's dashboard shows its applications, active loan and outstanding balance.">
@@ -123,8 +122,8 @@
     const play = () => {
       state = 'playing'; rig.style.transform = '';
       // one move, eased at both ends: it holds on the page, then glides back and comes to rest
-      anims.push(rig.animate([{ transform: START() }, { transform: 'none' }], { duration: 2600, delay: 700, easing: 'cubic-bezier(.65,0,.25,1)', fill: 'backwards' }));
-      const o = { duration: LOOP, iterations: Infinity, delay: 3000 };
+      anims.push(rig.animate([{ transform: START() }, { transform: 'none' }], { duration: 2600, delay: 200, easing: 'cubic-bezier(.65,0,.25,1)', fill: 'backwards' }));
+      const o = { duration: LOOP, iterations: Infinity, delay: 2500 };
       // the sway starts and ends at rest, so it picks up from the intro without a jump
       anims.push(sway.animate(kf('transform', [[0, 'none'], [.25, 'rotateY(-2deg) rotateX(.8deg)'], [.75, 'rotateY(2deg) rotateX(-.4deg)'], [1, 'none']]), o));
       anims.push(L.querySelector('img')!.animate(kf('transform', [[0, 'translateY(0)'], [.08, 'translateY(0)'], [.42, 'translateY(-46%)'], [.6, 'translateY(-46%)'], [.61, 'translateY(0)'], [1, 'translateY(0)']]), o));
@@ -141,7 +140,7 @@
     const seen = () => { const r = qp.getBoundingClientRect(); const h = Math.min(r.height, innerHeight); return h ? Math.max(0, Math.min(r.bottom, innerHeight) - Math.max(r.top, 0)) / h : 0; };
     const check = () => {
       const v = seen(); vis = v > 0; runShader();
-      if (state === 'idle' && v >= 0.8) play(); else if (state !== 'idle' && v < 0.3) reset();
+      if (state === 'idle' && v >= 0.4) play(); else if (state !== 'idle' && v === 0) reset();
     };
     let tk = false;
     addEventListener('scroll', () => { if (!tk) { tk = true; requestAnimationFrame(() => { tk = false; check(); }); } }, { passive: true });
