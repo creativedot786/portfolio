@@ -1,0 +1,153 @@
+---
+// The QFunder card's picture on the home page. No words, two real screens: the home page and the dashboard.
+// It opens on the website itself, edge to edge, then the camera glides back just far enough to show it is on a
+// dark laptop, the keyboard cut by the frame. From there it holds with a slight sway: the home page scrolls to
+// the loan calculator, changes to the dashboard the way a browser changes pages, the dashboard scrolls to the
+// financial solutions, and it changes back. The loop never zooms, and its last frame is its first. Behind it,
+// slow silk folds in the theme's own colours. It plays when most of the card is in view and starts over when it
+// comes back. Reduced motion: the settled frame, still.
+---
+<div class="qp promo-img" data-qfunder-promo data-cursor-expand role="img"
+  aria-label="The QFunder website on a dark laptop: the home page, UAE's fastest business funding, scrolls down to the loan calculator, then the business's dashboard shows its applications, active loan and outstanding balance.">
+  <canvas class="bg" aria-hidden="true"></canvas>
+  <div class="stage" aria-hidden="true"><div class="rig"><div class="sway"><div class="mac">
+    <div class="lid">
+      <div class="bezel">
+        <div class="scr">
+          <div class="chrome"><i></i><i></i><i></i><span>qfunder.tradeling.com</span></div>
+          <div class="view">
+            <div class="pg l"><img src="/work/qfunder-promo/l.jpg" alt="" width="1400" height="2164" loading="lazy" decoding="async" /></div>
+            <div class="pg b"><img src="/work/qfunder-promo/b.jpg" alt="" width="1600" height="1765" loading="lazy" decoding="async" /></div>
+          </div>
+        </div>
+        <span class="notch"></span>
+      </div>
+      <div class="glare"></div>
+    </div>
+    <div class="deck"><div class="kb"></div><div class="pad"></div><div class="lip"></div></div>
+  </div></div></div></div>
+</div>
+
+<style>
+  .qp{position:relative;display:block;width:100%;aspect-ratio:16/10;overflow:hidden;background:var(--color-page);container-type:inline-size}
+  .bg{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .stage{position:absolute;inset:0;perspective:120cqw;perspective-origin:50% 30%}
+  /* the intro camera, then a sway of a couple of degrees; both pivot on the screen */
+  .rig,.sway{position:absolute;inset:0;transform-style:preserve-3d;transform-origin:50% 40%}
+
+  /* the laptop, settled: the screen fills the frame and the bottom edge cuts the keyboard in half */
+  .mac{--w:80cqw;position:absolute;left:50cqw;top:6.5cqw;width:var(--w);margin-left:calc(var(--w) / -2);aspect-ratio:1.54;transform-style:preserve-3d}
+  .lid{position:absolute;inset:0;transform-origin:50% 100%;transform:rotateX(6deg);transform-style:preserve-3d;border-radius:3.2% 3.2% 1% 1%/4.9% 4.9% 1.5% 1.5%;
+    background:#1c1d20;box-shadow:inset 0 0 0 .12cqw #3d3e43,inset 0 0 0 .3cqw #141517}
+  .bezel{position:absolute;inset:1.5% 1.2% 1.4%;border-radius:2.4% 2.4% .6% .6%/3.7% 3.7% .9% .9%;background:#050506;overflow:hidden}
+  .scr{position:absolute;inset:2.6% 1.7% 2.4%;overflow:hidden;background:#f5f9fc;border-radius:.4cqw .4cqw 0 0}
+  .notch{position:absolute;top:0;left:50%;width:9%;height:2.6%;transform:translateX(-50%);background:#050506;border-radius:0 0 .5cqw .5cqw;z-index:3}
+  .glare{position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(118deg,rgba(255,255,255,.07) 0%,rgba(255,255,255,0) 30%);z-index:4}
+  .deck{position:absolute;left:-1.5%;right:-1.5%;top:100%;height:64%;transform-origin:50% 0;transform:rotateX(90deg);transform-style:preserve-3d;
+    border-radius:0 0 2.6% 2.6%/0 0 5% 5%;background:linear-gradient(#26272b,#1b1c1f);box-shadow:inset 0 0 0 .12cqw #3a3b40}
+  .kb{position:absolute;left:12%;right:12%;top:8%;height:46%;border-radius:1.2%/2.6%;background:#0f1012;
+    background-image:repeating-linear-gradient(90deg,transparent 0 calc(6.66% - .14cqw),#26272b calc(6.66% - .14cqw) 6.66%),repeating-linear-gradient(0deg,transparent 0 calc(16.66% - .14cqw),#26272b calc(16.66% - .14cqw) 16.66%)}
+  .pad{position:absolute;left:33%;right:33%;top:60%;height:33%;border-radius:2%/5%;background:#212226;box-shadow:inset 0 0 0 .1cqw #34353a}
+  .lip{position:absolute;left:0;right:0;bottom:0;height:1.1cqw;transform-origin:50% 100%;transform:rotateX(-90deg);background:linear-gradient(#2c2d31,#121315);border-radius:0 0 .6cqw .6cqw}
+
+  /* the browser: light chrome with the real address, the pages under it */
+  .chrome{position:absolute;left:0;right:0;top:0;height:5.4%;background:#eceef1;display:flex;align-items:center;gap:.5cqw;padding:0 1.2cqw;box-shadow:inset 0 -1px 0 #dcdfe4;z-index:2}
+  .chrome i{width:.62cqw;height:.62cqw;border-radius:50%;background:#cfd2d8}
+  .chrome span{margin:0 auto;padding:.18cqw 2.4cqw;border-radius:.5cqw;background:#fff;font:500 .82cqw/1.3 var(--font-body);color:#5b6170;letter-spacing:.01em}
+  .view{position:absolute;left:0;right:0;top:5.4%;bottom:0;overflow:hidden;background:#f5f9fc}
+  .pg{position:absolute;inset:0;background:#f5f9fc}
+  .pg img{display:block;width:100%;height:auto}
+  .pg.b{opacity:0}
+
+  /* phones: square, the laptop lower and wider so the screen still carries the frame */
+  @media (max-width:599px){
+    .qp{aspect-ratio:1/1}
+    .stage{perspective-origin:50% 40%}
+    .rig,.sway{transform-origin:50% 50%}
+    .mac{--w:96cqw;top:31cqw}
+    .chrome span{font-size:1.2cqw}.chrome i{width:.9cqw;height:.9cqw}
+  }
+</style>
+
+<script>
+  function qfunderPromo() {
+    const qp = document.querySelector<HTMLElement>('[data-qfunder-promo]');
+    if (!qp || (qp as any).__on) return;
+    (qp as any).__on = true;
+    const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const LOOP = 16000;   // home scroll, dashboard, dashboard scroll, back home; end frame = first frame
+    const E = 'cubic-bezier(.45,0,.55,1)';
+    const rig = qp.querySelector<HTMLElement>('.rig')!, sway = qp.querySelector<HTMLElement>('.sway')!;
+    const L = qp.querySelector<HTMLElement>('.pg.l')!, B = qp.querySelector<HTMLElement>('.pg.b')!;
+
+    // ── silk: slow folds in the theme's ink over its page colour, with a fine grain ──
+    const cv = qp.querySelector<HTMLCanvasElement>('canvas.bg')!;
+    const gl = cv.getContext('webgl', { antialias: false });
+    let draw = (_t: number) => {};
+    if (gl) {
+      const VS = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
+      const FS = `precision highp float;uniform vec2 r;uniform float t;uniform vec3 ink,bg;
+        float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+        float n(vec2 p){vec2 i=floor(p),f=fract(p);vec2 u=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1,0)),u.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),u.x),u.y);}
+        float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*n(p);p=p*2.03+vec2(1.7,9.2);a*=.5;}return v;}
+        void main(){vec2 fc=gl_FragCoord.xy,q=fc/r.x*1.5;float grain=(h(fc+fract(t)*91.)-.5)*.03;
+          float w=fbm(q*.9+vec2(t*.012,-t*.008));float s=sin((q.x*1.1+q.y*2.3+w*3.2)*2.6+t*.12);
+          float l=pow(.5+.5*s,3.)*(.55+.45*fbm(q*2.2-t*.01))*.09;
+          gl_FragColor=vec4(mix(bg,ink,l)+grain,1.);}`;
+      const sh = (type: number, src: string) => { const s = gl.createShader(type)!; gl.shaderSource(s, src); gl.compileShader(s); return s; };
+      const pr = gl.createProgram()!; gl.attachShader(pr, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, FS)); gl.linkProgram(pr); gl.useProgram(pr);
+      gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer()); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+      const loc = gl.getAttribLocation(pr, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+      const U = (k: string) => gl.getUniformLocation(pr, k);
+      // theme colours can compute as rgb() or color(srgb …), so let a 1×1 canvas resolve them to bytes
+      const px = document.createElement('canvas').getContext('2d', { willReadFrequently: true })!;
+      const rgb = (v: string) => { const d = document.createElement('i'); d.style.color = v; qp.appendChild(d); const c = getComputedStyle(d).color; d.remove();
+        px.clearRect(0, 0, 1, 1); px.fillStyle = c; px.fillRect(0, 0, 1, 1); return [...px.getImageData(0, 0, 1, 1).data.slice(0, 3)].map((x) => x / 255); };
+      let ink = rgb('var(--color-primary)'), bg = rgb('var(--color-page)');
+      const size = () => { const r = qp.getBoundingClientRect(), d = Math.min(2, devicePixelRatio || 1); cv.width = r.width * d; cv.height = r.height * d; gl.viewport(0, 0, cv.width, cv.height); };
+      draw = (t: number) => { gl.uniform2f(U('r'), cv.width, cv.height); gl.uniform1f(U('t'), t); gl.uniform3fv(U('ink'), ink); gl.uniform3fv(U('bg'), bg); gl.drawArrays(gl.TRIANGLES, 0, 3); };
+      new ResizeObserver(() => { size(); draw(clock); }).observe(qp);
+      new MutationObserver(() => { ink = rgb('var(--color-primary)'); bg = rgb('var(--color-page)'); draw(clock); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+      size();
+    }
+    // the shader runs only while the card is on screen
+    let clock = 0, last = 0, raf = 0, vis = false;
+    const tick = (now: number) => { if (last) clock += Math.min(.05, (now - last) / 1000); last = now; draw(clock); raf = vis && !document.hidden && !RM ? requestAnimationFrame(tick) : 0; };
+    const runShader = () => { if (!raf && vis && !document.hidden) { last = 0; raf = requestAnimationFrame(tick); } };
+
+    // ── the shot ──
+    const kf = (prop: string, steps: [number, string | number][]) => steps.map(([o, v]) => ({ offset: o, [prop]: v, easing: E }));
+    // where it opens: the page edge to edge, the laptop out of frame
+    const START = () => innerWidth < 600 ? 'translate3d(0,-13cqw,0) scale(1.16)' : 'translate3d(0,-3.5cqw,0) scale(1.34)';
+    let anims: Animation[] = [], state = 'idle';
+    const play = () => {
+      state = 'playing'; rig.style.transform = '';
+      // one move, eased at both ends: it holds on the page, then glides back and comes to rest
+      anims.push(rig.animate([{ transform: START() }, { transform: 'none' }], { duration: 2600, delay: 700, easing: 'cubic-bezier(.65,0,.25,1)', fill: 'backwards' }));
+      const o = { duration: LOOP, iterations: Infinity, delay: 3000 };
+      // the sway starts and ends at rest, so it picks up from the intro without a jump
+      anims.push(sway.animate(kf('transform', [[0, 'none'], [.25, 'rotateY(-2deg) rotateX(.8deg)'], [.75, 'rotateY(2deg) rotateX(-.4deg)'], [1, 'none']]), o));
+      anims.push(L.querySelector('img')!.animate(kf('transform', [[0, 'translateY(0)'], [.08, 'translateY(0)'], [.42, 'translateY(-46%)'], [.6, 'translateY(-46%)'], [.61, 'translateY(0)'], [1, 'translateY(0)']]), o));
+      // a page change, the way a browser does it: the old page clears, a beat of blank, the new one fades up
+      anims.push(L.animate(kf('opacity', [[0, 1], [.47, 1], [.49, 0], [.955, 0], [.98, 1], [1, 1]]), o));
+      anims.push(B.animate(kf('opacity', [[0, 0], [.5, 0], [.53, 1], [.93, 1], [.95, 0], [1, 0]]), o));
+      anims.push(B.animate(kf('transform', [[0, 'translateY(1.5%)'], [.5, 'translateY(1.5%)'], [.54, 'translateY(0)'], [.95, 'translateY(0)'], [.96, 'translateY(1.5%)'], [1, 'translateY(1.5%)']]), o));
+      anims.push(B.querySelector('img')!.animate(kf('transform', [[0, 'translateY(0)'], [.62, 'translateY(0)'], [.86, 'translateY(-34%)'], [.98, 'translateY(-34%)'], [.99, 'translateY(0)'], [1, 'translateY(0)']]), o));
+    };
+    const reset = () => { state = 'idle'; anims.forEach((a) => a.cancel()); anims = []; rig.style.transform = START(); };
+
+    if (RM) { vis = true; draw(0); return; }
+    reset();
+    const seen = () => { const r = qp.getBoundingClientRect(); const h = Math.min(r.height, innerHeight); return h ? Math.max(0, Math.min(r.bottom, innerHeight) - Math.max(r.top, 0)) / h : 0; };
+    const check = () => {
+      const v = seen(); vis = v > 0; runShader();
+      if (state === 'idle' && v >= 0.8) play(); else if (state !== 'idle' && v < 0.3) reset();
+    };
+    let tk = false;
+    addEventListener('scroll', () => { if (!tk) { tk = true; requestAnimationFrame(() => { tk = false; check(); }); } }, { passive: true });
+    addEventListener('resize', () => { if (state === 'idle') rig.style.transform = START(); }, { passive: true });
+    document.addEventListener('visibilitychange', () => { if (document.hidden) reset(); else check(); });
+    check(); draw(0);
+  }
+  document.addEventListener('astro:page-load', qfunderPromo);
+</script>

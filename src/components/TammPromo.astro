@@ -1,0 +1,179 @@
+---
+// The TAMM card's picture on the home page. TAMM brought scattered government services into one home, so the
+// card shows exactly that, with no words: the home's real widgets (welcome, a complaint, a request for
+// information) float apart in front of a dark iPhone whose home is empty, then fly in one by one and land in
+// their places. They were cut from the real home, so once they have landed the page simply carries on: it
+// scrolls down through documents, favourites, featured services and public holidays, then glides back to the
+// top as if Home was tapped, which is where the loop starts again. Behind it, a faint eight-pointed star
+// lattice, after the carved screens of the city's buildings, catching a slow light. It plays when most of the
+// card is in view and starts over when it comes back. Reduced motion: the finished home, still.
+
+// each widget's place in the home, in the app's own pixels (1125 wide): left, top, right, bottom of the scroll strip
+const PC = { w: [43, 95, 1082, 475], c: [47, 744, 1077, 1105], i: [47, 1140, 1077, 1501] } as const;
+const ORDER = ['w', 'c', 'i'] as const;
+// the strip starts 264px down, under the header
+const at = ([l, t, r, b]: readonly number[]) =>
+  `left:calc(${l} * var(--u));top:calc(${264 + t} * var(--u));width:calc(${r - l} * var(--u));height:calc(${b - t} * var(--u))`;
+---
+<div class="tm promo-img" data-tamm-promo data-cursor-expand role="img"
+  aria-label="The TAMM app's home on a dark iPhone: its widgets, a welcome, a complaint in progress and a request for information, fly in and land in place, then the home scrolls through documents, favourites, featured services and public holidays.">
+  <canvas class="bg" aria-hidden="true"></canvas>
+  <div class="stage" aria-hidden="true"><div class="sway"><div class="iph">
+    <span class="edge l"></span><span class="edge r"></span><div class="body"></div>
+    <div class="glass">
+      <img class="strip" src="/work/tamm-promo/strip.jpg" alt="" width="750" height="5444" loading="lazy" decoding="async" />
+      {ORDER.map((k) => <div class="slot" data-k={k} style={at(PC[k])}></div>)}
+      <img class="top" src="/work/tamm-promo/top.jpg" alt="" width="750" height="176" loading="lazy" decoding="async" />
+      <div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg viewBox="0 0 16 12"><path d="M8 11.5 5.6 9a3.4 3.4 0 0 1 4.8 0zM3.5 6.9a6.4 6.4 0 0 1 9 0l-1.4 1.4a4.4 4.4 0 0 0-6.2 0zM1.2 4.6a9.6 9.6 0 0 1 13.6 0l-1.4 1.4a7.6 7.6 0 0 0-10.8 0z"/></svg><svg viewBox="0 0 27 13"><rect x=".5" y=".5" width="23" height="12" rx="3.5" fill="none" stroke="currentColor" opacity=".4"/><rect x="2.5" y="2.5" width="19" height="8" rx="2"/><path d="M25 4.5v4c.8-.3 1.4-1.1 1.4-2s-.6-1.7-1.4-2z" opacity=".45"/></svg></i></div>
+    </div>
+    <div class="fly">{ORDER.map((k) => <img class="pc" data-k={k} src={`/work/tamm-promo/${k}.jpg`} alt="" loading="lazy" decoding="async" style={at(PC[k])} />)}</div>
+    <div class="glare"></div><span class="island"></span><i class="btn a"></i><i class="btn b"></i><i class="btn c"></i>
+  </div></div></div>
+</div>
+
+<style>
+  .tm{position:relative;display:block;width:100%;aspect-ratio:16/10;overflow:hidden;background:var(--color-page);container-type:inline-size}
+  .bg{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .stage{position:absolute;inset:0;perspective:110cqw;perspective-origin:50% 45%}
+  .sway{position:absolute;inset:0;transform-style:preserve-3d;transform-origin:50% 50%}
+
+  /* the iPhone, as on the Tradeling card, close enough that the frame cuts it below the quick actions.
+     --s is 1% of the screen's width, --u one pixel of the 1125px-wide app */
+  .iph{--w:36cqw;--s:calc(var(--w) * .00928);--u:calc(var(--s) * 100 / 1125);position:absolute;left:50cqw;top:3cqw;width:var(--w);aspect-ratio:71.6/146.6;margin-left:calc(var(--w) / -2);
+    transform-style:preserve-3d;transform:rotateY(-14deg) rotateX(3deg)}
+  .body{position:absolute;inset:0;border-radius:17%/8.3%;background:#0c0c0e;
+    box-shadow:inset 0 0 0 .14cqw #4a4a4f,inset 0 0 0 .32cqw #1b1b1e,inset 0 0 0 .5cqw #0a0a0b,0 3cqw 6cqw -2cqw rgba(0,0,0,.6)}
+  .glass,.fly{position:absolute;inset:1.75% 3.6%}
+  .glass{border-radius:14%/6.8%;overflow:hidden;background:#f9f9f9}
+  /* nothing shares the glass's plane: the landing layer sits a hair in front, the island and glare above it */
+  .fly{transform-style:preserve-3d;transform:translateZ(.15cqw)}
+  .island{position:absolute;top:2.1%;left:50%;width:31%;height:3.3%;transform:translateX(-50%) translateZ(.3cqw);border-radius:99px;background:#000}
+  .glare{position:absolute;inset:1.75% 3.6%;border-radius:14%/6.8%;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,.09) 0%,rgba(255,255,255,0) 32%);transform:translateZ(.35cqw)}
+  .edge{position:absolute;top:4%;bottom:4%;width:1.4cqw;background:linear-gradient(90deg,#2a2a2e,#141416 45%,#2a2a2e);border-radius:.7cqw}
+  .edge.r{right:0;transform:translateX(50%) rotateY(90deg)}
+  .edge.l{left:0;transform:translateX(-50%) rotateY(-90deg)}
+  .btn{position:absolute;width:.3cqw;border-radius:.2cqw;background:#2b2b2f}
+  .btn.a{left:-.25cqw;top:20%;height:5%}.btn.b{left:-.25cqw;top:27%;height:9%}.btn.c{right:-.25cqw;top:25%;height:12%}
+
+  /* the home: the scrolling page, the empty slots waiting for their widgets, the header and status bar */
+  .strip{position:absolute;left:0;top:calc(264 * var(--u));width:100%;height:auto;display:block}
+  .slot{position:absolute;background:#f9f9f9}
+  .slot::after{content:"";position:absolute;inset:6%;border-radius:calc(30 * var(--u));background:#efeff1}
+  .top{position:absolute;left:0;top:0;width:100%;height:auto;display:block}
+  .sb{position:absolute;left:0;right:0;top:0;height:calc(11.7 * var(--s));display:flex;align-items:center;justify-content:space-between;padding:0 calc(7 * var(--s)) 0 calc(9 * var(--s));
+    font:600 calc(4 * var(--s))/1 -apple-system,"SF Pro Text",system-ui,sans-serif;color:#0b0b0d}
+  .sb i{display:flex;align-items:center;gap:calc(1.3 * var(--s))}
+  .sb svg{display:block;fill:#0b0b0d;color:#0b0b0d;height:calc(2.9 * var(--s));width:auto}
+  /* a widget: the real card, cut from the home */
+  .pc{position:absolute;display:block;border-radius:calc(22 * var(--u));box-shadow:0 1.2cqw 2.4cqw -1cqw rgba(0,0,0,.35)}
+
+  /* phones: square, the phone larger so the frame still cuts it below the quick actions */
+  @media (max-width:599px){
+    .tm{aspect-ratio:1/1}
+    .iph{--w:57cqw;top:6cqw;transform:rotateY(-10deg) rotateX(3deg)}
+  }
+</style>
+
+<script>
+  function tammPromo() {
+    const tm = document.querySelector<HTMLElement>('[data-tamm-promo]');
+    if (!tm || (tm as any).__on) return;
+    (tm as any).__on = true;
+    const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const LOOP = 16000;
+    const E = 'cubic-bezier(.45,0,.55,1)';
+    const ORDER = ['w', 'c', 'i'];
+    // where each widget floats before it flies in, relative to its place: x, y, z (card widths), turn, tilt, blur.
+    // All of them wait in front of the phone, so they land onto the screen and never pass behind it.
+    const FROM: Record<string, Record<string, number[]>> = {
+      wide: { w: [-28, 3, 7, 22, -5, .15], c: [27, -6, 10, -24, 4, .25], i: [-25, -2, 12, 20, 3, .3] },
+      sq: { w: [-21, -5, 6, 18, -5, .2], c: [20, -12, 9, -20, 4, .3], i: [-22, -8, 11, 18, 3, .35] },
+    };
+    const sway = tm.querySelector<HTMLElement>('.sway')!, strip = tm.querySelector<HTMLElement>('.strip')!;
+    const pcs = Object.fromEntries(ORDER.map((k) => [k, tm.querySelector<HTMLElement>(`.pc[data-k="${k}"]`)!]));
+    const slots = Object.fromEntries(ORDER.map((k) => [k, tm.querySelector<HTMLElement>(`.slot[data-k="${k}"]`)!]));
+
+    // ── the lattice: eight-pointed stars in the theme's ink over its page colour, a slow light passing across ──
+    const cv = tm.querySelector<HTMLCanvasElement>('canvas.bg')!;
+    const gl = cv.getContext('webgl', { antialias: false });
+    let draw = (_t: number) => {};
+    if (gl) {
+      const VS = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
+      const FS = `precision highp float;uniform vec2 r;uniform float t;uniform vec3 ink,bg;
+        float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+        float star(vec2 g){vec2 q=vec2(g.x+g.y,g.x-g.y)*.70710678;return min(max(abs(g.x),abs(g.y)),max(abs(q.x),abs(q.y)));}
+        void main(){vec2 fc=gl_FragCoord.xy,uv=fc/r;float grain=(h(fc+fract(t)*91.)-.5)*.025;
+          float cell=r.x/13.;vec2 p=fc/cell;float px=1.2/cell;
+          float s1=star(fract(p)-.5),s2=star(fract(p+.5)-.5);
+          float line=max(1.-smoothstep(0.,px,abs(s1-.3)),(1.-smoothstep(0.,px,abs(s2-.16)))*.8);
+          vec2 lp=vec2(.5+.38*sin(t*.06),.55+.22*cos(t*.045));vec2 d=(uv-lp)*vec2(r.x/r.y,1.);
+          float light=exp(-dot(d,d)*3.);
+          float a=line*(.022+.12*light)+light*.02;
+          gl_FragColor=vec4(mix(bg,ink,a)+grain,1.);}`;
+      const sh = (type: number, src: string) => { const s = gl.createShader(type)!; gl.shaderSource(s, src); gl.compileShader(s); return s; };
+      const pr = gl.createProgram()!; gl.attachShader(pr, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, FS)); gl.linkProgram(pr); gl.useProgram(pr);
+      gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer()); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+      const loc = gl.getAttribLocation(pr, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+      const U = (k: string) => gl.getUniformLocation(pr, k);
+      // theme colours can compute as rgb() or color(srgb …), so let a 1×1 canvas resolve them to bytes
+      const px = document.createElement('canvas').getContext('2d', { willReadFrequently: true })!;
+      const rgb = (v: string) => { const d = document.createElement('i'); d.style.color = v; tm.appendChild(d); const c = getComputedStyle(d).color; d.remove();
+        px.clearRect(0, 0, 1, 1); px.fillStyle = c; px.fillRect(0, 0, 1, 1); return [...px.getImageData(0, 0, 1, 1).data.slice(0, 3)].map((x) => x / 255); };
+      let ink = rgb('var(--color-primary)'), bg = rgb('var(--color-page)');
+      const size = () => { const r = tm.getBoundingClientRect(), d = Math.min(2, devicePixelRatio || 1); cv.width = r.width * d; cv.height = r.height * d; gl.viewport(0, 0, cv.width, cv.height); };
+      draw = (t: number) => { gl.uniform2f(U('r'), cv.width, cv.height); gl.uniform1f(U('t'), t); gl.uniform3fv(U('ink'), ink); gl.uniform3fv(U('bg'), bg); gl.drawArrays(gl.TRIANGLES, 0, 3); };
+      new ResizeObserver(() => { size(); draw(clock); }).observe(tm);
+      new MutationObserver(() => { ink = rgb('var(--color-primary)'); bg = rgb('var(--color-page)'); draw(clock); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+      size();
+    }
+    // the shader runs only while the card is on screen
+    let clock = 0, last = 0, raf = 0, vis = false;
+    const tick = (now: number) => { if (last) clock += Math.min(.05, (now - last) / 1000); last = now; draw(clock); raf = vis && !document.hidden && !RM ? requestAnimationFrame(tick) : 0; };
+    const runShader = () => { if (!raf && vis && !document.hidden) { last = 0; raf = requestAnimationFrame(tick); } };
+
+    // ── the shot ──
+    const kf = (prop: string, steps: [number, string][]) => steps.map(([o, v]) => ({ offset: o, [prop]: v, easing: E }));
+    const away = (k: string) => { const [x, y, z, ry, rz] = FROM[innerWidth < 600 ? 'sq' : 'wide'][k]; return `translate3d(${x}cqw,${y}cqw,${z}cqw) rotateY(${ry}deg) rotateZ(${rz}deg)`; };
+    const blur = (k: string) => `blur(${FROM[innerWidth < 600 ? 'sq' : 'wide'][k][5]}cqw)`;
+    let anims: Animation[] = [], state = 'idle';
+    // before it plays: the widgets apart, the home empty
+    const scatter = () => ORDER.forEach((k) => { pcs[k].style.transform = away(k); pcs[k].style.filter = blur(k); pcs[k].style.opacity = '1'; slots[k].style.opacity = '1'; });
+    // the finished home, for reduced motion
+    const settled = () => ORDER.forEach((k) => { pcs[k].style.opacity = '0'; slots[k].style.opacity = '0'; });
+    const play = () => {
+      state = 'playing';
+      ORDER.forEach((k) => { pcs[k].style.transform = ''; pcs[k].style.filter = ''; });
+      // they float a moment, then fly in one after another and land in focus; each slot clears as its widget lands
+      ORDER.forEach((k, n) => {
+        const delay = 700 + n * 240, dur = 1500;
+        anims.push(pcs[k].animate([{ transform: away(k), filter: blur(k) }, { transform: 'none', filter: 'blur(0)' }],
+          { duration: dur, delay, easing: 'cubic-bezier(.22,.68,.18,1)', fill: 'backwards' }));
+        anims.push(slots[k].animate([{ opacity: 1 }, { opacity: 0 }], { duration: 10, delay: delay + dur - 10, fill: 'both' }));
+      });
+      // once all have landed, the page beneath carries on; the widgets were cut from it, so nothing changes
+      const done = 700 + (ORDER.length - 1) * 240 + 1500;
+      ORDER.forEach((k) => anims.push(pcs[k].animate([{ opacity: 1 }, { opacity: 0 }], { duration: 10, delay: done + 100, fill: 'both' })));
+      const o = { duration: LOOP, iterations: Infinity, delay: done + 300 };
+      // the home scrolls in steps, then a tap on Home glides it back to the top
+      const y = (v: number) => `translateY(${(-v / 8166 * 100).toFixed(3)}%)`;
+      anims.push(strip.animate(kf('transform', [[0, y(0)], [.07, y(0)], [.2, y(2734)], [.3, y(2734)], [.43, y(4836)], [.53, y(4836)], [.66, y(6318)], [.8, y(6318)], [.9, y(0)], [1, y(0)]]), o));
+      // the sway starts and ends at rest, so it picks up from the landing without a jump
+      anims.push(sway.animate(kf('transform', [[0, 'none'], [.25, 'rotateY(-2.5deg) rotateX(.8deg)'], [.75, 'rotateY(2.5deg) rotateX(-.4deg)'], [1, 'none']]), o));
+    };
+    const reset = () => { state = 'idle'; anims.forEach((a) => a.cancel()); anims = []; scatter(); };
+
+    if (RM) { settled(); vis = true; draw(0); return; }
+    scatter();
+    const seen = () => { const r = tm.getBoundingClientRect(); const h = Math.min(r.height, innerHeight); return h ? Math.max(0, Math.min(r.bottom, innerHeight) - Math.max(r.top, 0)) / h : 0; };
+    const check = () => {
+      const v = seen(); vis = v > 0; runShader();
+      if (state === 'idle' && v >= 0.8) play(); else if (state !== 'idle' && v < 0.3) reset();
+    };
+    let tk = false;
+    addEventListener('scroll', () => { if (!tk) { tk = true; requestAnimationFrame(() => { tk = false; check(); }); } }, { passive: true });
+    addEventListener('resize', () => { if (state === 'idle') scatter(); }, { passive: true });
+    document.addEventListener('visibilitychange', () => { if (document.hidden) reset(); else check(); });
+    check(); draw(0);
+  }
+  document.addEventListener('astro:page-load', tammPromo);
+</script>
