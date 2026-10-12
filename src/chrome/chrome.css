@@ -132,7 +132,7 @@ html.hc-cs .lines{display:none}
 /* ── case studies: the home page footer (src/components/Footer.astro), rebuilt with hc- classes ──
    The strip of nine bands runs from the page ground to the ink, then the footer sits on the ink. */
 .hc-foot{position:relative;z-index:1;background:var(--hc-ink);color:var(--hc-page);font-family:var(--hc-body)}
-.hc-strip-wrap{background:var(--hc-page)}
+.hc-strip-wrap{background:var(--hc-ink)} /* the footer's own ground under the growing strip, as on the home page: no dark gap while it reveals */
 /* chrome.js sets --fp from 0 to 1 as the footer comes up the screen: the bands grow with the scroll */
 .hc-strip{transform:scaleY(var(--fp,1));transform-origin:top;will-change:transform}
 .hc-strip i{display:block;height:56px}
