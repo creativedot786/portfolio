@@ -1,8 +1,8 @@
 ---
 // The RTA card's picture on the home page: the iTraffic dashboard on a flat display mounted on a wall, as on the
 // case study, turned a little toward us. When the card comes into view it eases in from a touch further back and
-// settles, then sways a degree or two, like the other cards. Behind it, faint lanes of light trails drift across,
-// like a long exposure of traffic at night, in the theme's own colours. It plays as soon as a good part of the card
+// settles, then sways a degree or two, like the other cards. Behind it, a slow radar sweep turns over faint range
+// rings, blips lighting as it passes, like a control room, in the theme's own colours. It plays as soon as a good part of the card
 // is in view and starts over once it has left the screen. Reduced motion: the settled frame, still.
 ---
 <div class="rp promo-img" data-rta-promo data-cursor-expand role="img"
@@ -39,7 +39,7 @@
     const E = 'cubic-bezier(.45,0,.55,1)';
     const rig = rp.querySelector<HTMLElement>('.rig')!, sway = rp.querySelector<HTMLElement>('.sway')!;
 
-    // ── light trails: curved lanes corner to corner, warped by slow noise; short dashes of light travel along them ──
+    // ── radar: a sweep turning about the middle of the card, behind the display; a fading wedge, faint range rings, blips ──
     const cv = rp.querySelector<HTMLCanvasElement>('canvas.bg')!;
     const gl = cv.getContext('webgl', { antialias: false });
     let draw = (_t: number) => {};
@@ -47,19 +47,15 @@
       const VS = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
       const FS = `precision highp float;uniform vec2 r;uniform float t;uniform vec3 ink,bg;
         float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
-        float n(vec2 p){vec2 i=floor(p),f=fract(p);vec2 u=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1,0)),u.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),u.x),u.y);}
-        float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<4;i++){v+=a*n(p);p=p*2.03+vec2(1.7,9.2);a*=.5;}return v;}
-        void main(){vec2 fc=gl_FragCoord.xy,q=fc/r.x;float grain=(h(fc+fract(t)*91.)-.5)*.025;
-          vec2 d=normalize(vec2(1.,.42));vec2 nrm=vec2(-d.y,d.x);
-          float w=fbm(q*1.6+vec2(t*.01,0.))*.55;
-          float across=dot(q,nrm)+w*.35, along=dot(q,d);
-          float lanes=across*13.;float lane=floor(lanes);float f=fract(lanes);
-          float thin=1.-smoothstep(.0,.035,abs(f-.5));
-          float speed=.05+h(vec2(lane,1.))*.06, dir=h(vec2(lane,7.))>.5?1.:-1.;
-          float dash=fract(along*(2.+h(vec2(lane,3.))*3.)-t*speed*dir+h(vec2(lane,5.)));
-          float head=smoothstep(.0,.7,dash)*smoothstep(1.,.86,dash);
-          float lit=step(.45,h(vec2(lane,11.)));
-          float a=thin*(.012+.12*head*lit)*smoothstep(.05,.4,fbm(q*2.2+3.));
+        void main(){vec2 fc=gl_FragCoord.xy,q=fc/r.x;float px=1./r.x;float grain=(h(fc+fract(t)*91.)-.5)*.025;
+          vec2 c=vec2(.5,r.y/r.x*.5);vec2 v=q-c;float d=length(v);float ang=atan(v.y,v.x);
+          float sw=mod(t*.22,6.2831853);float behind=mod(sw-ang,6.2831853);
+          float wedge=exp(-behind*2.2)*smoothstep(.75,.15,d);
+          float ring=1.-smoothstep(0.,px*1.3,abs(fract(d/.11)-.5)*.11);
+          vec2 g=floor(q*18.);float on=step(.93,h(g));vec2 cc=(g+.5)/18.;float bd=length(q-cc);
+          float since=mod(sw-atan(cc.y-c.y,cc.x-c.x),6.2831853);
+          float blip=on*(1.-smoothstep(.0,.006,bd))*exp(-since*1.2);
+          float a=wedge*.075+ring*.025+blip*.4;
           gl_FragColor=vec4(mix(bg,ink,a)+grain,1.);}`;
       const sh = (type: number, src: string) => { const s = gl.createShader(type)!; gl.shaderSource(s, src); gl.compileShader(s); return s; };
       const pr = gl.createProgram()!; gl.attachShader(pr, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, FS)); gl.linkProgram(pr); gl.useProgram(pr);
