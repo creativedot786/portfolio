@@ -3,7 +3,7 @@
 // `image` is a path under /public. Leave it off and the frame falls back to the placeholder,
 // so case studies can land one at a time without anything looking broken. Scout has no still:
 // its card plays a short loop instead (ScoutPromo.astro).
-export type Work = { slug: string; industry: 'fintech' | 'gov' | 'commerce' | 'proptech'; industryLabel: string; platform: string; href: string; title: string; line: string; image?: string; alt?: string };
+export type Work = { slug: string; industry: 'fintech' | 'gov' | 'commerce' | 'proptech' | 'transport'; industryLabel: string; platform: string; href: string; title: string; line: string; image?: string; alt?: string };
 
 export const work: Work[] = [
   {
@@ -47,5 +47,14 @@ export const work: Work[] = [
     platform: 'Mobile App',
     title: 'Building one home for Abu Dhabi’s government services',
     line: 'TAMM is Abu Dhabi’s initiative to bring government services into one ecosystem. The services were fragmented, so we built one unified digital system where citizens, residents, businesses and visitors complete them in one place. Downloads went from 1K to 19K between January and June.',
+  },
+  {
+    slug: 'rta',
+    href: '/work/rta/',
+    industry: 'transport',
+    industryLabel: 'Transport',
+    platform: 'Desktop Software',
+    title: 'An intelligent traffic management system for Dubai’s roads',
+    line: 'iTraffic is RTA’s intelligent traffic management system. I designed its interface in 2019, in collaboration with ST Engineering: one place to watch the roads, respond to incidents, and run the signs and equipment on them.',
   },
 ];

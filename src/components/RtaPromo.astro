@@ -1,0 +1,111 @@
+---
+// The RTA card's picture on the home page: the iTraffic dashboard on a flat display mounted on a wall, as on the
+// case study, turned a little toward us. When the card comes into view it eases in from a touch further back and
+// settles, then sways a degree or two, like the other cards. Behind it, faint lanes of light trails drift across,
+// like a long exposure of traffic at night, in the theme's own colours. It plays as soon as a good part of the card
+// is in view and starts over once it has left the screen. Reduced motion: the settled frame, still.
+---
+<div class="rp promo-img" data-rta-promo data-cursor-expand role="img"
+  aria-label="The iTraffic dashboard on a wall-mounted display: total incidents and events, incident and alert statistics, open alarms and ongoing events">
+  <canvas class="bg" aria-hidden="true"></canvas>
+  <div class="stage" aria-hidden="true"><div class="rig"><div class="sway">
+    <div class="disp"><img src="/work/rta-promo/dashboard.jpg" alt="" width="1600" height="900" loading="lazy" decoding="async" /></div>
+  </div></div></div>
+</div>
+
+<style>
+  .rp{position:relative;display:block;width:100%;aspect-ratio:16/10;overflow:hidden;background:var(--color-page);container-type:inline-size}
+  .bg{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .stage{position:absolute;inset:0;perspective:120cqw;perspective-origin:50% 40%}
+  .rig,.sway{position:absolute;inset:0;transform-style:preserve-3d;transform-origin:50% 50%}
+  /* the display, as on the case study: a thin bezel, no stand */
+  .disp{position:absolute;left:50%;top:50%;width:80cqw;transform:translate(-50%,-50%) rotateY(-10deg) rotateX(4deg);padding:.5cqw;border-radius:.45cqw;background:#08090a;
+    box-shadow:inset 0 0 0 1px #24262a,0 .2cqw .3cqw rgba(0,0,0,.35),0 3cqw 5cqw -2cqw rgba(0,0,0,.6)}
+  .disp img{display:block;width:100%;height:auto;aspect-ratio:16/9}
+  .disp::after{content:"";position:absolute;inset:.5cqw;pointer-events:none;background:linear-gradient(118deg,rgba(255,255,255,.06),rgba(255,255,255,0) 35%)}
+  @media (max-width:599px){
+    .rp{aspect-ratio:1/1}
+    .disp{width:112cqw;transform:translate(-50%,-50%) rotateY(-12deg) rotateX(4deg)}
+  }
+</style>
+
+<script>
+  function rtaPromo() {
+    const rp = document.querySelector<HTMLElement>('[data-rta-promo]');
+    if (!rp || (rp as any).__on) return;
+    (rp as any).__on = true;
+    const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const LOOP = 16000;
+    const E = 'cubic-bezier(.45,0,.55,1)';
+    const rig = rp.querySelector<HTMLElement>('.rig')!, sway = rp.querySelector<HTMLElement>('.sway')!;
+
+    // ── light trails: curved lanes corner to corner, warped by slow noise; short dashes of light travel along them ──
+    const cv = rp.querySelector<HTMLCanvasElement>('canvas.bg')!;
+    const gl = cv.getContext('webgl', { antialias: false });
+    let draw = (_t: number) => {};
+    if (gl) {
+      const VS = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
+      const FS = `precision highp float;uniform vec2 r;uniform float t;uniform vec3 ink,bg;
+        float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+        float n(vec2 p){vec2 i=floor(p),f=fract(p);vec2 u=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1,0)),u.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),u.x),u.y);}
+        float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<4;i++){v+=a*n(p);p=p*2.03+vec2(1.7,9.2);a*=.5;}return v;}
+        void main(){vec2 fc=gl_FragCoord.xy,q=fc/r.x;float grain=(h(fc+fract(t)*91.)-.5)*.025;
+          vec2 d=normalize(vec2(1.,.42));vec2 nrm=vec2(-d.y,d.x);
+          float w=fbm(q*1.6+vec2(t*.01,0.))*.55;
+          float across=dot(q,nrm)+w*.35, along=dot(q,d);
+          float lanes=across*13.;float lane=floor(lanes);float f=fract(lanes);
+          float thin=1.-smoothstep(.0,.035,abs(f-.5));
+          float speed=.05+h(vec2(lane,1.))*.06, dir=h(vec2(lane,7.))>.5?1.:-1.;
+          float dash=fract(along*(2.+h(vec2(lane,3.))*3.)-t*speed*dir+h(vec2(lane,5.)));
+          float head=smoothstep(.0,.7,dash)*smoothstep(1.,.86,dash);
+          float lit=step(.45,h(vec2(lane,11.)));
+          float a=thin*(.012+.12*head*lit)*smoothstep(.05,.4,fbm(q*2.2+3.));
+          gl_FragColor=vec4(mix(bg,ink,a)+grain,1.);}`;
+      const sh = (type: number, src: string) => { const s = gl.createShader(type)!; gl.shaderSource(s, src); gl.compileShader(s); return s; };
+      const pr = gl.createProgram()!; gl.attachShader(pr, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, FS)); gl.linkProgram(pr); gl.useProgram(pr);
+      gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer()); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+      const loc = gl.getAttribLocation(pr, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+      const U = (k: string) => gl.getUniformLocation(pr, k);
+      // theme colours can compute as rgb() or color(srgb …), so let a 1×1 canvas resolve them to bytes
+      const px = document.createElement('canvas').getContext('2d', { willReadFrequently: true })!;
+      const rgb = (v: string) => { const d = document.createElement('i'); d.style.color = v; rp.appendChild(d); const c = getComputedStyle(d).color; d.remove();
+        px.clearRect(0, 0, 1, 1); px.fillStyle = c; px.fillRect(0, 0, 1, 1); return [...px.getImageData(0, 0, 1, 1).data.slice(0, 3)].map((x) => x / 255); };
+      let ink = rgb('var(--color-primary)'), bg = rgb('var(--color-page)');
+      const size = () => { const r = rp.getBoundingClientRect(), d = Math.min(2, devicePixelRatio || 1); cv.width = r.width * d; cv.height = r.height * d; gl.viewport(0, 0, cv.width, cv.height); };
+      draw = (t: number) => { gl.uniform2f(U('r'), cv.width, cv.height); gl.uniform1f(U('t'), t); gl.uniform3fv(U('ink'), ink); gl.uniform3fv(U('bg'), bg); gl.drawArrays(gl.TRIANGLES, 0, 3); };
+      new ResizeObserver(() => { size(); draw(clock); }).observe(rp);
+      new MutationObserver(() => { ink = rgb('var(--color-primary)'); bg = rgb('var(--color-page)'); draw(clock); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+      size();
+    }
+    // the shader runs only while the card is on screen
+    let clock = 0, last = 0, raf = 0, vis = false;
+    const tick = (now: number) => { if (last) clock += Math.min(.05, (now - last) / 1000); last = now; draw(clock); raf = vis && !document.hidden && !RM ? requestAnimationFrame(tick) : 0; };
+    const runShader = () => { if (!raf && vis && !document.hidden) { last = 0; raf = requestAnimationFrame(tick); } };
+
+    // ── the shot ──
+    const kf = (prop: string, steps: [number, string][]) => steps.map(([o, v]) => ({ offset: o, [prop]: v, easing: E }));
+    const START = 'translateZ(-8cqw) rotateY(-6deg)';
+    let anims: Animation[] = [], state = 'idle';
+    const play = () => {
+      state = 'playing'; rig.style.transform = '';
+      // a short, gentle settle: from a touch further back and more turned, to its place
+      anims.push(rig.animate([{ transform: START }, { transform: 'none' }], { duration: 2200, delay: 200, easing: 'cubic-bezier(.3,0,.15,1)', fill: 'backwards' }));
+      // the sway starts and ends at rest, so it picks up from the settle without a jump
+      anims.push(sway.animate(kf('transform', [[0, 'none'], [.25, 'rotateY(-2deg) rotateX(.6deg)'], [.75, 'rotateY(2deg) rotateX(-.4deg)'], [1, 'none']]), { duration: LOOP, iterations: Infinity, delay: 2400 }));
+    };
+    const reset = () => { state = 'idle'; anims.forEach((a) => a.cancel()); anims = []; rig.style.transform = START; };
+
+    if (RM) { vis = true; draw(0); return; }
+    reset();
+    const seen = () => { const r = rp.getBoundingClientRect(); const h = Math.min(r.height, innerHeight); return h ? Math.max(0, Math.min(r.bottom, innerHeight) - Math.max(r.top, 0)) / h : 0; };
+    const check = () => {
+      const v = seen(); vis = v > 0; runShader();
+      if (state === 'idle' && v >= 0.4) play(); else if (state !== 'idle' && v === 0) reset();
+    };
+    let tk = false;
+    addEventListener('scroll', () => { if (!tk) { tk = true; requestAnimationFrame(() => { tk = false; check(); }); } }, { passive: true });
+    document.addEventListener('visibilitychange', () => { if (document.hidden) reset(); else check(); });
+    check(); draw(0);
+  }
+  document.addEventListener('astro:page-load', rtaPromo);
+</script>
