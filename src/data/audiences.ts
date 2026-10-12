@@ -3,14 +3,14 @@ export type Audience = { id: string; label: string; heading: string; body: strin
 // Emphasis. White against a muted statement, never a hue.
 const em = (text: string) => `<em class="not-italic text-primary">${text}</em>`;
 
-// "build with AI" is drawn as particles (src/scripts/particle-word.ts); data-pw marks it and keeps it whole.
+// "Building with AI" is drawn as particles (src/scripts/particle-word.ts); data-pw marks it and keeps it whole.
 const pw = (text: string) => `<em class="not-italic text-primary" data-pw>${text}</em>`;
 
 export const audiences: Audience[] = [
   {
     id: 'anyone',
     label: 'For anyone',
-    heading: `I design products used by millions. I also ${pw('build with AI')}.`,
+    heading: `Designing at scale. ${pw('Building with AI')}.`,
     body: `10+ years, most of it designing for other people to build. AI changed that. What hasn't changed is deciding what's worth building in the first place.`,
   },
   {

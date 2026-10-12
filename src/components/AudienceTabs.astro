@@ -36,7 +36,7 @@ import SkillPills from './SkillPills.astro';
      headline keeps its place (the rail's links line up with the tabs) and the bottom of the first
      screen is already clear */
   @media (max-width:1023px){[data-hero]{padding-bottom:calc(var(--section-space) + 150px)}}
-  /* "build with AI" is drawn as particles (src/scripts/particle-word.ts); the text stays, transparent, underneath */
+  /* "Building with AI" is drawn as particles (src/scripts/particle-word.ts); the text stays, transparent, underneath */
   .stmt :global(.pw){position:relative;display:inline-block;white-space:nowrap;text-decoration:none!important}
   .stmt :global(.pw.pw-live){color:transparent!important}
   .stmt :global(.w.pw-open){overflow:visible}
@@ -119,7 +119,7 @@ import SkillPills from './SkillPills.astro';
     (root as any).__init = true;
     root.querySelectorAll<HTMLElement>('[data-split]').forEach(splitWords);
 
-    // "build with AI": particles, once the headline has risen
+    // "Building with AI": particles, once the headline has risen
     const pwPanel = root.querySelector<HTMLElement>('#panel-anyone');
     const pwEl = pwPanel?.querySelector<HTMLElement>('[data-pw]');
     let pw: { replay: () => void; resume: () => void } | undefined;

@@ -46,7 +46,7 @@ export const work: Work[] = [
     industryLabel: 'e-Government',
     platform: 'Mobile App',
     title: 'Building one home for Abu Dhabi’s government services',
-    line: 'TAMM is Abu Dhabi’s initiative to bring government services into one ecosystem. The services were fragmented, so we built one unified digital system where citizens, residents, businesses and visitors complete them in one place. Downloads went from 1K to 19K between January and June.',
+    line: 'TAMM is Abu Dhabi’s initiative to bring government services into one ecosystem. The services were fragmented, so we built one unified digital system where citizens, residents, businesses and visitors complete them in one place.',
   },
   {
     slug: 'rta',
