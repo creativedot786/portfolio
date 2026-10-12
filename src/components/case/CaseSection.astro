@@ -1,0 +1,33 @@
+---
+// A case study section: a label, the claim, a line or two, then its media. Text on columns 4-10, media on 4-12.
+interface Props { id?: string; lab: string; claim: string; line?: string }
+const { id, lab, claim, line } = Astro.props;
+---
+<section class="ch" id={id}>
+  <div class="shell">
+    <div class="head">
+      <p class="lab">{lab}</p>
+      <h2 class="claim">{claim}</h2>
+      {line && <p class="line">{line}</p>}
+    </div>
+    <div class="media"><slot /></div>
+  </div>
+</section>
+
+<style>
+  .ch{padding-top:176px}
+  .head{grid-column:1/-1;margin-bottom:72px}
+  .lab{margin:0 0 8px;font:400 13px/1.4 var(--font-mono);color:var(--color-tertiary)}
+  .claim{font-family:var(--font-display);font-weight:400;font-size:var(--text-h2);line-height:1.08;letter-spacing:-.01em;margin:0 0 24px;text-wrap:balance}
+  .line{margin:0;max-width:42ch;color:var(--color-secondary)}
+  .media{grid-column:1/-1}
+  @media (min-width:1024px){
+    .head{grid-column:4/10}
+    .media{grid-column:4/12;margin-right:calc(-1 * var(--grid-gutter))}
+  }
+  @media (max-width:599px){
+    .ch{padding-top:88px}
+    .head{margin-bottom:40px}
+    .claim{font-size:28px}
+  }
+</style>

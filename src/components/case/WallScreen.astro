@@ -1,0 +1,20 @@
+---
+// A desktop screen as a flat display mounted on a wall: a thin black bezel, no stand, no browser chrome.
+// Screens are 16:9. A list of them stacks with room between.
+interface Props { src: string; alt: string; caption?: string; width?: number; height?: number; eager?: boolean }
+const { src, alt, caption, width = 1920, height = 1080, eager = false } = Astro.props;
+---
+<figure class="ws">
+  <div class="frame"><img src={src} alt={alt} width={width} height={height} loading={eager ? 'eager' : 'lazy'} decoding="async" /></div>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+  .ws{margin:0}
+  .ws + .ws{margin-top:72px}
+  .frame{position:relative;padding:.6%;border-radius:.5%/.9%;background:#08090a;
+    box-shadow:inset 0 0 0 1px #24262a,0 2px 3px rgba(0,0,0,.35),0 36px 60px -28px rgba(0,0,0,.6)}
+  img{display:block;width:100%;height:auto;aspect-ratio:16/9;background:#16191d}
+  figcaption{margin:18px 0 0;font:400 13px/1.4 var(--font-mono);color:var(--color-tertiary)}
+  @media (max-width:1023px){ .ws + .ws{margin-top:48px} }
+</style>

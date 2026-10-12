@@ -1,0 +1,41 @@
+---
+// A case study's opening: eyebrow, title and summary on the left, the facts (role, client, year…) on the right,
+// and the hero media below. The eyebrow is what the rail's first link lines up with (data-nav-align).
+interface Props { eyebrow: string; title: string; summary: string; meta: [string, string][] }
+const { eyebrow, title, summary, meta } = Astro.props;
+---
+<header class="cs-head" id="overview">
+  <div class="shell">
+    <div class="ttl-w">
+      <p class="eyebrow" data-nav-align>{eyebrow}</p>
+      <h1 class="ttl">{title}</h1>
+      <p class="sum">{summary}</p>
+    </div>
+    <dl class="meta">
+      {meta.map(([dt, dd]) => <div><dt>{dt}</dt><dd>{dd}</dd></div>)}
+    </dl>
+    <div class="hero"><slot /></div>
+  </div>
+</header>
+
+<style>
+  .cs-head{padding-top:136px}
+  .ttl-w{grid-column:1/-1}
+  .eyebrow{margin:0 0 18px;font:400 13px/1.4 var(--font-mono);color:var(--color-tertiary);letter-spacing:.01em}
+  .ttl{font-family:var(--font-display);font-weight:400;font-size:var(--text-h2);line-height:1.06;letter-spacing:-.01em;margin:0;text-wrap:balance}
+  .sum{margin:28px 0 0;font-size:19px;line-height:1.5;color:var(--color-secondary)}
+  .meta{grid-column:1/-1;display:grid;grid-template-columns:1fr;gap:22px;margin:24px 0 0}
+  .meta dt{font:400 12px var(--font-mono);color:var(--color-tertiary)}
+  .meta dd{margin:6px 0 0;font-size:15px;line-height:1.45;color:var(--color-secondary)}
+  .hero{grid-column:1/-1;margin-top:56px}
+  @media (min-width:1024px){
+    .ttl-w{grid-column:4/8}
+    .meta{grid-column:9/12;margin:0 calc(-1 * var(--grid-gutter)) 0 0;padding-top:32px;align-self:start}
+    .hero{grid-column:4/12;margin:96px calc(-1 * var(--grid-gutter)) 0 0}
+  }
+  @media (max-width:599px){
+    .cs-head{padding-top:56px}
+    .ttl{font-size:32px;line-height:1.1}
+    .sum{font-size:17px}
+  }
+</style>

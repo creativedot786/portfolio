@@ -1,0 +1,59 @@
+---
+// RTA iTraffic: a 2019 UI design project for RTA, in collaboration with ST Engineering, shown through its main
+// screens on wall-mounted displays. Kept short on purpose. Screens are in public/work/rta/.
+import Base from '../../layouts/Base.astro';
+import CaseHeader from '../../components/case/CaseHeader.astro';
+import CaseSection from '../../components/case/CaseSection.astro';
+import WallScreen from '../../components/case/WallScreen.astro';
+import MoreWork from '../../components/case/MoreWork.astro';
+import { work } from '../../data/work';
+
+const item = work.find((w) => w.slug === 'rta')!;
+const img = (k: string) => `/work/rta/${k}.jpg`;
+const sections: { id?: string; lab: string; claim: string; line: string; screens: [string, string, string][] }[] = [
+  { id: 'design', lab: 'Map view', claim: 'Everything on the road, on one map.',
+    line: 'Live traffic, alarms, events and equipment as layers. An alarm opens with its camera feeds, to verify it on the spot.',
+    screens: [
+      ['map_alarm', 'Map view · alarm with camera feeds', 'Map of Dubai with an alarm open, showing two live camera feeds and buttons to mark it false, unverified or true'],
+      ['map_live', 'Map view · live traffic', 'Map with live traffic flow along Sheikh Zayed Road, coloured from fast to slow'],
+      ['map_forecast', 'Map view · traffic forecast', 'The same stretch of road with forecast traffic, and a timeline to look ahead'],
+    ] },
+  { lab: 'Events', claim: 'From incident to response plan.',
+    line: 'An event records what happened, where and how severe. The system suggests response plans side by side, to evaluate and implement.',
+    screens: [
+      ['events', 'Event list', 'The list of events with road, type, severity, lane blockage and status'],
+      ['event', 'Create event', 'Creating an event: severity meter, source and type, camera feeds, location, congestion times and a map'],
+      ['plan', 'Multi plan', 'Two response plans side by side, Plan A recommended, each with suggested sign messages and actions'],
+    ] },
+  { lab: 'Road signs', claim: 'Writing the messages on the road.',
+    line: 'Messages for the electronic signs over the roads, composed from text or pictograms, scheduled, approved, then sent to each sign.',
+    screens: [
+      ['compose', 'Compose · pictogram', 'Composing a sign message from a library of road pictograms, with a live preview'],
+      ['schedule', 'Send message · recurring schedule', 'Choosing signs for a message and scheduling it to repeat, with a preview'],
+      ['dms', 'DMS management', 'The list of sign messages with who created them and their approval status: approved, pending or rejected'],
+      ['eq_dms', 'Equipment · DMS', 'One sign’s details: its current message, messaging, queue, scheduling and activity'],
+    ] },
+  { lab: 'Alarms', claim: 'Every alarm, and what to do about it.',
+    line: 'Alarms from roadside systems in one list. Each opens to its details, to verify it as true or false.',
+    screens: [
+      ['alarms', 'Operational alarms', 'The list of operational alarms with road, zone, source, time and status'],
+      ['alarm_detail', 'Alarm detail · action required', 'An alarm’s details with buttons to mark it false, unverified or true'],
+    ] },
+];
+---
+<Base title={`${item.title} · Huzaifa Ratlam`} description={item.line} nav={[['overview', 'Overview'], ['design', 'UI design']]} caseStudy>
+  <CaseHeader
+    eyebrow={`${item.industryLabel} · ${item.platform}`}
+    title={item.title}
+    summary={item.line}
+    meta={[['Role', 'Sole UI designer'], ['Client', 'RTA, Dubai'], ['Partner', 'ST Engineering'], ['Year', '2019']]}>
+    <WallScreen src={img('dash')} caption="Dashboard" eager
+      alt="The iTraffic dashboard: total incidents and events, incident and alert statistics, open alarms and ongoing events" />
+  </CaseHeader>
+  {sections.map((s) => (
+    <CaseSection id={s.id} lab={s.lab} claim={s.claim} line={s.line}>
+      {s.screens.map(([k, cap, alt]) => <WallScreen src={img(k)} caption={cap} alt={alt} />)}
+    </CaseSection>
+  ))}
+  <MoreWork slug="rta" />
+</Base>

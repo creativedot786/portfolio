@@ -10,8 +10,10 @@ import Loader from '../components/Loader.astro';
 import { CursorMultifollow } from '../components/ui/motion-cursor-multifollow';
 import { site } from '../data/site';
 
-interface Props { title: string; description: string }
-const { title, description } = Astro.props;
+// nav: the page's sections for the rail and the phone menu (the home page's by default).
+// caseStudy: the logo goes home and "All work" sits under it, instead of the home page's Resume link.
+interface Props { title: string; description: string; nav?: [string, string][]; caseStudy?: boolean }
+const { title, description, nav, caseStudy = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, site.url).href;
 ---
 <!doctype html>
@@ -68,8 +70,8 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
   </head>
   <body>
     <Loader />
-    <Rail />
-    <MobileNav />
+    <Rail nav={nav} caseStudy={caseStudy} />
+    <MobileNav nav={nav} caseStudy={caseStudy} />
     <main id="main"><slot /></main>
     <Footer />
     <CursorMultifollow client:idle />

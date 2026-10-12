@@ -3,28 +3,32 @@ import Logo from './Logo.astro';
 import { site } from '../data/site';
 import { themes, defaultTheme } from '../data/themes';
 import { sections } from '../data/sections';
+interface Props { nav?: [string, string][]; caseStudy?: boolean }
+const { nav = sections, caseStudy = false } = Astro.props;
 // the letter roll on hover: each letter in its own window, the copy below it rolls up into place
 const roll = (t: string) => [...t].map((ch) => (ch === ' ' ? '\u00a0' : ch));
 ---
 <div class="rail-layer" data-rail>
   <div class="shell">
     <div class="rail">
-      <a href="#intro" class="logo-link relative inline-flex items-center rounded-full self-start" aria-label="Huzaifa Ratlam, top of page">
+      <a href={caseStudy ? '/' : `#${nav[0][0]}`} class="logo-link relative inline-flex items-center rounded-full self-start" aria-label={caseStudy ? 'Huzaifa Ratlam, home' : 'Huzaifa Ratlam, top of page'}>
         <Logo size={64} />
         <span class="logo-name" aria-hidden="true"><span class="logo-hi">Hi, I'm</span> <span class="logo-who">Huzaifa</span></span>
       </a>
 
-      <nav class="rail-nav" aria-label="Sections">
-        {sections.map(([id, label], i) => (
+      {caseStudy && <a class="rail-back" href="/#work" data-roll>← All work</a>}
+
+      <nav class="rail-nav" aria-label={caseStudy ? 'Case study' : 'Sections'}>
+        {nav.map(([id, label], i) => (
           <a href={`#${id}`} data-spy={id} class={i === 0 ? 'on' : ''}>
             <span class="hc-roll" aria-hidden="true">{roll(label).map((ch, k) => <span class="hc-c" style={`--i:${k}`}><span>{ch}</span></span>)}</span><span class="sr-only">{label}</span>
           </a>
         ))}
-        <a href={site.resume} target="_blank" rel="noopener">
+        {!caseStudy && <a href={site.resume} target="_blank" rel="noopener">
           <span class="hc-roll" aria-hidden="true">{roll('Resume').map((ch, k) => <span class="hc-c" style={`--i:${k}`}><span>{ch}</span></span>)}</span><span class="sr-only">Resume</span>
           <svg class="arr" viewBox="0 0 14.4 14.4" aria-hidden="true"><path d="M1.2 13.2L13.2 1.2M13.2 1.2H1.2M13.2 1.2V13.2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" fill="none"/></svg>
           <span class="sr-only">(opens in a new tab)</span>
-        </a>
+        </a>}
       </nav>
 
       <div class="rail-tools">
@@ -136,7 +140,7 @@ const roll = (t: string) => [...t].map((ch) => (ch === ' ' ? '\u00a0' : ch));
     // The tab row is measured in PAGE coordinates (+ scrollY): the scroll spy keeps the hash in the
     // address, so a reload opens partway down, and a viewport measurement then put the nav at the top.
     const navEl = document.querySelector<HTMLElement>('.rail-nav');
-    const tabs = document.querySelector<HTMLElement>('[data-tabs]');
+    const tabs = document.querySelector<HTMLElement>('[data-tabs], [data-nav-align]');
     const alignNav = () => {
       if (!navEl || !tabs || !matchMedia('(min-width: 1024px)').matches) {
         navEl?.style.removeProperty('--nav-offset');
@@ -144,7 +148,7 @@ const roll = (t: string) => [...t].map((ch) => (ch === ' ' ? '\u00a0' : ch));
       }
       navEl.style.removeProperty('--nav-offset');
       const link = navEl.querySelector('a');
-      const tab = tabs.querySelector<HTMLElement>('[role="tab"]');
+      const tab = tabs.matches('[data-nav-align]') ? tabs : tabs.querySelector<HTMLElement>('[role="tab"]');
       if (!link || !tab) return;
       // Align the TEXT, not the boxes. Both are 14px, but the tab is a pill with 12px of padding
       // and the nav link has 5px, so matching box edges leaves the words 7px apart.

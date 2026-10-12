@@ -1,0 +1,22 @@
+---
+// "More work" at the end of a case study: the next two case studies after this one in the home page's order,
+// wrapping round, so every page shows a different pair and between them they reach all the work. They are the
+// home page's own cards (Promo), animations and all, so the two can never differ.
+import { work } from '../../data/work';
+import Promo from '../Promo.astro';
+interface Props { slug: string }
+const { slug } = Astro.props;
+const i = work.findIndex((w) => w.slug === slug);
+const next = [1, 2].map((k) => work[(i + k) % work.length]);
+---
+<section class="more" aria-labelledby="more-work">
+  <div class="shell"><h2 class="lab" id="more-work">More work</h2></div>
+  {next.map((item, k) => <Promo item={item} index={k + 1} total={next.length} />)}
+</section>
+
+<style>
+  .more{padding-top:176px}
+  .lab{grid-column:1/-1;margin:0;font:400 13px/1.4 var(--font-mono);color:var(--color-tertiary);letter-spacing:normal}
+  @media (min-width:1024px){ .lab{grid-column:4/-1} }
+  @media (max-width:599px){ .more{padding-top:88px} }
+</style>
