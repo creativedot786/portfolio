@@ -22,7 +22,7 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <meta name="theme-color" content="#0A0B0D" />
+    <meta name="theme-color" content="#0F1110" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -55,9 +55,10 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
       // Theme and grid are restored before first paint, so a Cream visitor never sees a dark flash.
       try {
         var t = localStorage.getItem('hr-theme');
-        if (t && t !== 'brass') {
+        // only the current themes; a theme saved from an older set falls back to the default
+        var grounds = { seaglass: '#0A1822', plum: '#17121F', paper: '#FBF6E4' };
+        if (t && grounds[t]) {
           document.documentElement.setAttribute('data-theme', t);
-          var grounds = { slate: '#27333A', moss: '#12241C', cream: '#F3EDDF' };
           var m = document.querySelector('meta[name="theme-color"]');
           if (m && grounds[t]) m.content = grounds[t];
         }

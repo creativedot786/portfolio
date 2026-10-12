@@ -3,13 +3,15 @@
 //
 // `mix` is the tertiary percentage: 14px muted text needs 4.5:1, and how much ink that takes
 // depends on how light the GROUND is — not on whether the theme is nominally dark or light.
-// A flat 50% gives 4.65:1 on Brass, 4.24:1 on Slate and 3.30:1 on Cream. The last two fail.
-// These values are solved, and every theme passes AA on body, secondary, tertiary and accent.
+// These values are solved so 14px muted text passes 4.5:1 on both the ground and the surface cards,
+// and every theme passes AA on body, secondary, tertiary and accent.
 export type Theme = { id: string; name: string; ground: string; ink: string; accent: string; mix: string };
 
 export const themes: Theme[] = [
-  { id: 'brass', name: 'Brass', ground: '#0A0B0D', ink: '#EDEBE4', accent: '#D9A441', mix: '49%' },
-  { id: 'slate', name: 'Slate', ground: '#27333A', ink: '#E6ECEF', accent: '#FF8A6B', mix: '56%' },
-  { id: 'moss',  name: 'Moss',  ground: '#12241C', ink: '#E7EDE4', accent: '#E88BB0', mix: '51%' },
-  { id: 'cream', name: 'Cream', ground: '#F3EDDF', ink: '#191611', accent: '#5C3F86', mix: '61%' },
+  { id: 'butter',   name: 'Graphite & Butter', ground: '#0F1110', ink: '#FFF6D5', accent: '#8EE0B0', mix: '51%' },
+  { id: 'seaglass', name: 'Sea Glass',         ground: '#0A1822', ink: '#DDF2EC', accent: '#F2B36B', mix: '54%' },
+  { id: 'plum',     name: 'Plum Dusk',         ground: '#17121F', ink: '#EEE8F7', accent: '#FF9EB0', mix: '54%' },
+  { id: 'paper',    name: 'Butter Paper',      ground: '#FBF6E4', ink: '#141713', accent: '#1A7F4E', mix: '63%' },
 ];
+// The first theme is the default: it has no data-theme attribute, the others set one.
+export const defaultTheme = themes[0].id;

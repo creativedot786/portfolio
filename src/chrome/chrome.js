@@ -3,20 +3,20 @@
 // studies the rail alignment, the scroll spy, the intro (the same one as the home page) and the reveals.
 // Safe to run more than once (Astro's router fires astro:page-load on every page change).
 (() => {
-  const THEME_COLORS = { brass: '#0A0B0D', slate: '#27333A', moss: '#12241C', cream: '#F3EDDF' };
+  const THEME_COLORS = { butter: '#0F1110', seaglass: '#0A1822', plum: '#17121F', paper: '#FBF6E4' };
   const RM = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
   const root = document.documentElement;
 
   // ── theme: one setting for the whole site. The home page styles read data-theme, the case studies data-t ──
   function setTheme(id) {
-    if (id === 'brass') { root.removeAttribute('data-theme'); root.removeAttribute('data-t'); }
+    if (id === 'butter') { root.removeAttribute('data-theme'); root.removeAttribute('data-t'); }
     else { root.setAttribute('data-theme', id); root.setAttribute('data-t', id); }
     try { localStorage.setItem('hr-theme', id); } catch (e) {}
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta && THEME_COLORS[id]) meta.content = THEME_COLORS[id];
     markTheme(id);
   }
-  function current() { return root.getAttribute('data-theme') || root.getAttribute('data-t') || 'brass'; }
+  function current() { return root.getAttribute('data-theme') || root.getAttribute('data-t') || 'butter'; }
   function markTheme(id) {
     document.querySelectorAll('[data-hc-theme],[data-theme-set]').forEach((b) =>
       b.setAttribute('aria-checked', String((b.dataset.hcTheme || b.dataset.themeSet) === id)));

@@ -5,7 +5,7 @@
 // are shared files, so the two can't drift apart.
 import Logo from './Logo.astro';
 import { site } from '../data/site';
-import { themes } from '../data/themes';
+import { themes, defaultTheme } from '../data/themes';
 import { sections } from '../data/sections';
 import '../chrome/chrome.css';
 ---
@@ -28,7 +28,7 @@ import '../chrome/chrome.css';
         <div class="hc-mthemes"><span>Theme</span>
           <div role="radiogroup" aria-label="Theme">
             {themes.map((t) => (
-              <button type="button" role="radio" data-hc-theme={t.id} aria-checked={t.id === 'brass' ? 'true' : 'false'} aria-label={t.name}
+              <button type="button" role="radio" data-hc-theme={t.id} aria-checked={t.id === defaultTheme ? 'true' : 'false'} aria-label={t.name}
                 style={`--g:${t.ground};--a:${t.accent};--i:${t.ink}`}></button>
             ))}
           </div>

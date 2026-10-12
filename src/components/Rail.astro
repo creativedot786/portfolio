@@ -1,7 +1,7 @@
 ---
 import Logo from './Logo.astro';
 import { site } from '../data/site';
-import { themes } from '../data/themes';
+import { themes, defaultTheme } from '../data/themes';
 import { sections } from '../data/sections';
 // the letter roll on hover: each letter in its own window, the copy below it rolls up into place
 const roll = (t: string) => [...t].map((ch) => (ch === ' ' ? '\u00a0' : ch));
@@ -32,7 +32,7 @@ const roll = (t: string) => [...t].map((ch) => (ch === ' ' ? '\u00a0' : ch));
           <div class="theme-pill" role="radiogroup" aria-label="Theme" tabindex="0">
             {themes.map((t) => (
               <button type="button" class="tsw" role="radio" data-theme-set={t.id}
-                aria-checked={t.id === 'brass' ? 'true' : 'false'} aria-label={t.name}
+                aria-checked={t.id === defaultTheme ? 'true' : 'false'} aria-label={t.name}
                 style={`--g:${t.ground};--a:${t.accent};--i:${t.ink}`}></button>
             ))}
           </div>
@@ -44,7 +44,7 @@ const roll = (t: string) => [...t].map((ch) => (ch === ' ' ? '\u00a0' : ch));
 </div>
 
 <script>
-  import { themes } from '../data/themes';
+  import { themes, defaultTheme } from '../data/themes';
 
   function rail() {
     const root = document.documentElement;
@@ -59,7 +59,7 @@ const roll = (t: string) => [...t].map((ch) => (ch === ' ' ? '\u00a0' : ch));
       });
     }
     function setTheme(id: string) {
-      if (id === 'brass') root.removeAttribute('data-theme');
+      if (id === defaultTheme) root.removeAttribute('data-theme');
       else root.setAttribute('data-theme', id);
       try { localStorage.setItem('hr-theme', id); } catch (e) {}
       // The glasses catch the light in the new accent — the moment the accent changes is the
@@ -72,7 +72,7 @@ const roll = (t: string) => [...t].map((ch) => (ch === ' ' ? '\u00a0' : ch));
       if (meta && t) meta.content = t.ground;
       markTheme(id);
     }
-    markTheme(root.getAttribute('data-theme') || 'brass');
+    markTheme(root.getAttribute('data-theme') || defaultTheme);
 
     const ctl = document.querySelector<HTMLElement>('[data-theme-ctl]');
     if (ctl) {

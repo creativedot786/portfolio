@@ -34,15 +34,15 @@
      Three real colours. Everything else is mixed from them, so nothing can
      drift out of system: secondary and tertiary text are the SAME colour at
      lower alpha, and surfaces are the text colour mixed into the ground. */
-  --color-page: #0A0B0D;              /* cool near-black: holds product screenshots without a cast */
-  --color-primary: #EDEBE4;           /* warm bone */
-  --color-accent: #D9A441;            /* brass: warm on cool, and carries no state meaning */
+  --color-page: #0F1110;              /* graphite: a green-tinted near-black */
+  --color-primary: #FFF6D5;           /* butter */
+  --color-accent: #8EE0B0;            /* mint: calm, and carries no state meaning */
 
   --color-secondary: color-mix(in srgb, var(--color-primary) 72%, transparent);
   /* The tertiary mix is a per-theme knob, not a constant. 14px muted text needs 4.5:1, and the
      mix required to reach it depends on how light the GROUND is, not on dark-vs-light: a flat 50%
      gives 4.65:1 on near-black, 4.24:1 on mid blue-grey and 3.30:1 on cream. The last two fail. */
-  --mix-tertiary: 49%;
+  --mix-tertiary: 51%;
   --color-tertiary:  color-mix(in srgb, var(--color-primary) var(--mix-tertiary), transparent);
   --color-line:        color-mix(in srgb, var(--color-primary) 14%, transparent);
   --color-line-strong: color-mix(in srgb, var(--color-primary) 24%, transparent);
@@ -77,14 +77,14 @@
    A theme is three seeds and one solved number. Everything else is derived, so a theme
    never restates a colour that can be mixed. :root[data-theme] outranks the :root that
    @theme emits, so the derived tokens recompute on their own.  */
-:root[data-theme="slate"] {
-  --color-page: #27333A; --color-primary: #E6ECEF; --color-accent: #FF8A6B; --mix-tertiary: 56%;
+:root[data-theme="seaglass"] {
+  --color-page: #0A1822; --color-primary: #DDF2EC; --color-accent: #F2B36B; --mix-tertiary: 54%;
 }
-:root[data-theme="moss"] {
-  --color-page: #12241C; --color-primary: #E7EDE4; --color-accent: #E88BB0; --mix-tertiary: 51%;
+:root[data-theme="plum"] {
+  --color-page: #17121F; --color-primary: #EEE8F7; --color-accent: #FF9EB0; --mix-tertiary: 54%;
 }
-:root[data-theme="cream"] {
-  --color-page: #F3EDDF; --color-primary: #191611; --color-accent: #5C3F86; --mix-tertiary: 61%;
+:root[data-theme="paper"] {
+  --color-page: #FBF6E4; --color-primary: #141713; --color-accent: #1A7F4E; --mix-tertiary: 63%;
   color-scheme: light;
 }
 
