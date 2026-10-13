@@ -1,7 +1,9 @@
 export const site = {
   name: 'Huzaifa Ratlam',
   title: 'Senior Product Designer',
-  url: 'https://huzaifaratlam.com',
+  // the address the site is served from: huzaifaratlam.com redirects here, so links, the canonical
+  // address and the sharing images all use it directly
+  url: 'https://www.huzaifaratlam.com',
   email: 'huzaifa.creativedot@gmail.com',
   emailShown: 'huzaifa.creativedot[at]gmail.com',
   linkedin: 'https://www.linkedin.com/in/hratlam/',

@@ -51,7 +51,7 @@ const base = (w, h, body) => `<!doctype html><meta charset="utf-8"><style>
 const home = () => base(1200, 630, `<div class="og" style="padding:72px 88px;display:flex;flex-direction:column;justify-content:space-between">
   <div class="ink2" style="display:flex;align-items:center;gap:22px;font-weight:600;font-size:28px">${mark(64)}${esc(site.name)}</div>
   <div class="d" style="font-size:104px;line-height:1.02">Designing at scale.<span style="display:block;color:${MINT}">Building with AI.</span></div>
-  <div class="ink3" style="display:flex;justify-content:space-between;font-weight:500;font-size:26px"><span>${esc(site.title)} · Dubai</span><span>${new URL(site.url).host}</span></div>
+  <div class="ink3" style="display:flex;justify-content:space-between;font-weight:500;font-size:26px"><span>${esc(site.title)} · Dubai</span><span>${new URL(site.url).host.replace(/^www\./, '')}</span></div>
 </div>`);
 
 const study = (w) => {

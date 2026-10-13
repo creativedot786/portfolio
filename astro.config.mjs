@@ -4,7 +4,7 @@ import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-  site: 'https://huzaifaratlam.com',
+  site: 'https://www.huzaifaratlam.com',
   prefetch: true,
   integrations: [react()],
   vite: { plugins: [tailwindcss()] },
