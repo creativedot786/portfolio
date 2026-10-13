@@ -1,0 +1,32 @@
+---
+// TAMM: one home for Abu Dhabi's government services. The page is the site's own layout; its sections are in
+// src/components/case/tamm/, its screens in public/work/tamm/i/.
+import Base from '../../layouts/Base.astro';
+import CaseHeader from '../../components/case/CaseHeader.astro';
+import MoreWork from '../../components/case/MoreWork.astro';
+import Hero from '../../components/case/tamm/Hero.astro';
+import Body from '../../components/case/tamm/Body.astro';
+import { work } from '../../data/work';
+
+const item = work.find((w) => w.slug === 'tamm')!;
+---
+<Base title={`${item.title} · Huzaifa Ratlam`} description={item.line}
+  nav={[['overview', 'Overview'], ['challenge', 'Challenge'], ['evaluation', 'Evaluation'], ['architecture', 'Architecture'], ['design', 'UI design'], ['impact', 'Impact']]} caseStudy>
+  <div class="cs cs-tamm">
+    <CaseHeader
+      eyebrow={`${item.industryLabel} · ${item.platform}`}
+      title={item.title}
+      summary={item.line}
+      meta={[['Role', 'Senior UX/UI designer'], ['Team', '3 designers, 2 PMs, 8 engineers'], ['Year', '2020'], ['Focus', 'Information architecture, user research, systems thinking, UI design']]}
+      bleed>
+      <Hero />
+    </CaseHeader>
+    <Body />
+  </div>
+  <MoreWork slug="tamm" />
+</Base>
+
+<script>
+  import { tamm } from '../../components/case/tamm/tamm.js';
+  document.addEventListener('astro:page-load', tamm);
+</script>
