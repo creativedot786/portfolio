@@ -1,0 +1,104 @@
+---
+// The Scout case study after its header: the challenge, the design, how the agent works, building it, and the call to try it.
+---
+<section class="ch" id="challenge"><div class="shell">
+ <div class="ch-txt head"><p class="lab">The challenge</p><h2 class="claim">In a filter panel, your intent is on screen. In a chat, it scrolls away.</h2>
+ <p>Search with filters is easy to read. What you asked for sits in one place, you set every part of it, and the results are clearly built from it.</p>
+ <p>A chat loses that. What you want is spread across messages: some said, some implied, some changed three messages later. And you can’t see what the results are based on.</p></div>
+ <div class="sc-two" role="img" aria-label="The same search two ways. As filters: location any, 2 bedrooms, up to AED 150k, pets allowed, pool. As a chat: the same wishes spread over four messages, and changed along the way.">
+ <div class="sc-side"><p class="lab">Filters</p>
+  <div class="sc-fp sc-ui">
+   <div class="r"><span>Location</span><b>Any</b></div>
+   <div class="r"><span>Bedrooms</span><b>2</b></div>
+   <div class="r"><span>Max rent</span><b>AED 150k</b></div>
+   <div class="r"><span>Pets allowed</span><i class="tg"></i></div>
+   <div class="r"><span>Pool</span><i class="tg"></i></div>
+  </div>
+  <p class="sc-sn">One place. You set every part of it, and the results come from exactly this.</p></div>
+ <div class="sc-side"><p class="lab">Chat</p>
+  <div class="sc-cp sc-ui">
+   <div class="sc-msg u"><div class="sc-b"><mark>2-bed</mark> <mark>near my office in DIFC</mark>, <mark>around 130k a year</mark>. <mark>I have a dog</mark></div></div>
+   <div class="sc-msg u"><div class="sc-b">Actually I can go to <mark>150k</mark> if there’s <mark>a pool</mark></div></div>
+   <div class="sc-msg u"><div class="sc-b"><mark>Just for now</mark>, show me anything <mark>under 110k</mark></div></div>
+   <div class="sc-msg u"><div class="sc-b">Being <mark>near DIFC isn’t important</mark>, drop it</div></div>
+  </div>
+  <p class="sc-sn">The same wishes, spread over four messages. Some were implied, and some changed along the way.</p></div>
+</div>
+</div></section>
+<section class="bigq"><div class="shell"><blockquote>The challenge: keep a memory of what you asked for, easy to change and clear about what the results are based on, without a filter panel.</blockquote></div></section><section class="ch" id="design"><div class="shell">
+ <div class="ch-txt head"><p class="lab">The design</p><h2 class="claim">One loop, and a memory you can see.</h2></div>
+ <div class="sc-loop" role="img" aria-label="The loop: intent, understanding, results, refine, then back to understanding">
+ <ol>
+  <li><span class="n">1</span><b>Intent</b><span>You say what you want, in your own words, however incomplete.</span></li>
+  <li><span class="n">2</span><b>Understanding</b><span>Scout forms a few preferences. Each one says where it came from.</span></li>
+  <li><span class="n">3</span><b>Results</b><span>Homes that match that understanding, and only that.</span></li>
+  <li><span class="n">4</span><b>Refine</b><span>Talk, or tap the memory. Scout says what changed.</span></li>
+ </ol>
+ <div class="sc-back" aria-hidden="true"><b class="u"></b><i></i><span>back to understanding</span></div>
+</div>
+<div class="sc-rules"><p class="lab">Two rules hold it together</p>
+ <p class="sc-rule">Nothing changes silently.</p>
+ <p class="sc-rule">What you see in the memory is exactly what the results were built from.</p></div>
+ <div class="decs sc-decs">
+ <article class="dec"><div class="dec-txt"><span class="dn">01</span><h3>See it. Always in view, never in a panel.</h3><p>Filters do one thing well: they’re always there. I kept that and dropped the panel. One line above the keyboard, in thumb reach, written in words instead of controls.</p><p>No quick-reply chips either. Chips are filters by another name.</p></div><div class="dec-m"><div class="sc-v" role="img" aria-label="Above the keyboard: the memory bar, reading 2-bed, up to 150k, pet-friendly and two more, then the message box"><div class="sc-ui sc-dockv">
+ <div class="sc-brief"><svg class="sc-pf" viewBox="0 0 100 150" aria-hidden="true"><use href="#sc-pf"/></svg><span class="sc-bt"><span class="sc-p">2-bed</span><span class="sc-sep">·</span><span class="sc-p">up to 150k</span><span class="sc-sep sc-wide">·</span><span class="sc-p sc-wide">pet-friendly</span></span><span class="sc-more sc-wide">+2</span><span class="sc-more sc-narrow">+3</span><span class="sc-chev"></span></div>
+ <div class="sc-comp"><span class="sc-in">Ask Scout…</span><span class="sc-send"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg></span></div>
+ <div class="sc-thumb">In thumb reach, one line, in words</div>
+</div></div></div></article>
+ <article class="dec"><div class="dec-txt"><span class="dn">02</span><h3>It infers, and shows its working.</h3><p>An agent that only does what it’s told is a form. Scout reads between the lines: a dog means a pet-friendly building, kids mean schools nearby probably matter.</p><p>What must be true filters. What’s only likely ranks. Every guess is marked as one.</p></div><div class="dec-m"><div class="sc-v sc-inf3" data-infer role="img" aria-label="I have a dog: the home card shows Pets allowed. Inferred, and it filters. I have 2 kids: the card shows Uptown International School, 4 minutes. Inferred, and it ranks. Near a metro: the card shows 640 metres from the metro. Said, and it filters."><ol class="sc-ui"><li><div class="sc-msg u"><div class="sc-b">I have a dog</div></div><div class="sc-mc"><img src="/work/scout/L22.jpg" alt=""><span class="sc-mt"><b>AED 88,000</b><span>Bloom Towers, Jumeirah Village Circle</span><span class="sc-tag"><svg aria-hidden="true"><use href="#sc-i-paw"/></svg>Pets allowed</span></span></div><em>Inferred · filters</em></li><li><div class="sc-msg u"><div class="sc-b">I have 2 kids</div></div><div class="sc-mc"><img src="/work/scout/L31.jpg" alt=""><span class="sc-mt"><b>AED 92,000</b><span>Uptown Mirdif, Mirdif</span><span class="sc-tag"><svg aria-hidden="true"><use href="#sc-i-school"/></svg>Uptown International School · 4 min</span></span></div><em>Inferred · ranks</em></li><li><div class="sc-msg u"><div class="sc-b">Near a metro, please</div></div><div class="sc-mc"><img src="/work/scout/L31.jpg" alt=""><span class="sc-mt"><b>AED 138,000</b><span>Executive Towers, Business Bay</span><span class="sc-tag"><svg aria-hidden="true"><use href="#sc-i-metro"/></svg>640m from metro</span></span></div><em>Said · filters</em></li></ol></div></div></article>
+ <article class="dec"><div class="dec-txt"><span class="dn">03</span><h3>Correct it. Tap a phrase, or just say it.</h3><p>The memory opens as a sentence you can disagree with, phrase by phrase. Taps and words both go through the conversation, so the memory and the chat never disagree.</p></div><div class="dec-m"><div class="sc-v" role="img" aria-label="The memory opens as a sentence. Tapping a phrase offers Not important, Change, or Why this? Or you can just say it: Being near DIFC isn't important, drop it."><div class="sc-ui">
+ <div class="sc-sheet"><div class="sc-handle"></div><div class="h">What I’ve understood</div>
+  <div class="t">You want <u>a 2-bed</u>, <u>up to 150k/year</u>, <u>a pet-friendly building</u>, <u class="sel">a pool</u>, <u class="now">just for now,</u> <u>under 110k/year</u>.</div>
+  <div class="sc-pop"><span>Not important</span><span>Change</span><span>Why this?</span></div>
+  <div class="hint">Tap anything to change it, or just tell me.</div></div>
+ <div class="sc-or">or just say it</div>
+ <div class="sc-msg u"><div class="sc-b">Being near DIFC isn’t important, drop it</div></div>
+</div></div></div></article>
+ <article class="dec"><div class="dec-txt"><span class="dn">04</span><h3>Steer it. Change course without losing your place.</h3><p>“Just for now” sits on top of what you said before and never replaces it. Drop it, and you’re back where you were.</p></div><div class="dec-m"><div class="sc-v" role="img" aria-label="Just for now, under 110k a year sits on top of the standing budget, up to 150k a year. Drop it and 150k is back."><div class="sc-ui sc-layers">
+ <div class="sc-msg u"><div class="sc-b">Just for now, show me anything under 110k</div></div>
+ <div class="sc-stack">
+  <div class="sc-layer back"><small>You said earlier</small><b>up to 150k/year</b></div>
+  <div class="sc-layer front"><small>Just for this search</small><b><i>for now:</i> under 110k/year</b></div>
+ </div>
+ <div class="sc-or">drop “just for now” and 150k is back</div>
+</div></div></div></article>
+ <article class="dec"><div class="dec-txt"><span class="dn">05</span><h3>No results is never the answer.</h3><p>Saying “no results” is easy. A smart agent works out why, and what would change it.</p><p>Scout first widens to what you’d likely accept anyway: the neighbouring areas. If still nothing fits, code tests every requirement, finds the one blocking the most homes, and Scout names it with what you’d get. It never drops a requirement without asking. You decide what to give up.</p></div><div class="dec-m"><div class="sc-v sc-dead" role="img" aria-label="Two moments from the session. Nothing in DIFC itself, so Scout shows nearby areas: a 2-bed at Executive Towers, Business Bay, AED 138,000. Later, nothing under 110k: Scout names the area as the one thing in the way, and five homes appear when it is dropped, from AED 72k."><div class="sc-ui">
+ <div class="sc-step"><span class="sc-sl">First, look next door</span>
+  <div class="sc-note">Nothing in DIFC itself. Showing nearby areas.</div>
+  <div class="sc-mini"><img src="/work/scout/L31.jpg" alt=""><span><b>AED 138,000</b>Executive Towers, Business Bay</span></div></div>
+ <div class="sc-step"><span class="sc-sl">Then, name the one thing in the way</span>
+  <div class="sc-msg s"><span class="sc-av"><svg class="sc-pf" viewBox="0 0 100 150" aria-hidden="true"><use href="#sc-pf"/></svg></span><div class="sc-b">Under 110k, nothing near DIFC has a pet-friendly 2-bed with a pool. Drop the area and there are 5 options elsewhere, starting at 72k in Town Square.</div></div>
+  <div class="sc-msg u"><div class="sc-b">Being near DIFC isn’t important, drop it</div></div>
+  <div class="sc-thumbs"><img src="/work/scout/L41.jpg" alt=""><img src="/work/scout/L22.jpg" alt=""><img src="/work/scout/L31.jpg" alt=""><img src="/work/scout/L19.jpg" alt=""><img src="/work/scout/L44.jpg" alt=""><span>5 homes, from AED 72k</span></div></div>
+</div></div></div></article>
+ </div>
+</div></section><section class="ch" id="agent"><div class="shell">
+ <div class="ch-txt head"><p class="lab">How the agent works</p><h2 class="claim">The model reads people. Code does the counting.</h2>
+ <p>Understanding a person is fuzzy work. Matching homes is exact: a budget is a number, and a building either allows pets or it doesn’t. So each half goes to what does it best. The memory on screen is where they meet.</p></div>
+ <div class="sc-flow" role="img" aria-label="Each turn: 1, the model understands; 2, code matches; 3, code finds the way out if nothing fits; 4, the model replies">
+  <div class="sc-lanes"><span>Model: meaning and language</span><span class="c">Code: rules and counting</span></div>
+  <div class="sc-nd"><span class="sc-k">1 · Model</span><b>Understand</b><span>Turns your message into preferences, and where each came from.</span><em>Claude Haiku 4.5, returns JSON</em></div>
+  <div class="sc-nd c"><span class="sc-k">2 · Code</span><b>Match</b><span>Applies them to the listings. Results can never be looser than the memory shows.</span><em>Plain code</em></div>
+  <div class="sc-nd c"><span class="sc-k">3 · Code</span><b>Find the way out</b><span>If nothing fits, tries dropping each requirement and keeps the one that frees the most homes.</span><em>Plain code</em></div>
+  <div class="sc-nd"><span class="sc-k">4 · Model</span><b>Reply</b><span>Says what changed and what’s on screen. No recap.</span><em>Claude Sonnet 5, streamed</em></div>
+ </div>
+ <p class="sc-truth">The memory on screen is the <b>single source of truth</b>. Results are built from it and nothing else, and every change to it is said out loud once.</p>
+ <p class="lab sc-facts-l">Technical choices for this prototype</p>
+ <div class="orow sc-facts">
+  <div class="o"><b>2</b><span>Models, each chosen for its job: a fast one to understand, a stronger one to write.</span></div>
+  <div class="o"><b>46</b><span>Seeded homes across 20 Dubai communities, shaped to test the edges of the conversation.</span></div>
+  <div class="o"><b>~6s</b><span>Saved on every turn by asking for plain JSON first, with strict schema mode as the fallback.</span></div>
+ </div>
+</div></section><section class="ch split sc-build" id="building"><div class="shell">
+ <div class="ch-txt"><p class="lab">Building it</p><h2 class="claim">Built with Claude Code, end to end, in a few hours.</h2>
+ <p>I decided what Scout should do, how it should talk, and where the model stops and code takes over. Claude Code wrote the interface, the prompts, the matching code and the tests. I judged every answer.</p>
+ <p>The prompts are design work. Scout’s voice lives in the reply prompt: short sentences, plain international English for a city of expats, no idioms, always the area, the price and the distance.</p></div>
+ <div class="ch-media"><div class="sc-checks"><p class="lab">The test it has to pass</p>
+  <p class="sub">A script replays a seven-turn conversation against the live model. It fails if Scout…</p>
+  <ul><li>uses an em dash</li><li>uses an idiom or filler, like “good news”</li><li>asks a question while homes are on screen</li><li>opens two replies the same way</li><li>forgets a preference you never took back</li><li>shows a home over a firm budget</li><li>shows a no-pets home after you mention a cat or dog</li><li>reads “10k a month” as anything but 120k a year</li></ul></div>
+ </div>
+</div></section>
+<section class="sc-end"><div class="shell"><div class="in">
+ <h2 class="claim">Try it. It’s a real model on seeded homes.</h2>
+ <div class="go"><a class="sc-try" href="https://pfscout-prototype.vercel.app/" target="_blank" rel="noopener">Open Scout <svg class="arr" viewBox="0 0 14.4 14.4" aria-hidden="true"><path d="M1.2 13.2L13.2 1.2M13.2 1.2H1.2M13.2 1.2V13.2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" fill="none"/></svg><span class="sr-only">(opens in a new tab)</span></a><span class="sc-try-note">Best on a phone. A demo session allows 15 messages.</span></div>
+</div></div></section>

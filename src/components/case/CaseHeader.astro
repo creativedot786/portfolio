@@ -1,6 +1,7 @@
 ---
 // A case study's opening: eyebrow, title and summary on the left, the facts (role, client, year…) on the right,
 // and the hero media below. The eyebrow is what the rail's first link lines up with (data-nav-align).
+// Optional slots: "aside" sits under the facts (a call to action), "note" sits between the title row and the hero.
 interface Props { eyebrow: string; title: string; summary: string; meta: [string, string][] }
 const { eyebrow, title, summary, meta } = Astro.props;
 ---
@@ -11,27 +12,42 @@ const { eyebrow, title, summary, meta } = Astro.props;
       <h1 class="ttl">{title}</h1>
       <p class="sum">{summary}</p>
     </div>
-    <dl class="meta">
-      {meta.map(([dt, dd]) => <div><dt>{dt}</dt><dd>{dd}</dd></div>)}
-    </dl>
+    <div class="hd-r">
+      <dl class="meta">
+        {meta.map(([dt, dd]) => <div><dt>{dt}</dt><dd>{dd}</dd></div>)}
+      </dl>
+      <slot name="aside" />
+    </div>
+    <slot name="note" />
     <div class="hero"><slot /></div>
   </div>
 </header>
 
 <style>
   .cs-head{padding-top:136px}
-  .ttl-w{grid-column:1/-1}
+  .ttl-w,.hd-r{grid-column:1/-1}
   .eyebrow{margin:0 0 18px;font:400 13px/1.4 var(--font-mono);color:var(--color-tertiary);letter-spacing:.01em}
   .ttl{font-family:var(--font-display);font-weight:400;font-size:var(--text-h2);line-height:1.06;letter-spacing:-.01em;margin:0;text-wrap:balance}
   .sum{margin:28px 0 0;font-size:19px;line-height:1.5;color:var(--color-secondary)}
-  .meta{grid-column:1/-1;display:grid;grid-template-columns:1fr;gap:22px;margin:24px 0 0}
+  .hd-r{margin-top:24px}
+  .meta{display:grid;grid-template-columns:1fr;gap:22px;margin:0}
   .meta dt{font:400 12px var(--font-mono);color:var(--color-tertiary)}
   .meta dd{margin:6px 0 0;font-size:15px;line-height:1.45;color:var(--color-secondary)}
   .hero{grid-column:1/-1;margin-top:56px}
+  /* below desktop each fact is one line: the label, then its value */
+  @media (max-width:1023px){
+    .meta{gap:10px}
+    .meta div{display:grid;grid-template-columns:96px minmax(0,1fr);column-gap:16px;align-items:baseline}
+    .meta dd{margin:0}
+  }
+  /* a note right above the hero sits close to it */
+  :global(.sc-alert) + .hero{margin-top:20px}
   @media (min-width:1024px){
+    /* title on columns 4-7, column 8 left empty, the facts on 9-12 out to the right edge */
     .ttl-w{grid-column:4/8}
-    .meta{grid-column:9/12;margin:0 calc(-1 * var(--grid-gutter)) 0 0;padding-top:32px;align-self:start}
+    .hd-r{grid-column:9/-1;padding-top:32px;align-self:start}
     .hero{grid-column:4/12;margin:96px calc(-1 * var(--grid-gutter)) 0 0}
+    :global(.sc-alert) + .hero{margin-top:20px}
   }
   @media (max-width:599px){
     .cs-head{padding-top:56px}

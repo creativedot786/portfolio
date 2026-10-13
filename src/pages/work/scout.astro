@@ -1,0 +1,63 @@
+---
+// Scout: an agentic AI property search, explored for Property Finder and built with Claude Code.
+// The page is the site's own layout; its sections are in src/components/case/scout/, its photos in public/work/scout/.
+import Base from '../../layouts/Base.astro';
+import CaseHeader from '../../components/case/CaseHeader.astro';
+import MoreWork from '../../components/case/MoreWork.astro';
+import ScoutStage from '../../components/case/scout/ScoutStage.astro';
+import ScoutBody from '../../components/case/scout/ScoutBody.astro';
+import { work } from '../../data/work';
+
+const item = work.find((w) => w.slug === 'scout')!;
+const PROTO = 'https://pfscout-prototype.vercel.app/';
+---
+<Base title={`${item.title} · Huzaifa Ratlam`} description={item.line}
+  nav={[['overview', 'Overview'], ['challenge', 'Challenge'], ['design', 'Design'], ['agent', 'The agent'], ['building', 'Building it']]} caseStudy>
+  <div class="cs">
+    <CaseHeader
+      eyebrow={`${item.industryLabel} · ${item.platform}`}
+      title={item.title}
+      summary="Scout is a conversational way to find a home to rent in Dubai, explored for Property Finder. You say what you want in your own words. Scout keeps a short memory of what it understood, marks what it guessed, and shows only the homes that match. It runs on a real model. Nothing is mocked."
+      meta={[['Role', 'Designer and builder'], ['Built with', 'Claude Code, Claude API'], ['Time', 'A few hours'], ['Year', '2026']]}>
+      <Fragment slot="aside">
+        <a class="sc-try" href={PROTO} target="_blank" rel="noopener">Try the prototype <svg class="arr" viewBox="0 0 14.4 14.4" aria-hidden="true"><path d="M1.2 13.2L13.2 1.2M13.2 1.2H1.2M13.2 1.2V13.2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" fill="none"/></svg><span class="sr-only">(opens in a new tab)</span></a><span class="sc-try-note">Best on a phone</span>
+      </Fragment>
+      <div class="sc-alert" role="note" slot="note"><span class="ic" aria-hidden="true">i</span><p>A prototype, made as a design exploration. Not affiliated with or endorsed by Property Finder.</p></div>
+      <ScoutStage />
+    </CaseHeader>
+    <ScoutBody />
+  </div>
+  <MoreWork slug="scout" />
+</Base>
+
+<script>
+  // the replay's homes, from the recorded session; the photos are the prototype's placeholders
+  import cards from '../../components/case/scout/cards.json';
+  import { replay, infer } from '../../components/case/scout/replay.js';
+  import { createOrb } from '../../scripts/scout-orb';
+
+  const C: Record<string, any> = {};
+  for (const c of cards as any[]) C[c.id] = {
+    img: `/work/scout/${c.id}.jpg`, type: c.type[0].toUpperCase() + c.type.slice(1), price: c.rentAed.toLocaleString('en-US'),
+    meta: `${c.beds} bed · ${c.baths} bath · ${c.sqft.toLocaleString('en-US')} sq ft`, where: `${c.building}, ${c.community}`,
+  };
+
+  function scout() {
+    // the orb on the replay's first screen; the replay pauses it while the chat is showing
+    const cv = document.querySelector<HTMLCanvasElement>('[data-replay] .sc-orb canvas');
+    if (cv && !(cv as any).__orb) {
+      (cv as any).__orb = true;
+      import('three').then((THREE) => {
+        try {
+          const o = createOrb(THREE, cv, { size: 190, onReady: () => cv.parentElement!.classList.add('ready') });
+          (window as any).__scoutOrb = o;
+          const r = cv.getBoundingClientRect();
+          if (r.bottom < 0 || r.top > innerHeight) o.pause();
+        } catch (e) { cv.parentElement!.classList.add('ready'); }
+      });
+    }
+    replay(C);
+    infer();
+  }
+  document.addEventListener('astro:page-load', scout);
+</script>

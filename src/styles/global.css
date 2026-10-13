@@ -1,4 +1,7 @@
 @import "tailwindcss";
+/* the case studies' patterns, part of this one stylesheet (scoped under .cs) */
+@import "./case.css";
+@import "./case/scout.css";
 
 @theme {
   /* Tailwind's own palette, type scale and font stacks are removed outright.
