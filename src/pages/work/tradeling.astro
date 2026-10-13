@@ -1,0 +1,40 @@
+---
+// Tradeling: a home page for each type of business in the B2B marketplace app. The page is the site's own layout;
+// its sections are in src/components/case/tradeling/, its screens in public/work/tradeling/i/.
+import Base from '../../layouts/Base.astro';
+import CaseHeader from '../../components/case/CaseHeader.astro';
+import MoreWork from '../../components/case/MoreWork.astro';
+import Hero from '../../components/case/tradeling/Hero.astro';
+import Body from '../../components/case/tradeling/Body.astro';
+import { work } from '../../data/work';
+
+const item = work.find((w) => w.slug === 'tradeling-b2b')!;
+---
+<Base title={`${item.title} · Huzaifa Ratlam`} description={item.line}
+  nav={[['overview', 'Overview'], ['problem', 'Problem'], ['research', 'Research'], ['idea', 'The idea'], ['decisions', 'Decisions'], ['features', 'Features'], ['system', 'Design system'], ['impact', 'Impact']]} caseStudy>
+  <div class="cs cs-tradeling">
+    <CaseHeader
+      eyebrow={`${item.industryLabel} · ${item.platform}`}
+      title={item.title}
+      summary="Most business customers on Tradeling ordered through sales agents, not the app. I redesigned the app so each type of business gets its own home page, which moved more orders into the app and reduced the dependency on the offline sales channel."
+      meta={[['Role', 'Sole product designer'], ['Team', '1 PM, 3 engineers, 1 data analyst'], ['Year', '2025'], ['Focus', 'Field research, usability testing, data analytics, UX and UI, design system']]}
+      bleed>
+      <Hero />
+    </CaseHeader>
+    <Body />
+  </div>
+  <MoreWork slug="tradeling-b2b" />
+</Base>
+
+<script>
+  import { tradeling } from '../../components/case/tradeling/tradeling.js';
+  import { tradelingHero } from '../../components/case/tradeling/hero.js';
+
+  document.addEventListener('astro:page-load', () => {
+    if (!document.querySelector('.cs-tradeling')) return;
+    tradeling();
+    // the hero's three phones: three.js loads only on this page
+    Promise.all([import('three'), import('three/addons/environments/RoomEnvironment.js')])
+      .then(([THREE, { RoomEnvironment }]) => tradelingHero(THREE, RoomEnvironment));
+  });
+</script>

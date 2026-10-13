@@ -1,9 +1,10 @@
 ---
 // A case study's opening: eyebrow, title and summary on the left, the facts (role, client, year…) on the right,
 // and the hero media below. The eyebrow is what the rail's first link lines up with (data-nav-align).
+// bleed: the hero runs to the right edge of the grid instead of stopping at column 12.
 // Optional slots: "aside" sits under the facts (a call to action), "note" sits between the title row and the hero.
-interface Props { eyebrow: string; title: string; summary: string; meta: [string, string][] }
-const { eyebrow, title, summary, meta } = Astro.props;
+interface Props { eyebrow: string; title: string; summary: string; meta: [string, string][]; bleed?: boolean }
+const { eyebrow, title, summary, meta, bleed } = Astro.props;
 ---
 <header class="cs-head" id="overview">
   <div class="shell">
@@ -19,7 +20,7 @@ const { eyebrow, title, summary, meta } = Astro.props;
       <slot name="aside" />
     </div>
     <slot name="note" />
-    <div class="hero"><slot /></div>
+    <div class:list={['hero', { bleed }]}><slot /></div>
   </div>
 </header>
 
@@ -48,6 +49,7 @@ const { eyebrow, title, summary, meta } = Astro.props;
     .hd-r{grid-column:9/-1;padding-top:32px;align-self:start}
     .hero{grid-column:4/12;margin:96px calc(-1 * var(--grid-gutter)) 0 0}
     :global(.sc-alert) + .hero{margin-top:20px}
+    .hero.bleed{grid-column:4/-1;margin-right:0}
   }
   @media (max-width:599px){
     .cs-head{padding-top:56px}

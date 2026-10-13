@@ -3,6 +3,7 @@
 @import "./case.css";
 @import "./case/scout.css";
 @import "./case/qfunder.css";
+@import "./case/tradeling.css";
 
 @theme {
   /* Tailwind's own palette, type scale and font stacks are removed outright.

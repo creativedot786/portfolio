@@ -1,0 +1,452 @@
+/* The tradeling case study's own patterns. Part of the global stylesheet, scoped under .cs-tradeling. */
+.cs-tradeling .nx-stage{background:var(--color-surface);padding:48px 24px;display:flex;justify-content:center}
+.cs-tradeling .nx-phone{position:relative;width:100%;max-width:300px;background:#0e0e10;border-radius:44px;padding:9px;box-shadow:0 0 0 1px rgba(255,255,255,.1),0 30px 60px -32px rgba(0,0,0,.65)}
+.cs-tradeling .nx-scr{position:relative;width:100%;border-radius:35px;overflow:hidden;background:#fff}
+.cs-tradeling .nx-app{position:absolute;left:0;top:0;width:375px;height:812px;transform-origin:0 0;display:flex;flex-direction:column;background:#fff;
+ font-family:"Inter",system-ui,sans-serif;color:#0b0c0d;-webkit-font-smoothing:antialiased;text-align:left;line-height:normal;letter-spacing:0}
+.cs-tradeling .nx-app *{box-sizing:border-box;margin:0}
+.cs-tradeling .nx-sb{height:44px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 22px 0 30px;background:#fff;font-family:-apple-system,"SF Pro Text",system-ui,sans-serif}
+.cs-tradeling .nx-time{font-weight:600;font-size:15px;letter-spacing:-.2px}
+.cs-tradeling .nx-ic{display:flex;align-items:center;gap:6px}
+.cs-tradeling .nx-ic svg{display:block;fill:#000}
+.cs-tradeling .nx-hd{height:56px;flex:none;position:relative;background:#fff}
+.cs-tradeling .nx-hd .x{position:absolute;left:4px;top:0;width:48px;height:48px;display:grid;place-items:center}
+.cs-tradeling .nx-hd .x svg{width:24px;height:24px;display:block}
+.cs-tradeling .nx-hd .nx-ttl{position:absolute;left:0;right:0;top:12px;text-align:center;font:700 18px/24px "Inter",sans-serif;letter-spacing:-.32px}
+.cs-tradeling .nx-pr{flex:none;background:#00394d;display:flex;gap:12px;padding:12px 16px;color:#fff}
+.cs-tradeling .nx-th{width:40px;height:40px;border-radius:5px;background:#f3f4f6;overflow:hidden;position:relative;flex:none}
+.cs-tradeling .nx-th img{position:absolute;left:23.17%;top:5.97%;width:53.66%;height:87.63%;object-fit:cover}
+.cs-tradeling .nx-pt{display:flex;flex-direction:column;gap:4px;justify-content:center}
+.cs-tradeling .nx-pa{font-size:14px}
+.cs-tradeling .nx-pa b{font-weight:700;margin-left:4px}
+.cs-tradeling .nx-pb,.cs-tradeling .nx-pc{font-size:12px}
+.cs-tradeling .nx-body{flex:1 1 0;min-height:0;background:#f8f8f8;padding:16px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
+.cs-tradeling .nx-chats{display:flex;flex-direction:column}
+.cs-tradeling .nx-col{display:grid;grid-template-rows:0fr;transition:grid-template-rows .32s cubic-bezier(.2,.7,.2,1),margin .32s cubic-bezier(.2,.7,.2,1)}
+.cs-tradeling .nx-col>.nx-ci{overflow:hidden;min-height:0;opacity:0;transform:translateY(8px);transition:opacity .25s,transform .32s cubic-bezier(.2,.7,.2,1)}
+.cs-tradeling .nx-col.on{grid-template-rows:1fr}
+.cs-tradeling .nx-col.on>.nx-ci{opacity:1;transform:none}
+.cs-tradeling .nx-chats>.nx-col.on+.nx-col.on{margin-top:12px}
+.cs-tradeling .nx-row{display:flex}
+.cs-tradeling .nx-row.me{justify-content:flex-end}
+.cs-tradeling .nx-b{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:12px;max-width:300px;font-size:14px;line-height:20px}
+.cs-tradeling .nx-row.me .nx-b{background:#00394d;color:#fff}
+.cs-tradeling .nx-card{width:300px;display:flex;flex-direction:column;gap:12px}
+.cs-tradeling .nx-card .msg{font-size:14px;line-height:20px}
+.cs-tradeling .nx-wait{width:300px}
+.cs-tradeling .nx-wait b{display:block;font-weight:700}
+.cs-tradeling .nx-wait .nx-p{margin-top:8px}
+.cs-tradeling .nx-ob{border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:12px;background:#f2fcf0;transition:background .3s}
+.cs-tradeling .nx-oh{display:flex;align-items:center;gap:8px;height:16px}
+.cs-tradeling .nx-oh i{width:8px;height:8px;border-radius:50%;background:#2e8d2c;flex:none}
+.cs-tradeling .nx-oh span{font-weight:600;font-size:12px;color:#236d21;transition:color .3s}
+.cs-tradeling .nx-rows{display:flex;flex-direction:column;gap:4px}
+.cs-tradeling .nx-r{display:flex;justify-content:space-between;font-size:12px;transition:color .3s}
+.cs-tradeling .nx-r span:last-child{font-weight:600;line-height:16px}
+.cs-tradeling .nx-r.t span:first-child{font-weight:600}
+.cs-tradeling .nx-r.t span:last-child{font-weight:700}
+.cs-tradeling .nx-ob.off{background:#f8f8f8}
+.cs-tradeling .nx-ob.off i{display:none}
+.cs-tradeling .nx-ob.off span,.cs-tradeling .nx-ob.off .nx-r{color:#a0a0a0}
+.cs-tradeling .nx-btns{display:flex;gap:8px}
+.cs-tradeling .nx-btn{flex:1;height:32px;border-radius:5px;display:grid;place-items:center;font-weight:600;font-size:14px;line-height:20px;transition:transform .12s,filter .12s}
+.cs-tradeling .nx-btn.o{background:#fff;border:1px solid #0b0c0d}
+.cs-tradeling .nx-btn.p{background:#f95000;color:#fff}
+.cs-tradeling .nx-btn.down,.cs-tradeling .nx-bt.down{transform:scale(.96);filter:brightness(.92)}
+.cs-tradeling .nx-deal{width:300px;background:#d5f5d3;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:12px}
+.cs-tradeling .nx-dh{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px}
+.cs-tradeling .nx-dh i{width:28px;height:28px;border-radius:50%;background:#2e8d2c;display:grid;place-items:center}
+.cs-tradeling .nx-dh svg{width:16px;height:16px;display:block}
+.cs-tradeling .nx-deal .nx-ob{border-radius:10px}
+.cs-tradeling .nx-deal .nx-btn{flex:none;height:32px}
+.cs-tradeling .nx-deal .nx-oh span{line-height:16px}
+.cs-tradeling .nx-bot{flex:none;background:#fff}
+.cs-tradeling .nx-pnl{padding:4px 16px 8px}
+.cs-tradeling .nx-flds{display:flex;gap:12px}
+.cs-tradeling .nx-fld{flex:1;min-width:0}
+.cs-tradeling .nx-fld label{display:block;padding:8px;font-size:14px;line-height:20px}
+.cs-tradeling .nx-in{height:40px;border-radius:12px;background:#f8f8f8;padding:0 16px;display:flex;align-items:center;font-size:14px;line-height:20px;border:2px solid transparent;transition:background .15s,border-color .15s;white-space:nowrap;overflow:hidden}
+.cs-tradeling .nx-in .nx-ph{color:#a0a0a0}
+.cs-tradeling .nx-in.f{background:#fff;border-color:#00394d}
+.cs-tradeling .nx-in .cur{display:none;width:1px;height:18px;background:#0b0c0d;margin:0 1px;animation:nxb 1s steps(1) infinite}
+.cs-tradeling .nx-in.f .cur{display:inline-block}
+@keyframes nxb{50%{opacity:0}}
+.cs-tradeling .nx-acts{display:flex;gap:12px;margin-top:12px}
+.cs-tradeling .nx-close{height:40px;padding:0 8px;display:grid;place-items:center;font-weight:600;font-size:14px}
+.cs-tradeling .nx-bt{flex:1;height:40px;border-radius:5px;display:grid;place-items:center;font-weight:600;font-size:14px;background:#e5e5e5;color:#a0a0a0;transition:background .2s,color .2s,transform .12s,filter .12s}
+.cs-tradeling .nx-bt.go{background:#f95000;color:#fff}
+.cs-tradeling .nx-bt.ol{background:#fff;color:#0b0c0d;border:1px solid #0b0c0d}
+.cs-tradeling .nx-pnl.cn{padding:12px 16px 8px}
+.cs-tradeling .nx-foot{padding:12px 16px 8px;text-align:center;font-size:14px;line-height:20px;color:#333}
+.cs-tradeling .nx-kbw{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s cubic-bezier(.2,.7,.2,1);flex:none}
+.cs-tradeling .nx-kbw.on{grid-template-rows:1fr}
+.cs-tradeling .nx-kbw>div{overflow:hidden;min-height:0}
+.cs-tradeling .nx-kb{height:216px;background:#dcdee3;padding:6px;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:46px 47px 47px 46px;gap:7px 6px;font-family:-apple-system,"SF Pro Text",system-ui,sans-serif}
+.cs-tradeling .nx-k{background:#fff;border-radius:5px;box-shadow:0 1px 0 rgba(0,0,0,.3);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#000;transition:background .08s}
+.cs-tradeling .nx-k b{font-weight:400;font-size:25px;line-height:26px;letter-spacing:-.5px}
+.cs-tradeling .nx-k small{font-weight:700;font-size:10px;letter-spacing:1.7px;line-height:11px;margin-top:-1px}
+.cs-tradeling .nx-k.bare{background:none;box-shadow:none}
+.cs-tradeling .nx-k.bare b{font-size:20px}
+.cs-tradeling .nx-k svg{width:32px;height:32px;display:block}
+.cs-tradeling .nx-k.dn{background:#b4b8bf}
+.cs-tradeling .nx-hiw{display:grid;grid-template-rows:1fr;transition:grid-template-rows .3s cubic-bezier(.2,.7,.2,1);flex:none;background:#fff}
+.cs-tradeling .nx-hiw.off{grid-template-rows:0fr}
+.cs-tradeling .nx-hiw>div{overflow:hidden;min-height:0}
+.cs-tradeling .nx-hi{height:34px;position:relative}
+.cs-tradeling .nx-hi::after{content:"";position:absolute;left:50%;bottom:8px;width:144px;height:5px;margin-left:-72px;border-radius:100px;background:#000}
+.cs-tradeling .nx-tap{position:absolute;left:0;top:0;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:rgba(11,12,13,.22);box-shadow:0 0 0 2px rgba(255,255,255,.85);pointer-events:none;opacity:0;transform:scale(.6);z-index:50;transition:opacity .14s,transform .14s}
+.cs-tradeling .nx-tap.on{opacity:1;transform:scale(1)}
+.cs-tradeling .nx-tap.press{transform:scale(.8)}
+.cs-tradeling .nx-app.instant *,.cs-tradeling .nx-app.instant{transition:none!important;animation:none!important}
+.cs-tradeling .av-tabs{display:flex;gap:4px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+.cs-tradeling .av-tabs .l{font:500 11px var(--font-body);letter-spacing:.06em;text-transform:uppercase;color:var(--color-tertiary);margin-right:6px}
+.cs-tradeling .av-tabs button{font:600 12.5px var(--font-body);color:var(--color-secondary);background:none;border:0;padding:7px 12px;border-radius:999px;cursor:pointer}
+.cs-tradeling .av-tabs button.on{background:var(--color-primary);color:var(--color-page)}
+.cs-tradeling .av-stage{background:var(--color-surface);padding:32px 24px 0;display:flex;justify-content:center;align-items:flex-start;overflow:hidden}
+.cs-tradeling .av-root{position:relative;font-family:"Inter",system-ui,sans-serif;color:#0b0c0d;-webkit-font-smoothing:antialiased;text-align:left;line-height:normal;letter-spacing:0}
+.cs-tradeling .av-root *{box-sizing:border-box;margin:0}
+.cs-tradeling .av-fr{width:375px;background:#fff;padding:12px;border-radius:24px;overflow:hidden}
+.cs-tradeling .av-pn{background:#f8f8f8;border-radius:20px;padding:8px 12px;display:flex;flex-direction:column;gap:4px;overflow:hidden}
+.cs-tradeling .av-tt{display:flex;align-items:center;padding:8px 0}
+.cs-tradeling .av-tt span{flex:1;font-weight:700;font-size:16px;line-height:24px}
+.cs-tradeling .av-tt svg,.cs-tradeling .av-ic svg{width:20px;height:20px;display:block;flex:none}
+.cs-tradeling .av-tt svg{transition:transform .3s}
+.cs-tradeling .av-sr{display:flex;align-items:center;gap:8px;padding-bottom:8px;font-size:14px;line-height:20px;color:#333;white-space:nowrap;overflow:hidden}
+.cs-tradeling .av-sr i{width:4px;height:4px;border-radius:50%;background:#a0a0a0;flex:none}
+.cs-tradeling .av-sr .tr{overflow:hidden;text-overflow:ellipsis;min-width:0}
+.cs-tradeling .av-ws{padding-bottom:8px}
+.cs-tradeling .av-ws>.av-col.on+.av-col.on,.cs-tradeling .av-ws>.av-col.on~.av-col.on{margin-top:8px}
+.cs-tradeling .av-cd{background:#fff;border-radius:12px;padding:12px;overflow:hidden}
+.cs-tradeling .av-ct{display:flex;align-items:center;gap:8px}
+.cs-tradeling .av-ic{display:flex;gap:8px;align-items:flex-start;flex:1;min-width:0}
+.cs-tradeling .av-tx{font-weight:600;font-size:14px;line-height:20px;white-space:nowrap;transition:color .3s}
+.cs-tradeling .av-bt{flex:none;height:32px;padding:0 8px;border-radius:5px;background:#f95000;color:#fff;display:grid;place-items:center;font-weight:600;font-size:14px;line-height:20px;transition:transform .12s,filter .12s}
+.cs-tradeling .av-bt.down{transform:scale(.95);filter:brightness(.92)}
+.cs-tradeling .av-cd.od .av-tx{color:#b30018;white-space:normal;width:194px}
+.cs-tradeling .av-cd.shp{width:343px;display:flex;flex-direction:column;gap:8px}
+.cs-tradeling .av-items{display:flex;gap:8px;transition:transform .9s cubic-bezier(.45,0,.2,1)}
+.cs-tradeling .av-or{flex:none;border:1px solid #e5e5e5;border-radius:12px;padding:8px;display:flex;align-items:center;gap:8px}
+.cs-tradeling .av-im{width:48px;height:48px;border-radius:10px;overflow:hidden;position:relative;background:#fff;flex:none}
+.cs-tradeling .av-im img{position:absolute;display:block}
+.cs-tradeling .av-im::after{content:"";position:absolute;inset:0;background:#f8f8f8;mix-blend-mode:multiply}
+.cs-tradeling .av-om{display:flex;flex-direction:column;gap:8px}
+.cs-tradeling .av-om b{font-weight:600;font-size:12px;color:#a0a0a0}
+.cs-tradeling .av-bd{height:20px;padding:0 4px;border-radius:5px;display:inline-flex;align-items:center;font-weight:600;font-size:12px;line-height:16px;background:#f0f0f0;color:#0b0c0d;align-self:flex-start;white-space:nowrap}
+.cs-tradeling .av-bd.ofd{background:#ffefcc;color:#333}
+.cs-tradeling .av-col{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s cubic-bezier(.2,.7,.2,1),margin .4s cubic-bezier(.2,.7,.2,1)}
+.cs-tradeling .av-col>.av-ci{overflow:hidden;min-height:0;opacity:0;transform:translateY(-6px);transition:opacity .3s,transform .4s cubic-bezier(.2,.7,.2,1)}
+.cs-tradeling .av-col.on{grid-template-rows:1fr}
+.cs-tradeling .av-col.on>.av-ci{opacity:1;transform:none}
+.cs-tradeling .av-root.instant *{transition:none!important}
+.cs-tradeling .av-tap{position:absolute;left:0;top:0;width:36px;height:36px;margin:-18px 0 0 -18px;border-radius:50%;background:rgba(11,12,13,.22);box-shadow:0 0 0 2px rgba(255,255,255,.85);pointer-events:none;opacity:0;transform:scale(.6);z-index:50;transition:opacity .14s,transform .14s}
+.cs-tradeling .av-tap.on{opacity:1;transform:scale(1)}
+.cs-tradeling .av-tap.press{transform:scale(.8)}
+.cs-tradeling .av-states{display:flex;flex-direction:column;gap:20px;zoom:.86}
+.cs-tradeling .av-sl{font:500 12px var(--font-mono);color:var(--color-tertiary);margin:0 0 8px 4px}
+.cs-tradeling .av-phone{width:100%;max-width:340px;flex:none;background:#0e0e10;border-radius:44px;padding:9px;box-shadow:0 0 0 1px rgba(255,255,255,.1),0 30px 60px -32px rgba(0,0,0,.65)}
+.cs-tradeling .av-scr{position:relative;width:100%;border-radius:35px;overflow:hidden;background:#fff}
+.cs-tradeling .av-app{position:absolute;left:0;top:0;width:375px;height:812px;transform-origin:0 0;display:flex;flex-direction:column;background:#fff}
+.cs-tradeling .av-sl1,.cs-tradeling .av-sl2,.cs-tradeling .av-sl3{background-repeat:no-repeat;background-size:375px auto;flex:none}
+.cs-tradeling .av-sb{height:44px;flex:none;position:relative;z-index:2;background-repeat:no-repeat;background-size:375px auto;background-position:0 0}
+.cs-tradeling .av-pgw{flex:1;min-height:0;overflow:hidden}
+.cs-tradeling .av-pg{transition:transform 1.2s cubic-bezier(.45,0,.2,1)}
+.cs-tradeling .av-sl1{height:181px;background-position:0 -44px}
+.cs-tradeling .av-sl2{height:340px;flex:0 1 auto;min-height:0;background-position:0 -380px}
+.cs-tradeling .av-sl3{height:92px;background-position:0 -720px;box-shadow:0 -1px 0 #ececec}
+.cs-tradeling .av-app .av-fr{border-radius:0;width:375px;flex:none}
+@media (max-width:1023px){
+.cs-tradeling .av-stage{padding:32px 12px 0}
+}
+.cs-tradeling .av-ct>svg{width:20px;height:20px;display:block;flex:none}
+.cs-tradeling .av-col.w3>.av-ci{margin-right:-16px}
+.cs-tradeling .bp-stage{background:var(--color-surface);padding:32px 24px 0;display:flex;justify-content:center;align-items:flex-start;overflow:hidden}
+.cs-tradeling .bp-phone{width:100%;max-width:340px;flex:none;background:#0e0e10;border-radius:44px;padding:9px;box-shadow:0 0 0 1px rgba(255,255,255,.1),0 30px 60px -32px rgba(0,0,0,.65)}
+.cs-tradeling .bp-scr{position:relative;width:100%;border-radius:35px;overflow:hidden;background:#fff}
+.cs-tradeling .bp-app{position:absolute;left:0;top:0;width:375px;height:812px;transform-origin:0 0;display:flex;flex-direction:column;background:#fff;overflow:hidden;
+ font-family:"Inter",system-ui,sans-serif;color:#0b0c0d;-webkit-font-smoothing:antialiased;text-align:left;line-height:normal;letter-spacing:0}
+.cs-tradeling .bp-app *{box-sizing:border-box;margin:0}
+.cs-tradeling .bp-top{flex:none;position:relative;z-index:3;background:linear-gradient(#ffefba,#fff 92%)}
+.cs-tradeling .bp-sb{height:54px;display:flex;align-items:center;justify-content:space-between;padding:4px 26px 0 44px;font-family:-apple-system,"SF Pro Text",system-ui,sans-serif}
+.cs-tradeling .bp-sb .t{font-weight:600;font-size:17px}
+.cs-tradeling .bp-sb .i{display:flex;align-items:center;gap:6px}
+.cs-tradeling .bp-sb svg{display:block;fill:#0b0c0d}
+.cs-tradeling .bp-pills{display:flex;gap:8px;padding:0 16px}
+.cs-tradeling .bp-pill{flex:1;min-width:96px;height:40px;border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:center;border:1px solid transparent;
+ box-shadow:0 1px 1.5px rgba(0,0,0,.1),0 1px 1px rgba(0,0,0,.06);font-weight:600;font-size:14px;line-height:20px;transition:background .25s,border-color .25s,transform .12s}
+.cs-tradeling .bp-pill.on{background:#e7f4fc;border-color:#017aa0}
+.cs-tradeling .bp-pill img{display:block;height:24px;width:auto;max-width:96px;object-fit:contain}
+.cs-tradeling .bp-pill.down{transform:scale(.96)}
+.cs-tradeling .bp-srch{padding:12px 16px}
+.cs-tradeling .bp-sf{height:48px;border-radius:12px;background:#fff;box-shadow:0 1px 1.5px rgba(0,0,0,.1),0 1px 1px rgba(0,0,0,.06);display:flex;align-items:center;gap:8px;padding:0 12px;color:#666;font-size:14px}
+.cs-tradeling .bp-sf .sp{flex:1}
+.cs-tradeling .bp-sf svg{display:block;flex:none}
+.cs-tradeling .bp-view{flex:1;min-height:0;overflow:hidden;position:relative}
+.cs-tradeling .bp-pg{transition:transform 1.4s cubic-bezier(.45,0,.2,1)}
+.cs-tradeling .bp-sec{padding:12px 4px}
+.cs-tradeling .bp-h{display:flex;align-items:center;gap:12px;padding:0 12px 12px}
+.cs-tradeling .bp-h b{flex:1;font-weight:700;font-size:18px;line-height:24px;letter-spacing:-.32px}
+.cs-tradeling .bp-h svg{width:24px;height:24px;display:block}
+.cs-tradeling .bp-cats{display:flex;gap:12px;padding:0 12px;overflow:hidden}
+.cs-tradeling .bp-cat{flex:1 0 0;min-width:72px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.cs-tradeling .bp-ci{width:72px;height:72px;border-radius:12px;overflow:hidden;position:relative;background:#fff;display:grid;place-items:center}
+.cs-tradeling .bp-ci img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cs-tradeling .bp-ci.ln{background:#f1f4fb}
+.cs-tradeling .bp-ci.ln svg{width:40px;height:40px;stroke:#1428a0}
+.cs-tradeling .bp-cl{font-weight:600;font-size:12px;line-height:18px;text-align:center;width:72px}
+.cs-tradeling .bp-bans{display:flex;gap:12px;padding:12px 16px;overflow:hidden}
+.cs-tradeling .bp-ban{flex:none;height:200px;border-radius:20px;overflow:hidden;position:relative}
+.cs-tradeling .bp-ban.w1{width:320px}
+.cs-tradeling .bp-ban.w2{width:280px}
+.cs-tradeling .bp-ban>img{position:absolute;display:block}
+.cs-tradeling .bp-cb{position:absolute;inset:0;padding:22px 20px;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.cs-tradeling .bp-cb .lg{height:26px;padding:4px 10px;border-radius:7px;background:#fff;display:flex;align-items:center;margin-bottom:8px}
+.cs-tradeling .bp-cb .lg img{height:18px;width:auto;display:block}
+.cs-tradeling .bp-cb b{font-weight:800;font-size:22px;line-height:26px;letter-spacing:-.4px;max-width:190px}
+.cs-tradeling .bp-cb span{font-size:12px;line-height:16px;max-width:180px;opacity:.85}
+.cs-tradeling .bp-cb i{margin-top:auto;font-style:normal;font-weight:800;font-size:11px;letter-spacing:.04em;padding:7px 14px;border-radius:4px;background:#f95000;color:#fff}
+.cs-tradeling .bp-cb svg{position:absolute;right:16px;bottom:18px;width:96px;height:96px;stroke-width:1.2;fill:none}
+.cs-tradeling .bp-cards{display:flex;gap:12px;padding:0 12px;overflow:hidden}
+.cs-tradeling .bp-card{flex:none;width:140px;position:relative}
+.cs-tradeling .bp-img{width:140px;height:140px;border-radius:12px;background:#f8f8f8;display:grid;place-items:center;position:relative;overflow:hidden}
+.cs-tradeling .bp-img svg{width:56px;height:56px;stroke:#b4b4b4;fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.cs-tradeling .bp-cart{position:absolute;right:6px;bottom:6px;width:32px;height:32px;border-radius:5px;background:#fff;box-shadow:0 1px 1.5px rgba(0,0,0,.1),0 1px 1px rgba(0,0,0,.06);display:grid;place-items:center}
+.cs-tradeling .bp-cart svg{width:18px;height:18px;stroke:#0b0c0d;stroke-width:1.6}
+.cs-tradeling .bp-tier{position:absolute;left:0;top:0;height:24px;padding:0 8px;background:#ffe099;color:#4d2800;font-weight:700;font-size:12px;line-height:24px;border-radius:8px 0 12px 0;z-index:1}
+.cs-tradeling .bp-ct{padding:8px 0;display:flex;flex-direction:column;gap:6px}
+.cs-tradeling .bp-nm{font-size:14px;line-height:20px;height:40px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.cs-tradeling .bp-pr{font-weight:700;font-size:16px;line-height:24px}
+.cs-tradeling .bp-dl{display:flex;align-items:center;gap:6px;font-weight:600;font-size:12px;line-height:16px}
+.cs-tradeling .bp-dl em{font-style:italic;font-weight:800;color:#fff;background:#f95000;border-radius:5px;padding:2px 4px;line-height:16px}
+.cs-tradeling .bp-brs{display:flex;gap:12px;padding:0 12px;overflow:hidden}
+.cs-tradeling .bp-br{flex:none;width:88px;height:88px;border-radius:10px;overflow:hidden;position:relative;background:#fff}
+.cs-tradeling .bp-br img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.cs-tradeling .bp-br::after{content:"";position:absolute;inset:0;background:#f8f8f8;mix-blend-mode:multiply}
+.cs-tradeling .bp-br.dk{background:#000}
+.cs-tradeling .bp-br.dk::after{display:none}
+.cs-tradeling .bp-col{display:grid;grid-template-rows:0fr;transition:grid-template-rows .5s cubic-bezier(.2,.7,.2,1)}
+.cs-tradeling .bp-col>div{overflow:hidden;min-height:0}
+.cs-tradeling .bp-col.on{grid-template-rows:1fr}
+.cs-tradeling .bp-fd{transition:opacity .22s}
+.cs-tradeling .bp-fd.out{opacity:0}
+.cs-tradeling .bp-app.instant *,.cs-tradeling .bp-app.instant{transition:none!important}
+.cs-tradeling .bp-tap{position:absolute;left:0;top:0;width:36px;height:36px;margin:-18px 0 0 -18px;border-radius:50%;background:rgba(11,12,13,.22);box-shadow:0 0 0 2px rgba(255,255,255,.85);pointer-events:none;opacity:0;transform:scale(.6);z-index:50;transition:opacity .14s,transform .14s}
+.cs-tradeling .bp-tap.on{opacity:1;transform:scale(1)}
+.cs-tradeling .bp-tap.press{transform:scale(.8)}
+@media (max-width:1023px){
+.cs-tradeling .bp-stage{padding:32px 12px 0}
+}
+.cs-tradeling .bp-pill[data-k="sm"] img{width:92px;height:24px;object-fit:cover;max-width:none}
+.cs-tradeling .bp-pill[data-k="mc"] img{width:96px;height:24px;object-fit:cover;max-width:none}
+.cs-tradeling .bp-cb .lg img.sm{width:69px;height:18px;object-fit:cover}
+.cs-tradeling .bp-tier{white-space:nowrap;padding:0 6px}
+.cs-tradeling .bp-ban>img{max-width:none}
+.cs-tradeling .nx-stage,.cs-tradeling .av-stage,.cs-tradeling .bp-stage{position:relative}
+.cs-tradeling .spot-dim{position:absolute;inset:0;background:rgba(11,12,13,.5);opacity:0;transition:opacity .5s;z-index:45;pointer-events:none}
+.cs-tradeling .spot-dim.on{opacity:1}
+.cs-tradeling .spot{position:absolute;z-index:60;transform-origin:50% 50%;transition:transform .6s cubic-bezier(.2,.7,.2,1),box-shadow .6s;pointer-events:none}
+.cs-tradeling .spot.up{transform:scale(1.08);box-shadow:0 28px 60px -18px rgba(0,0,0,.6)}
+.cs-tradeling .spot-in{position:static!important;height:auto!important;display:block!important;background:none!important;overflow:visible!important;transform-origin:0 0!important;left:auto!important;top:auto!important}
+.cs-tradeling .nx-app img,.cs-tradeling .av-root img,.cs-tradeling .bp-app img,.cs-tradeling .spot img{max-width:none}
+.cs-tradeling .cc{display:grid;grid-template-columns:minmax(0,1fr) 272px;border-radius:14px;overflow:hidden;min-height:480px}
+.cs-tradeling .cc-stage{background:var(--color-surface);display:flex;align-items:center;justify-content:center;padding:40px 24px;overflow:hidden;position:relative}
+.cs-tradeling .cc-fit{position:relative;flex:none}
+.cs-tradeling .cc-comp{width:375px;padding:12px 4px;background:#fff;font-family:"Inter",system-ui,sans-serif;color:#0b0c0d;-webkit-font-smoothing:antialiased;text-align:left;line-height:normal;letter-spacing:0}
+.cs-tradeling .cc-comp *,.cs-tradeling .cc-panel *{box-sizing:border-box;margin:0}
+.cs-tradeling .cc-comp img{max-width:none}
+.cs-tradeling .cc-sel{position:absolute;inset:0;border:1px solid #9747ff;pointer-events:none}
+.cs-tradeling .cc-sel i{position:absolute;width:7px;height:7px;background:#fff;border:1px solid #9747ff}
+.cs-tradeling .cc-sel i:nth-child(1){left:-4px;top:-4px}
+.cs-tradeling .cc-sel i:nth-child(2){right:-4px;top:-4px}
+.cs-tradeling .cc-sel i:nth-child(3){left:-4px;bottom:-4px}
+.cs-tradeling .cc-sel i:nth-child(4){right:-4px;bottom:-4px}
+.cs-tradeling .cc-size{position:absolute;left:50%;top:calc(100% + 8px);transform:translateX(-50%);background:#9747ff;color:#fff;font:600 11px/1 "Inter",system-ui,sans-serif;padding:4px 6px;border-radius:4px;white-space:nowrap}
+.cs-tradeling .cc-sec{border-radius:20px;overflow:hidden;background:rgba(231,244,252,0);transition:background .4s,padding .4s cubic-bezier(.2,.7,.2,1)}
+.cs-tradeling .cc-sec.bg{background:#e7f4fc}
+.cs-tradeling .cc-sec.bg.txt{padding-top:12px}
+.cs-tradeling .cc-col{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s cubic-bezier(.2,.7,.2,1)}
+.cs-tradeling .cc-col>div{overflow:hidden;min-height:0;opacity:0;transition:opacity .3s}
+.cs-tradeling .cc-col.on{grid-template-rows:1fr}
+.cs-tradeling .cc-col.on>div{opacity:1}
+.cs-tradeling .cc-ht{display:flex;align-items:center;gap:12px;padding:0 12px 12px;min-height:36px}
+.cs-tradeling .cc-ht b{flex:1;font-weight:700;font-size:18px;line-height:24px;letter-spacing:-.32px}
+.cs-tradeling .cc-ht svg{width:24px;height:24px;display:block;flex:none;transition:opacity .25s}
+.cs-tradeling .cc-ht.noact svg{opacity:0;width:0}
+.cs-tradeling .cc-hi{padding-bottom:12px}
+.cs-tradeling .cc-hi img{display:block;width:100%;aspect-ratio:4/1;object-fit:cover}
+.cs-tradeling .cc-body{display:flex;gap:12px;padding:0 12px;overflow:hidden;transition:opacity .25s}
+.cs-tradeling .cc-body.out{opacity:0}
+.cs-tradeling .cc-slot{flex:none;width:140px;height:260px}
+.cs-tradeling .cc-body.fc .cc-slot{width:124px;height:206px}
+.cs-tradeling .cc-tile{background:#f8f8f8;border-radius:12px;display:grid;place-items:center;position:relative;overflow:hidden}
+.cs-tradeling .cc-tile svg{width:52px;height:52px;fill:none;stroke:#b4b4b4;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.cs-tradeling .cc-pc .cc-tile{width:140px;height:140px}
+.cs-tradeling .cc-tier{position:absolute;left:0;top:0;height:24px;padding:0 8px;background:#ffe099;color:#4d2800;font-weight:700;font-size:12px;line-height:24px;border-radius:12px 0 12px 0;white-space:nowrap;z-index:1}
+.cs-tradeling .cc-cart{position:absolute;right:6px;bottom:6px;width:32px;height:32px;border-radius:5px;background:#fff;box-shadow:0 1px 1.5px rgba(0,0,0,.1),0 1px 1px rgba(0,0,0,.06);display:grid;place-items:center}
+.cs-tradeling .cc-cart svg{width:18px;height:18px;stroke:#0b0c0d;stroke-width:1.6}
+.cs-tradeling .cc-pt{padding:8px 0;display:flex;flex-direction:column;gap:4px}
+.cs-tradeling .cc-nm{font-size:14px;line-height:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cs-tradeling .cc-pr{font-size:14px;line-height:24px}
+.cs-tradeling .cc-pr b{font-weight:700;font-size:16px}
+.cs-tradeling .cc-ds{font-size:12px;line-height:16px;display:flex;gap:4px}
+.cs-tradeling .cc-ds s{color:#a0a0a0}
+.cs-tradeling .cc-ds span{color:#236d21;font-weight:600}
+.cs-tradeling .cc-dl{display:flex;align-items:center;gap:6px;font-weight:600;font-size:12px;line-height:16px;margin-top:2px}
+.cs-tradeling .cc-dl em{font-style:italic;font-weight:800;color:#fff;background:#f95000;border-radius:5px;padding:2px 4px}
+.cs-tradeling .cc-fc{width:124px;background:#fff;border-radius:12px}
+.cs-tradeling .cc-fc .cc-tile{width:124px;height:124px}
+.cs-tradeling .cc-fb{padding:8px;display:flex;flex-direction:column;gap:8px}
+.cs-tradeling .cc-fb b{display:block;font-weight:600;font-size:14px;line-height:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cs-tradeling .cc-fb span{display:block;font-size:12px;line-height:16px;color:#333;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cs-tradeling .cc-fb i{align-self:flex-start;font-style:normal;height:20px;padding:0 4px;border-radius:5px;background:#d5f5d3;color:#236d21;font-weight:600;font-size:12px;line-height:20px}
+.cs-tradeling .cc-panel{background:#2c2c2c;padding:16px 16px 18px;color:#fff;font:400 12px/1.3 "Inter",system-ui,sans-serif;position:relative;display:flex;flex-direction:column}
+.cs-tradeling .cc-ph{display:flex;align-items:center;gap:6px;font-weight:600;font-size:13px}
+.cs-tradeling .cc-ph svg{width:10px;height:10px}
+.cs-tradeling .cc-from{display:flex;align-items:center;gap:6px;color:#9b9b9b;font-size:11px;margin:6px 0 14px}
+.cs-tradeling .cc-from svg{width:10px;height:10px;stroke:#9b9b9b}
+.cs-tradeling .cc-row{display:grid;grid-template-columns:1fr 124px;align-items:center;min-height:34px}
+.cs-tradeling .cc-row label{color:#cfcfcf}
+.cs-tradeling .cc-row.sub label{padding-left:2px;color:#b5b5b5}
+.cs-tradeling .cc-rcol{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s}
+.cs-tradeling .cc-rcol>div{overflow:hidden;min-height:0}
+.cs-tradeling .cc-rcol.on{grid-template-rows:1fr}
+.cs-tradeling .cc-tg{width:30px;height:18px;border-radius:9px;background:#4a4a4a;border:0;padding:0;position:relative;cursor:pointer;transition:background .2s}
+.cs-tradeling .cc-tg::after{content:"";position:absolute;left:3px;top:3px;width:12px;height:12px;border-radius:50%;background:#fff;transition:transform .2s}
+.cs-tradeling .cc-tg.on{background:#0d99ff}
+.cs-tradeling .cc-tg.on::after{transform:translateX(12px)}
+.cs-tradeling .cc-dd{position:relative}
+.cs-tradeling .cc-db{width:124px;height:26px;border-radius:5px;border:1px solid #4a4a4a;background:#383838;color:#fff;font:inherit;font-size:11.5px;display:flex;align-items:center;justify-content:space-between;padding:0 8px;cursor:pointer}
+.cs-tradeling .cc-db svg{width:9px;height:9px;stroke:#bbb}
+.cs-tradeling .cc-menu{position:absolute;left:0;top:30px;width:124px;background:#1e1e1e;border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.5);padding:4px;z-index:5;opacity:0;transform:translateY(-4px);pointer-events:none;transition:opacity .15s,transform .15s}
+.cs-tradeling .cc-dd.open .cc-menu{opacity:1;transform:none;pointer-events:auto}
+.cs-tradeling .cc-mi{display:block;width:100%;text-align:left;height:24px;padding:0 8px;border:0;border-radius:4px;background:none;color:#fff;font:inherit;font-size:11.5px;cursor:pointer}
+.cs-tradeling .cc-mi.hov,.cs-tradeling .cc-mi:hover{background:#0d99ff}
+.cs-tradeling .cc-sep{height:1px;background:#3d3d3d;margin:10px 0}
+.cs-tradeling .cc-hint{margin-top:auto;padding-top:14px;color:#8a8a8a;font-size:11px}
+.cs-tradeling .cc-panel button:focus-visible{outline:2px solid #0d99ff;outline-offset:2px}
+.cs-tradeling .cc-cur{position:absolute;left:0;top:0;width:16px;height:20px;pointer-events:none;z-index:10;opacity:0;transition:left .55s cubic-bezier(.45,0,.2,1),top .55s cubic-bezier(.45,0,.2,1),opacity .2s}
+.cs-tradeling .cc-cur.on{opacity:1}
+.cs-tradeling .cc-cur.press{transform:scale(.88)}
+.cs-tradeling .cc-cur svg{display:block;filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))}
+.cs-tradeling .cc-instant *,.cs-tradeling .cc-instant{transition:none!important}
+@media (max-width:1023px){
+.cs-tradeling .cc{grid-template-columns:1fr}
+.cs-tradeling .cc-stage{padding:28px 12px 40px}
+}
+.cs-tradeling .fd{display:grid;grid-template-columns:1fr 1fr;gap:20px;background:var(--color-surface);border-radius:14px;padding:24px;font-family:"Inter",system-ui,sans-serif;color:#0b0c0d;-webkit-font-smoothing:antialiased;line-height:1.3}
+.cs-tradeling .fd *{box-sizing:border-box;margin:0}
+.cs-tradeling .fd-card{background:#fff;border-radius:10px;padding:20px 20px 16px;overflow:hidden;min-width:0}
+.cs-tradeling .fd-h{font-weight:700;font-size:16px;letter-spacing:-.2px}
+.cs-tradeling .fd-s{font-size:12px;color:#666;margin-top:4px!important}
+.cs-tradeling .fd-ramp{margin-top:16px}
+.cs-tradeling .fd-ramp>b{display:block;font-weight:600;font-size:11.5px;margin-bottom:6px}
+.cs-tradeling .fd-sw{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:3px}
+.cs-tradeling .fd-sw span{display:flex;flex-direction:column;gap:3px;min-width:0}
+.cs-tradeling .fd-sw i{display:block;height:22px;border-radius:3px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
+.cs-tradeling .fd-sw em{font-style:normal;font-size:8.5px;color:#808080;white-space:nowrap}
+.cs-tradeling .fd-tok{padding:0}
+.cs-tradeling .fd-th{background:#0b0c0d;color:#fff;padding:18px 20px}
+.cs-tradeling .fd-th .fd-s{color:#b8b8b8}
+.cs-tradeling .fd-tbl{padding:8px 16px 12px}
+.cs-tradeling .fd-row{display:grid;grid-template-columns:minmax(0,1fr) 182px;gap:12px;align-items:center;padding:8px 4px;border-bottom:1px solid #eee}
+.cs-tradeling .fd-row:last-child{border-bottom:0}
+.cs-tradeling .fd-hd{font-size:11px;color:#808080;padding-top:4px}
+.cs-tradeling .fd-tn b{display:block;font-weight:600;font-size:12.5px}
+.cs-tradeling .fd-tn span{display:block;font-size:11px;color:#666;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cs-tradeling .fd-tv{display:flex;align-items:center;gap:8px;min-width:0}
+.cs-tradeling .fd-tv i{flex:none;width:26px;height:20px;border-radius:4px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.1)}
+.cs-tradeling .fd-tv code{font:11px ui-monospace,SFMono-Regular,Menlo,monospace;color:#333;background:#f0f0f0;padding:2px 6px;border-radius:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cs-tradeling .dsp{max-width:660px;margin:72px 0 40px}
+.cs-tradeling .dsp:first-child{margin-top:8px}
+.cs-tradeling .dsp .dsn{font:400 13px var(--font-mono);color:var(--color-accent);margin:0 0 10px}
+.cs-tradeling .dsp h3{font:600 var(--text-h3)/1.25 var(--font-body);letter-spacing:-.01em;margin:0 0 12px;text-wrap:balance}
+.cs-tradeling .dsp p:not(.dsn){margin:0 0 12px;color:var(--color-secondary);font-size:16px;max-width:60ch}
+@media (max-width:1023px){
+.cs-tradeling .fd{grid-template-columns:1fr;padding:16px}
+.cs-tradeling .dsp{margin-top:56px}
+}
+.cs-tradeling .hv{position:relative;margin:0;aspect-ratio:3/2;background:var(--color-surface);overflow:hidden;container-type:size}
+.cs-tradeling .hv canvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:1}
+.cs-tradeling .hv-fb{position:absolute;inset:0 0 7cqh;display:flex;align-items:center;justify-content:center;gap:2.4cqw}
+.cs-tradeling .hv.gl .hv-fb{display:none}
+.cs-tradeling .hv-fb span{border:1cqh solid #101012;border-radius:5.4cqh}
+.cs-tradeling .hv-fb img{display:block;height:80cqh;width:auto;border-radius:4.5cqh}
+.cs-tradeling .hv-labs span{position:absolute;left:0;top:0;z-index:2;white-space:nowrap;font:500 12px/1 var(--font-mono);letter-spacing:.05em;color:var(--color-secondary);opacity:0;transition:opacity .6s;pointer-events:none}
+.cs-tradeling .hv-labs.on span{opacity:1}
+.cs-tradeling .hv:not(.gl) .hv-labs{display:none}
+.cs-tradeling .hv-rp{font:inherit;color:var(--color-accent);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px;justify-self:start}
+@media (max-width:1023px){
+.cs-tradeling .hv{aspect-ratio:4/5}
+.cs-tradeling .hv-fb img{height:44cqh}
+.cs-tradeling .hv-labs{display:none}
+}
+.cs-tradeling .hv-line{position:absolute;left:0;right:0;top:auto;margin:0;text-align:center;z-index:2;font:500 12px/1 var(--font-mono);letter-spacing:.05em;color:var(--color-primary);opacity:0;transition:opacity .6s .2s;pointer-events:none}
+.cs-tradeling .hv-line.on{opacity:1}
+.cs-tradeling .hv:not(.gl) .hv-line{opacity:1}
+@media (max-width:1023px){
+.cs-tradeling .hv-line{padding:0 16px}
+}
+.cs-tradeling .nsteps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.cs-tradeling .nst{margin:0}
+.cs-tradeling .nst-in{background:#fff;aspect-ratio:570/1135;overflow:hidden}
+.cs-tradeling .nst-in img{display:block;width:100%;height:100%;object-fit:contain}
+.cs-tradeling .nst figcaption{display:flex;gap:10px;align-items:baseline;margin-top:14px;font-size:14px;color:var(--color-secondary)}
+.cs-tradeling .nst figcaption b{font:400 12px var(--font-mono);color:var(--color-accent)}
+.cs-tradeling .dpair{display:grid;gap:48px}
+@media (min-width:1024px){
+.cs-tradeling .split .ch-media,.cs-tradeling .split.slim .ch-media{grid-column:8/-1;margin-right:0}
+.cs-tradeling .dec-m{grid-column:8/-1;margin-right:0}
+.cs-tradeling #problem .ch-txt{grid-column:4/10;position:static}
+.cs-tradeling #problem .ch-txt p{max-width:60ch}
+.cs-tradeling .dec.steps .dec-txt{grid-column:4/10;position:static;margin-bottom:48px}
+.cs-tradeling .dec.steps .dec-m{grid-column:4/-1}
+.cs-tradeling .nsteps{display:grid;grid-template-columns:repeat(9,1fr);column-gap:var(--grid-gutter)}
+.cs-tradeling .nst{margin:0 calc(-1*var(--grid-gutter)) 0 0}
+.cs-tradeling .nst:nth-child(1){grid-column:1/3}
+.cs-tradeling .nst:nth-child(2){grid-column:4/6}
+.cs-tradeling .nst:nth-child(3){grid-column:7/9}
+.cs-tradeling #system .ch-txt{grid-column:4/10;position:static}
+.cs-tradeling #system .ch-media{grid-column:4/-1;margin-top:56px}
+.cs-tradeling #system .dpair{display:grid;grid-template-columns:repeat(9,1fr);column-gap:var(--grid-gutter);align-items:start}
+.cs-tradeling #system .dpair>:first-child{grid-column:1/5;margin-right:calc(-1*var(--grid-gutter))}
+.cs-tradeling #system .dpair>:last-child{grid-column:6/10}
+}
+.cs-tradeling .nspec{margin-top:28px}
+@media (min-width:1024px){
+.cs-tradeling .dec.negv .dec-m{grid-column:8/-1;margin-right:0}
+}
+@media (min-width:1024px){
+.cs-tradeling .iq{grid-column:1/5}
+.cs-tradeling .ins p{grid-column:6/9}
+}
+.cs-tradeling .dec.shv .opts-box{padding:28px 24px 32px}
+.cs-tradeling .dec.shv .bhead{grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr);column-gap:14px}
+.cs-tradeling .dec.shv .bhead span:first-child{display:none}
+.cs-tradeling .dec.shv .brow{grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr);column-gap:14px;row-gap:12px;padding:18px}
+.cs-tradeling .dec.shv .brow .mv-l{grid-column:1/-1}
+.cs-tradeling .dec.shv .b-br::after{width:16px}
+@media (max-width:1023px){
+.cs-tradeling .dec.shv .brow{grid-template-columns:1fr}
+.cs-tradeling .dec.shv .bhead{display:none}
+}
+@media (max-width:599px){
+.cs-tradeling .orow{grid-template-columns:repeat(3,minmax(0,1fr));column-gap:16px}
+.cs-tradeling .o b{font-size:34px}
+.cs-tradeling .o span{font-size:13px}
+.cs-tradeling .machine{grid-template-columns:minmax(0,1fr);padding:20px;overflow:hidden}
+.cs-tradeling .phones{grid-template-columns:repeat(3,62%);column-gap:14px;justify-items:stretch;transition:transform .6s var(--ease-out-soft)}
+.cs-tradeling .phones .ph-m{max-width:none}
+.cs-tradeling .machine[data-on=g] .phones{transform:translateX(19%)}
+.cs-tradeling .machine[data-on=e] .phones{transform:translateX(calc(19% - 62% - 14px))}
+.cs-tradeling .machine[data-on=d] .phones{transform:translateX(calc(19% - 124% - 28px))}
+.cs-tradeling .dec.shv .brows{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -24px;padding:0 24px;scroll-padding:0 24px;scrollbar-width:none;overscroll-behavior-x:contain;align-items:stretch}
+.cs-tradeling .dec.shv .brows::-webkit-scrollbar{display:none}
+.cs-tradeling .dec.shv .brow{flex:0 0 78%;scroll-snap-align:start;align-content:start}
+.cs-tradeling .nx-phone{max-width:240px}
+.cs-tradeling .av-phone,.cs-tradeling .bp-phone{max-width:250px}
+.cs-tradeling .fd{padding:12px}
+.cs-tradeling .fd-tbl{padding:6px 12px 10px}
+.cs-tradeling .fd-row{grid-template-columns:minmax(0,1fr) auto}
+.cs-tradeling .fd-tn b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cs-tradeling .fd-tn span{display:none}
+.cs-tradeling .fd-tv i{width:20px}
+}
