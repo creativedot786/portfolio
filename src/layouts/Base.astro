@@ -13,7 +13,7 @@ import { themes, defaultTheme } from '../data/themes';
 
 // nav: the page's sections for the rail and the phone menu (the home page's by default).
 // caseStudy: the logo goes home and "All work" sits under it, instead of the home page's Resume link.
-// image: the picture a shared link shows (1200 × 630, drawn by `npm run og`); imageAlt describes it.
+// image: the picture a shared link shows (2400 × 1260, drawn by `npm run og`); imageAlt describes it.
 interface Props { title: string; description: string; nav?: [string, string][]; caseStudy?: boolean; image?: string; imageAlt?: string }
 const { title, description, nav, caseStudy = false, image = '/og/home.png',
   imageAlt = `${site.name}, ${site.title}. Designing at scale. Building with AI.` } = Astro.props;
@@ -37,8 +37,8 @@ const grounds: Record<string, string> = Object.fromEntries(themes.filter((t) => 
     <meta property="og:url" content={canonical} />
     <meta property="og:site_name" content={site.name} />
     <meta property="og:image" content={ogImage} />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
+    <meta property="og:image:width" content="2400" />
+    <meta property="og:image:height" content="1260" />
     <meta property="og:image:alt" content={imageAlt} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content={ogImage} />
