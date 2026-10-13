@@ -1,6 +1,7 @@
 ---
 // A case study's opening: eyebrow, title and summary on the left, the facts (role, client, year…) on the right,
-// and the hero media below. The eyebrow is what the rail's first link lines up with (data-nav-align).
+// and the hero media below. The rail's first link lines up with the first line of the summary (data-nav-align),
+// the way the home page's links line up with its tabs.
 // bleed: the hero runs to the right edge of the grid instead of stopping at column 12.
 // Optional slots: "aside" sits under the facts (a call to action), "note" sits between the title row and the hero.
 interface Props { eyebrow: string; title: string; summary: string; meta: [string, string][]; bleed?: boolean }
@@ -9,9 +10,9 @@ const { eyebrow, title, summary, meta, bleed } = Astro.props;
 <header class="cs-head" id="overview">
   <div class="shell">
     <div class="ttl-w">
-      <p class="eyebrow" data-nav-align>{eyebrow}</p>
+      <p class="eyebrow">{eyebrow}</p>
       <h1 class="ttl">{title}</h1>
-      <p class="sum">{summary}</p>
+      <p class="sum" data-nav-align>{summary}</p>
     </div>
     <div class="hd-r">
       <dl class="meta">

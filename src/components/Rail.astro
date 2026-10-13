@@ -136,15 +136,22 @@ const roll = (t: string) => [...t].map((ch) => (ch === ' ' ? '\u00a0' : ch));
       const tab = tabs.matches('[data-nav-align]') ? tabs : tabs.querySelector<HTMLElement>('[role="tab"]');
       if (!link || !tab) return;
       // Align the TEXT, not the boxes. Both are 14px, but the tab is a pill with 12px of padding
-      // and the nav link has 5px, so matching box edges leaves the words 7px apart.
-      const tabText = tab.getBoundingClientRect().top + scrollY + parseFloat(getComputedStyle(tab).paddingTop);
-      const linkText = link.getBoundingClientRect().top + parseFloat(getComputedStyle(link).paddingTop);
+      // and the nav link has 5px, so matching box edges leaves the words 7px apart. A case study's summary
+      // is larger type on a taller line, so there each side's half-leading is counted too.
+      const lead = (el: Element) => {
+        if (!tab.matches('[data-nav-align]')) return 0;
+        const cs = getComputedStyle(el);
+        return (parseFloat(cs.lineHeight) - parseFloat(cs.fontSize)) / 2 || 0;
+      };
+      const textTop = (el: Element) => el.getBoundingClientRect().top + parseFloat(getComputedStyle(el).paddingTop) + lead(el);
+      const tabText = textTop(tab) + scrollY;
+      const linkText = textTop(link);
       const delta = tabText - linkText;
       if (delta > 0) navEl.style.setProperty('--nav-offset', Math.round(delta) + 'px');
       // Converge: one pass can land short if the hero has not finished settling.
       requestAnimationFrame(() => {
-        const t2 = tab.getBoundingClientRect().top + scrollY + parseFloat(getComputedStyle(tab).paddingTop);
-        const l2 = link.getBoundingClientRect().top + parseFloat(getComputedStyle(link).paddingTop);
+        const t2 = textTop(tab) + scrollY;
+        const l2 = textTop(link);
         const d2 = t2 - l2;
         if (Math.abs(d2) > 1) {
           const cur = parseFloat(navEl.style.getPropertyValue('--nav-offset')) || 0;

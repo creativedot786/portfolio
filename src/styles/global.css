@@ -295,6 +295,9 @@
   a:hover .arr, a:focus-visible .arr { transform: translate(2px, -2px); opacity: 1; }
 
   .rail-tools { margin-top: auto; display: flex; align-items: flex-end; gap: 14px; }
+  /* the rail's column is narrower than the tools on small desktops: they keep their size and run into the gutter,
+     rather than the theme control shrinking under its own pill and the G key landing on it */
+  .rail-tools > * { flex: none; }
 
   /* ── scroll drift ────────────────────────────────────────────
      Two depth planes only, and small. The earlier version gave every photograph its own rate,
