@@ -1,0 +1,39 @@
+---
+// QFunder: Tradeling's SME lending MVP. The page is the site's own layout; its sections are in
+// src/components/case/qfunder/, its screens in public/work/qfunder/i/.
+import Base from '../../layouts/Base.astro';
+import CaseHeader from '../../components/case/CaseHeader.astro';
+import MoreWork from '../../components/case/MoreWork.astro';
+import Hero from '../../components/case/qfunder/Hero.astro';
+import Body from '../../components/case/qfunder/Body.astro';
+import { work } from '../../data/work';
+
+const item = work.find((w) => w.slug === 'tradeling-lending')!;
+---
+<Base title={`${item.title} · Huzaifa Ratlam`} description={item.line}
+  nav={[['overview', 'Overview'], ['opportunity', 'Opportunity'], ['strategy', 'Strategy'], ['design', 'Design'], ['outcome', 'Outcome']]} caseStudy>
+  <div class="cs cs-qfunder">
+    <CaseHeader
+      eyebrow={`${item.industryLabel} · ${item.platform}`}
+      title={item.title}
+      summary="QFunder is Tradeling’s new fintech vertical. Banks rarely lend to small businesses because they see them as high risk, and when they do, it takes weeks. We built an MVP to test a faster way: apply online in minutes, get funded in 24 hours. Our approach was build fast, fail fast."
+      meta={[['Role', 'Sole product designer'], ['Team', 'Head of Product, 3 engineers'], ['Year', '2025'], ['Focus', 'Business alignment, UX strategy, UI design']]}>
+      <Hero />
+    </CaseHeader>
+    <Body />
+  </div>
+  <MoreWork slug="tradeling-lending" />
+</Base>
+
+<script>
+  import { qfunder } from '../../components/case/qfunder/qfunder.js';
+  import { qfunderHero } from '../../components/case/qfunder/hero.js';
+
+  document.addEventListener('astro:page-load', () => {
+    if (!document.querySelector('.cs-qfunder')) return;
+    qfunder();
+    // the hero's laptop: three.js loads only on this page
+    Promise.all([import('three'), import('three/addons/environments/RoomEnvironment.js')])
+      .then(([THREE, { RoomEnvironment }]) => qfunderHero(THREE, RoomEnvironment));
+  });
+</script>
