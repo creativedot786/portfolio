@@ -30,6 +30,8 @@ const grounds: Record<string, string> = Object.fromEntries(themes.filter((t) => 
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    <!-- search results and Google Discover may show the sharing image large -->
+    <meta name="robots" content="max-image-preview:large" />
     <meta name="theme-color" content={themes[0].ground} />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
