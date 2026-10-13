@@ -9,12 +9,15 @@ import Footer from '../components/Footer.astro';
 import Loader from '../components/Loader.astro';
 import { CursorMultifollow } from '../components/ui/motion-cursor-multifollow';
 import { site } from '../data/site';
+import { themes, defaultTheme } from '../data/themes';
 
 // nav: the page's sections for the rail and the phone menu (the home page's by default).
 // caseStudy: the logo goes home and "All work" sits under it, instead of the home page's Resume link.
 interface Props { title: string; description: string; nav?: [string, string][]; caseStudy?: boolean }
 const { title, description, nav, caseStudy = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, site.url).href;
+// each theme's page colour, for the head script below; the default theme sets no attribute
+const grounds: Record<string, string> = Object.fromEntries(themes.filter((t) => t.id !== defaultTheme).map((t) => [t.id, t.ground]));
 ---
 <!doctype html>
 <html lang="en">
@@ -24,7 +27,7 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <meta name="theme-color" content="#0F1110" />
+    <meta name="theme-color" content={themes[0].ground} />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -35,7 +38,7 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta name="generator" content={Astro.generator} />
-    <script is:inline data-astro-rerun>
+    <script is:inline data-astro-rerun define:vars={{ grounds }}>
       document.documentElement.classList.add('js');
       // Hide the system cursor only where the custom one will actually render.
       try {
@@ -57,12 +60,11 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
       // Theme and grid are restored before first paint, so a Cream visitor never sees a dark flash.
       try {
         var t = localStorage.getItem('hr-theme');
-        // only the current themes; a theme saved from an older set falls back to the default
-        var grounds = { seaglass: '#0A1822', plum: '#17121F', paper: '#FBF6E4' };
+        // only the current themes (grounds, from src/data/themes.ts); a theme saved from an older set falls back to the default
         if (t && grounds[t]) {
           document.documentElement.setAttribute('data-theme', t);
           var m = document.querySelector('meta[name="theme-color"]');
-          if (m && grounds[t]) m.content = grounds[t];
+          if (m) m.content = grounds[t];
         }
       } catch (e) {}
     </script>
@@ -76,6 +78,7 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
     <Footer />
     <CursorMultifollow client:idle />
     <script>
+      import { rolls, grid } from '../scripts/site';
       // ── the intro ──────────────────────────────────────────────
       // 0        the logo draws and fills (Loader.astro)
       // 1100ms   the loader dissolves
@@ -155,7 +158,19 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
         drift();
         revealCheck();
       }
-      document.addEventListener('astro:page-load', () => { loader(); scrollLoop(); });
+      // Case studies reveal as the home page does: blocks fade up as they come into view, once each. The units
+      // are the direct children of each section's grid; one taller than the screen is split into its children,
+      // so a long section reveals row by row instead of all at once. Reduced motion shows everything (global.css).
+      function caseReveals() {
+        if (!document.querySelector('.cs-head')) return;
+        const collect = (el: Element, depth: number) => {
+          if (depth < 3 && el.children.length && el.getBoundingClientRect().height > innerHeight * 1.1) {
+            [...el.children].forEach((c) => collect(c, depth + 1));
+          } else el.classList.add('reveal');
+        };
+        document.querySelectorAll('header.cs-head > .shell > *, section.ch > .shell > *, .cs section > .shell > *').forEach((el) => collect(el, 0));
+      }
+      document.addEventListener('astro:page-load', () => { rolls(); grid(); caseReveals(); loader(); scrollLoop(); revealCheck(); });
     </script>
   </body>
 </html>

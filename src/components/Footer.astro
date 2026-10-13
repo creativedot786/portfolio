@@ -32,7 +32,7 @@ const arrow = 'inline-flex items-center gap-1.5';
   </div>
 </footer>
 <style>
-  /* The strip is tied to the scroll (src/chrome/chrome.js sets --fp on the footer, 0 to 1): the bands
+  /* The strip is tied to the scroll (the script below sets --fp on the footer, 0 to 1): the bands
      grow as the footer comes up the screen and are complete when it reaches the middle, and shrink if
      you scroll back up. It used to play once, 220px before the footer was on screen, so anyone who
      paused just above it scrolled down to a strip that had already finished.
@@ -55,7 +55,27 @@ const arrow = 'inline-flex items-center gap-1.5';
     if (w.__clock) clearInterval(w.__clock);
     w.__clock = setInterval(tick, 1000);
 
-    // the strip itself is driven by the shared chrome (src/chrome/chrome.js), with the case studies' one
+    // ── the strip, tied to the scroll. From the moment it enters at the bottom of the screen to the moment
+    // its top reaches the middle, or the end of the page if that comes first, so it always completes smoothly.
+    // However long you paused above it, you see it fill in. ──
+    page?.abort();
+    page = new AbortController();
+    const strip = document.querySelector<HTMLElement>('[data-strip]');
+    if (!strip) return;
+    const host = strip.parentElement!;
+    const set = () => {
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) { host.style.setProperty('--fp', '1'); return; }
+      const vh = innerHeight, y = scrollY, top = strip.getBoundingClientRect().top + y;
+      const max = document.documentElement.scrollHeight - vh;
+      const start = top - vh, end = Math.max(start + 1, Math.min(top - vh * 0.5, max));
+      host.style.setProperty('--fp', Math.min(1, Math.max(0, (y - start) / (end - start))).toFixed(3));
+    };
+    let t = false;
+    addEventListener('scroll', () => { if (!t) { t = true; requestAnimationFrame(() => { t = false; set(); }); } }, { passive: true, signal: page.signal });
+    addEventListener('resize', set, { passive: true, signal: page.signal });
+    set();
   }
+  // the scroll listeners belong to the page that added them: each page change drops the last page's
+  let page: AbortController | null = null;
   document.addEventListener('astro:page-load', footer);
 </script>

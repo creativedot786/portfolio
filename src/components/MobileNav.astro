@@ -1,13 +1,11 @@
 ---
 // Phones and tablets: a floating pill at the top. The logo, and the section you're in, which rolls to the
 // next as you scroll. Tap it and the pill opens downward: the sections on the right, then the four themes.
-// The case study pages carry the same markup, written in by the export script; the CSS and the behaviour
-// are shared files, so the two can't drift apart.
+// On a case study the logo goes home and "All work" sits next to it. Its styles are in global.css (site chrome).
 import Logo from './Logo.astro';
 import { site } from '../data/site';
 import { themes, defaultTheme } from '../data/themes';
 import { sections } from '../data/sections';
-import '../chrome/chrome.css';
 interface Props { nav?: [string, string][]; caseStudy?: boolean }
 const { nav = sections, caseStudy = false } = Astro.props;
 ---
@@ -40,5 +38,60 @@ const { nav = sections, caseStudy = false } = Astro.props;
   </nav>
 </div>
 <script>
-  import '../chrome/chrome.js';
+  import { currentTheme, markTheme, setTheme } from '../scripts/theme';
+
+  const RM = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // listeners on window and document belong to the page that added them: each page change drops the last page's
+  let page: AbortController | null = null;
+
+  // a word that rolls out while the next rolls in, the way the scroll went
+  function rollTo(box: HTMLElement, text: string, dir: number) {
+    const old = box.lastElementChild as HTMLElement | null; if (old && old.textContent === text) return;
+    [...box.children].slice(0, -1).forEach((s) => s.remove());
+    const nu = document.createElement('span'); nu.textContent = text; box.appendChild(nu);
+    if (RM() || !old || !nu.animate) { old?.remove(); return; }
+    const d = dir < 0 ? -1 : 1, o = { duration: 420, easing: 'cubic-bezier(.65,0,.35,1)' };
+    old.animate([{ transform: 'translateY(0)' }, { transform: `translateY(${-d * 100}%)` }], o).onfinish = () => old.remove();
+    nu.animate([{ transform: `translateY(${d * 100}%)` }, { transform: 'translateY(0)' }], o);
+  }
+
+  // ── the pill at the top. It shows the section you're in; tap it to open the menu ──
+  function mnav() {
+    page?.abort();
+    page = new AbortController();
+    const signal = page.signal;
+    const nav = document.querySelector<HTMLElement>('[data-hc-mnav]');
+    if (!nav) return;
+    const tog = nav.querySelector<HTMLElement>('.hc-mtoggle')!, panel = nav.querySelector<HTMLElement>('.hc-mpanel')!, label = nav.querySelector<HTMLElement>('.hc-mlabel')!;
+    const links = [...nav.querySelectorAll<HTMLElement>('[data-hc-sec]')];
+    const targets = links.map((a) => document.getElementById(a.dataset.hcSec!));
+    const isOpen = () => nav.classList.contains('open');
+    const open = () => { markTheme(); nav.classList.add('open'); tog.setAttribute('aria-expanded', 'true'); panel.inert = false; };
+    const close = () => { nav.classList.remove('open'); tog.setAttribute('aria-expanded', 'false'); panel.inert = true; };
+    tog.addEventListener('click', () => { last = scrollY; isOpen() ? close() : open(); });
+    addEventListener('keydown', (e) => { if (e.key === 'Escape' && isOpen()) { close(); tog.focus(); } }, { signal });
+    document.addEventListener('click', (e) => { if (isOpen() && !nav.contains(e.target as Node)) close(); }, { signal });
+    nav.querySelectorAll('a').forEach((a) => a.addEventListener('click', close));
+
+    // the themes, under the links
+    markTheme(currentTheme());
+    nav.querySelectorAll<HTMLElement>('[data-hc-theme]').forEach((b) => {
+      b.addEventListener('click', () => { if (b.getAttribute('aria-checked') !== 'true') setTheme(b.dataset.hcTheme!); b.blur(); });
+    });
+
+    // the section in view: the one whose top has passed 40% of the screen
+    let cur = -1, last = scrollY, t = false;
+    const pick = () => {
+      t = false;
+      let on = 0;
+      targets.forEach((el, i) => { if (el && el.getBoundingClientRect().top < innerHeight * 0.4) on = i; });
+      if (innerHeight + Math.ceil(scrollY) >= document.documentElement.scrollHeight - 2) on = targets.length - 1;
+      if (on !== cur) { if (links[on]) rollTo(label, links[on].textContent!, cur < 0 ? 0 : on - cur); cur = on; links.forEach((a, i) => a.classList.toggle('on', i === on)); }
+      if (Math.abs(scrollY - last) > 40 && isOpen()) close();
+      if (!isOpen()) last = scrollY;
+    };
+    addEventListener('scroll', () => { if (!t) { t = true; requestAnimationFrame(pick); } }, { passive: true, signal });
+    pick();
+  }
+  document.addEventListener('astro:page-load', mnav);
 </script>

@@ -48,35 +48,20 @@ const roll = (t: string) => [...t].map((ch) => (ch === ' ' ? '\u00a0' : ch));
 </div>
 
 <script>
-  import { themes, defaultTheme } from '../data/themes';
+  import { markTheme, setTheme } from '../scripts/theme';
+
+  // listeners on window belong to the page that added them: each page change drops the last page's
+  let page: AbortController | null = null;
 
   function rail() {
-    const root = document.documentElement;
+    page?.abort();
+    page = new AbortController();
+    const signal = page.signal;
 
     // ── theme ────────────────────────────────────────────────
     // The initial theme is applied by an inline script in <head> so there is no flash;
     // this only wires the picker.
-
-    function markTheme(id: string) {
-      document.querySelectorAll<HTMLElement>('[data-theme-set]').forEach((b) => {
-        b.setAttribute('aria-checked', String(b.dataset.themeSet === id));
-      });
-    }
-    function setTheme(id: string) {
-      if (id === defaultTheme) root.removeAttribute('data-theme');
-      else root.setAttribute('data-theme', id);
-      try { localStorage.setItem('hr-theme', id); } catch (e) {}
-      // The glasses catch the light in the new accent — the moment the accent changes is the
-      // moment to show it.
-      document.querySelectorAll<HTMLElement>('.logo').forEach((l) => {
-        l.classList.remove('shine'); void l.offsetWidth; l.classList.add('shine');
-      });
-      const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
-      const t = themes.find((x) => x.id === id);
-      if (meta && t) meta.content = t.ground;
-      markTheme(id);
-    }
-    markTheme(root.getAttribute('data-theme') || defaultTheme);
+    markTheme();
 
     const ctl = document.querySelector<HTMLElement>('[data-theme-ctl]');
     if (ctl) {
@@ -189,8 +174,8 @@ const roll = (t: string) => [...t].map((ch) => (ch === ' ' ? '\u00a0' : ch));
 
     const frame = () => { ticking = false; pick(); invert(); };
     const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(frame); } };
-    addEventListener('scroll', onScroll, { passive: true });
-    addEventListener('resize', () => { alignNav(); onScroll(); }, { passive: true });
+    addEventListener('scroll', onScroll, { passive: true, signal });
+    addEventListener('resize', () => { alignNav(); onScroll(); }, { passive: true, signal });
     if ((document as any).fonts?.ready) (document as any).fonts.ready.then(alignNav);
     alignNav();
     pick();
