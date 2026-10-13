@@ -13,9 +13,12 @@ import { themes, defaultTheme } from '../data/themes';
 
 // nav: the page's sections for the rail and the phone menu (the home page's by default).
 // caseStudy: the logo goes home and "All work" sits under it, instead of the home page's Resume link.
-interface Props { title: string; description: string; nav?: [string, string][]; caseStudy?: boolean }
-const { title, description, nav, caseStudy = false } = Astro.props;
+// image: the picture a shared link shows (1200 × 630, drawn by `npm run og`); imageAlt describes it.
+interface Props { title: string; description: string; nav?: [string, string][]; caseStudy?: boolean; image?: string; imageAlt?: string }
+const { title, description, nav, caseStudy = false, image = '/og/home.png',
+  imageAlt = `${site.name}, ${site.title}. Designing at scale. Building with AI.` } = Astro.props;
 const canonical = new URL(Astro.url.pathname, site.url).href;
+const ogImage = new URL(image, site.url).href;
 // each theme's page colour, for the head script below; the default theme sets no attribute
 const grounds: Record<string, string> = Object.fromEntries(themes.filter((t) => t.id !== defaultTheme).map((t) => [t.id, t.ground]));
 ---
@@ -33,7 +36,13 @@ const grounds: Record<string, string> = Object.fromEntries(themes.filter((t) => 
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:site_name" content={site.name} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={imageAlt} />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={imageAlt} />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />

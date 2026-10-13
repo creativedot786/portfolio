@@ -10,7 +10,7 @@ import { work } from '../../data/work';
 
 const item = work.find((w) => w.slug === 'tradeling-lending')!;
 ---
-<Base title={`${item.title} · Huzaifa Ratlam`} description={item.line}
+<Base title={`${item.title} · Huzaifa Ratlam`} description={item.line} image="/og/qfunder.png" imageAlt={`${item.title}, a case study by Huzaifa Ratlam`}
   nav={[['overview', 'Overview'], ['opportunity', 'Opportunity'], ['strategy', 'Strategy'], ['design', 'Design'], ['outcome', 'Outcome']]} caseStudy>
   <div class="cs cs-qfunder">
     <CaseHeader

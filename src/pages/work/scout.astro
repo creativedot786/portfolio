@@ -11,7 +11,7 @@ import { work } from '../../data/work';
 const item = work.find((w) => w.slug === 'scout')!;
 const PROTO = 'https://pfscout-prototype.vercel.app/';
 ---
-<Base title={`${item.title} · Huzaifa Ratlam`} description={item.line}
+<Base title={`${item.title} · Huzaifa Ratlam`} description={item.line} image="/og/scout.png" imageAlt={`${item.title}, a case study by Huzaifa Ratlam`}
   nav={[['overview', 'Overview'], ['challenge', 'Challenge'], ['design', 'Design'], ['agent', 'The agent'], ['building', 'Building it']]} caseStudy>
   <div class="cs">
     <CaseHeader
