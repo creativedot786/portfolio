@@ -87,7 +87,8 @@ const grounds: Record<string, string> = Object.fromEntries(themes.filter((t) => 
     <MobileNav nav={nav} caseStudy={caseStudy} />
     <main id="main"><slot /></main>
     <Footer />
-    <CursorMultifollow client:idle />
+    <!-- one cursor for the whole visit: kept across page changes, so it never restarts in the middle of the screen -->
+    <CursorMultifollow client:idle transition:persist="cursor" />
     <script>
       import { rolls, grid } from '../scripts/site';
       // ── the intro ──────────────────────────────────────────────

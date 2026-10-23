@@ -42,10 +42,12 @@ const say = [
   .drift{position:absolute;inset:0;transform-style:preserve-3d}
   .body{position:absolute;inset:0;border-radius:17%/8.3%;background:#0c0c0e;
     box-shadow:inset 0 0 0 .14cqw #4a4a4f,inset 0 0 0 .32cqw #1b1b1e,inset 0 0 0 .5cqw #0a0a0b,0 3cqw 6cqw -2cqw rgba(0,0,0,.6)}
-  .glass{position:absolute;inset:1.75% 3.6%;border-radius:14%/6.8%;overflow:hidden;background:#000}
+  /* the screen, its glare and the island sit a hair in front of the body: on the same plane, Safari may draw
+     the black body over the screen */
+  .glass{position:absolute;inset:1.75% 3.6%;border-radius:14%/6.8%;overflow:hidden;background:#000;transform:translateZ(.06cqw)}
   .glass img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
-  .island{position:absolute;top:2.1%;left:50%;width:31%;height:3.3%;transform:translateX(-50%);border-radius:99px;background:#000;z-index:2}
-  .glare{position:absolute;inset:1.75% 3.6%;border-radius:14%/6.8%;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,.09) 0%,rgba(255,255,255,0) 32%)}
+  .island{position:absolute;top:2.1%;left:50%;width:31%;height:3.3%;transform:translateX(-50%) translateZ(.1cqw);border-radius:99px;background:#000;z-index:2}
+  .glare{position:absolute;inset:1.75% 3.6%;border-radius:14%/6.8%;pointer-events:none;transform:translateZ(.08cqw);background:linear-gradient(115deg,rgba(255,255,255,.09) 0%,rgba(255,255,255,0) 32%)}
   .edge{position:absolute;top:4%;bottom:4%;width:1.4cqw;background:linear-gradient(90deg,#2a2a2e,#141416 45%,#2a2a2e);border-radius:.7cqw}
   .edge.r{right:0;transform:translateX(50%) rotateY(90deg)}
   .edge.l{left:0;transform:translateX(-50%) rotateY(-90deg)}

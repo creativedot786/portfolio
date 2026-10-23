@@ -36,7 +36,9 @@
 
   /* the laptop, settled: the screen fills the frame and the bottom edge cuts the keyboard in half */
   .mac{--w:80cqw;position:absolute;left:50cqw;top:6.5cqw;width:var(--w);margin-left:calc(var(--w) / -2);aspect-ratio:1.54;transform-style:preserve-3d}
-  .lid{position:absolute;inset:0;transform-origin:50% 100%;transform:rotateX(6deg);transform-style:preserve-3d;border-radius:3.2% 3.2% 1% 1%/4.9% 4.9% 1.5% 1.5%;
+  /* the lid is flat: its screen, notch and glare are drawn in its own plane, in order. (As a 3D container,
+     Safari could draw the lid's dark back over the screen, which sits on the same plane.) */
+  .lid{position:absolute;inset:0;transform-origin:50% 100%;transform:rotateX(6deg);border-radius:3.2% 3.2% 1% 1%/4.9% 4.9% 1.5% 1.5%;
     background:#1c1d20;box-shadow:inset 0 0 0 .12cqw #3d3e43,inset 0 0 0 .3cqw #141517}
   .bezel{position:absolute;inset:1.5% 1.2% 1.4%;border-radius:2.4% 2.4% .6% .6%/3.7% 3.7% .9% .9%;background:#050506;overflow:hidden}
   .scr{position:absolute;inset:2.6% 1.7% 2.4%;overflow:hidden;background:#f5f9fc;border-radius:.4cqw .4cqw 0 0}
