@@ -65,7 +65,7 @@
     .qp{aspect-ratio:1/1}
     .stage{perspective-origin:50% 40%}
     .rig,.sway{transform-origin:50% 50%}
-    .mac{--w:96cqw;top:31cqw}
+    .mac{--w:96cqw;top:15cqw}
     .chrome span{font-size:1.2cqw}.chrome i{width:.9cqw;height:.9cqw}
   }
 </style>
@@ -119,7 +119,7 @@
     // ── the shot ──
     const kf = (prop: string, steps: [number, string | number][]) => steps.map(([o, v]) => ({ offset: o, [prop]: v, easing: E }));
     // where it opens: the page edge to edge, the laptop out of frame
-    const START = () => innerWidth < 600 ? 'translate3d(0,-13cqw,0) scale(1.16)' : 'translate3d(0,-3.5cqw,0) scale(1.34)';
+    const START = () => innerWidth < 600 ? 'translate3d(0,3.5cqw,0) scale(1.16)' : 'translate3d(0,-3.5cqw,0) scale(1.34)';
     let anims: Animation[] = [], state = 'idle';
     const play = () => {
       state = 'playing'; rig.style.transform = '';
