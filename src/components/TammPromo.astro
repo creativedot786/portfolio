@@ -154,8 +154,12 @@ const at = ([l, t, r, b]: readonly number[]) =>
       ORDER.forEach((k) => anims.push(pcs[k].animate([{ opacity: 1 }, { opacity: 0 }], { duration: 10, delay: done + 100, fill: 'both' })));
       const o = { duration: LOOP, iterations: Infinity, delay: done + 300 };
       // the home scrolls in steps, then a tap on Home glides it back to the top
-      const y = (v: number) => `translateY(${(-v / 8166 * 100).toFixed(3)}%)`;
-      anims.push(strip.animate(kf('transform', [[0, y(0)], [.07, y(0)], [.2, y(2734)], [.3, y(2734)], [.43, y(4836)], [.53, y(4836)], [.66, y(6318)], [.8, y(6318)], [.9, y(0)], [1, y(0)]]), o));
+      // It scrolls by its top margin, not a transform: a transform makes the page its own layer, and at an
+      // iPhone's 3× pixels this tall page is over the size Safari can draw inside a 3D scene, so the screen
+      // went blank. A margin keeps it painted into the screen, only the part on show. A margin in % is of the
+      // screen's width, which is the page's width, 1125 of the app's pixels, so v app pixels = v / 11.25 %.
+      const y = (v: number) => `${(-v / 11.25).toFixed(3)}%`;
+      anims.push(strip.animate(kf('marginTop', [[0, y(0)], [.07, y(0)], [.2, y(2734)], [.3, y(2734)], [.43, y(4836)], [.53, y(4836)], [.66, y(6318)], [.8, y(6318)], [.9, y(0)], [1, y(0)]]), o));
       // the sway starts and ends at rest, so it picks up from the landing without a jump
       anims.push(sway.animate(kf('transform', [[0, 'none'], [.25, 'rotateY(-2.5deg) rotateX(.8deg)'], [.75, 'rotateY(2.5deg) rotateX(-.4deg)'], [1, 'none']]), o));
     };
