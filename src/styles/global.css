@@ -187,6 +187,10 @@
    Deliberately outside @layer: layered !important loses to Motion's inline style. */
 .cursor-stage [data-cursor] { transition: border-width .28s var(--ease-out-soft) }
 .cursor-stage.is-hovering [data-cursor] { border-width: 0.7px !important }
+/* the tag beside the cursor over the work images: the theme's ink, small, just below and right of the dot */
+.cursor-stage .cursor-tag span { display: inline-flex; align-items: center; gap: 6px; margin: 14px 0 0 14px; padding: 8px 10px; border-radius: 6px;
+  background: var(--color-primary); color: var(--color-page); font: 600 12px/1 var(--font-body); white-space: nowrap }
+.cursor-stage .cursor-tag svg { width: 9px; height: 9px; flex: none }
 
 
 @layer components {

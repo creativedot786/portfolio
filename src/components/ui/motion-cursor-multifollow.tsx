@@ -18,9 +18,14 @@ import { motion, useMotionValue, useSpring } from "motion/react"
 function usePointerPosition() {
   const x = useMotionValue(0)
   const y = useMotionValue(0)
+  // LOCAL FIX. Upstream treats a position of 0 as "the pointer hasn't moved yet" and centres the cursor,
+  // so touching the window's left or top edge (x or y = 0) sent it flying to the middle of the screen.
+  // Whether the pointer has moved is its own flag.
+  const moved = useRef(false)
 
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
+      moved.current = true
       x.set(e.clientX)
       y.set(e.clientY)
     }
@@ -28,7 +33,7 @@ function usePointerPosition() {
     return () => window.removeEventListener("pointermove", onMove)
   }, [x, y])
 
-  return { x, y }
+  return { x, y, moved }
 }
 
 type Kind = "default" | "text" | "magnetic"
@@ -52,16 +57,21 @@ function useWindowPointer() {
   const [pressed, setPressed] = useState(false)
   const [hovered, setHovered] = useState(false)
   const [inverted, setInverted] = useState(false)
+  const [label, setLabel] = useState<string | null>(null)
 
   useEffect(() => {
     const down = () => setPressed(true)
     const up = () => setPressed(false)
     const over = (e: PointerEvent) => {
       const el = e.target as Element | null
-      setHovered(Boolean(el?.closest?.(INTERACTIVE)))
+      // LOCAL ADDITION: an element with data-cursor-label (the work images) gets a tag beside the cursor
+      // instead of the hover expansion
+      const lab = el?.closest?.("[data-cursor-label]") as HTMLElement | null
+      setLabel(lab?.dataset.cursorLabel ?? null)
+      setHovered(!lab && Boolean(el?.closest?.(INTERACTIVE)))
       setInverted(Boolean(el?.closest?.("[data-cursor-invert]")))
     }
-    const leave = () => { setPressed(false); setHovered(false); setInverted(false) }
+    const leave = () => { setPressed(false); setHovered(false); setInverted(false); setLabel(null) }
     window.addEventListener("pointerdown", down)
     window.addEventListener("pointerup", up)
     window.addEventListener("pointerover", over)
@@ -74,7 +84,7 @@ function useWindowPointer() {
     }
   }, [])
 
-  return { pressed, hovered, inverted }
+  return { pressed, hovered, inverted, label }
 }
 
 const CursorCtx = createContext<CursorState | null>(null)
@@ -97,7 +107,7 @@ function Stage({
   const [caret, setCaret] = useState(18)
   const [targetBoundingBox, setTarget] = useState<DOMRect | null>(null)
   const [zone, setZone] = useState<string | null>(null)
-  const { pressed, hovered, inverted } = useWindowPointer()   // LOCAL: was local state on this div
+  const { pressed, hovered, inverted, label } = useWindowPointer()   // LOCAL: was local state on this div
 
   return (
     <CursorCtx.Provider
@@ -134,8 +144,47 @@ function Stage({
         }}
       >
         {children}
+        <CursorTag label={label} />
       </div>
     </CursorCtx.Provider>
+  )
+}
+
+// LOCAL ADDITION. A small tag that rides just below and to the right of the cursor, over anything with
+// data-cursor-label. It follows the pointer a touch behind the dot, and keeps its words while it fades out.
+function CursorTag({ label }: { label: string | null }) {
+  const { stageRef } = useCursorState()
+  const pointer = usePointerPosition()
+  const rawX = useMotionValue(0)
+  const rawY = useMotionValue(0)
+  const x = useSpring(rawX, { stiffness: 600, damping: 45 })
+  const y = useSpring(rawY, { stiffness: 600, damping: 45 })
+  const [text, setText] = useState(label)
+  useEffect(() => { if (label) setText(label) }, [label])
+  useEffect(() => {
+    const sync = () => {
+      const sr = stageRef.current?.getBoundingClientRect()
+      if (!sr) return
+      rawX.set(pointer.x.get() - sr.left)
+      rawY.set(pointer.y.get() - sr.top)
+    }
+    const ux = pointer.x.on("change", sync)
+    const uy = pointer.y.on("change", sync)
+    return () => { ux(); uy() }
+  }, [pointer.x, pointer.y, rawX, rawY, stageRef])
+  return (
+    <motion.div
+      className="cursor-tag"
+      initial={false}
+      animate={{ opacity: label ? 1 : 0, scale: label ? 1 : 0.9 }}
+      transition={{ duration: 0.25, ease: [0.2, 0.7, 0.2, 1] }}
+      style={{ position: "absolute", top: 0, left: 0, x, y, pointerEvents: "none", zIndex: 31, transformOrigin: "0 0" }}
+    >
+      <span>
+        {text}
+        <svg viewBox="0 0 14.4 14.4" aria-hidden="true"><path d="M1.2 13.2L13.2 1.2M13.2 1.2H1.2M13.2 1.2V13.2" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" fill="none" /></svg>
+      </span>
+    </motion.div>
   )
 }
 
@@ -203,8 +252,8 @@ function Cursor({
         h.set(caret)
         return
       }
-      rawX.set(pointer.x.get() ? px : sr.width / 2)
-      rawY.set(pointer.y.get() ? py : sr.height / 2)
+      rawX.set(pointer.moved.current ? px : sr.width / 2)
+      rawY.set(pointer.moved.current ? py : sr.height / 2)
       w.set(baseW)
       h.set(baseH)
     }

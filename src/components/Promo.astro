@@ -17,7 +17,7 @@ const { item } = Astro.props;
       <p class="text-body text-secondary">{item.line}</p>
       <p class="mt-3"><a class="promo-cta" href={item.href} tabindex="-1" aria-hidden="true" data-roll>Read the case study<svg class="arr" viewBox="0 0 14.4 14.4" aria-hidden="true"><path d="M1.2 13.2L13.2 1.2M13.2 1.2H1.2M13.2 1.2V13.2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" fill="none"/></svg></a></p>
     </div>
-    <a class="col-media block max-lg:order-first" href={item.href} tabindex="-1" aria-hidden="true">
+    <a class="col-media block max-lg:order-first" href={item.href} tabindex="-1" aria-hidden="true" data-cursor-label="Read the case study">
       {item.slug === 'scout' ? <ScoutPromo /> : item.slug === 'tradeling-b2b' ? <TradelingPromo /> : item.slug === 'tradeling-lending' ? <QFunderPromo /> : item.slug === 'tamm' ? <TammPromo /> : item.slug === 'rta' ? <RtaPromo /> : item.image ? (
         <img
           class="promo-img block w-full aspect-[16/10] object-cover bg-surface"
@@ -37,7 +37,9 @@ const { item } = Astro.props;
 </section>
 <style>
   /* the title is the link; the image and the call to action point to the same page for mouse and touch.
-    : case studies are standalone pages, so they load in full rather than through the view-transition router */
+     With a mouse, the cursor says so over the image ("Read the case study", data-cursor-label), and the
+     image comes forward a touch: slightly larger and dimmer. Its own scale and filter, so the reveal's
+     transform and timing are untouched. */
   .promo-link{color:inherit;text-decoration:none}
   .promo-cta{display:inline-flex;align-items:center;gap:7px;font-weight:600;font-size:var(--text-meta);color:var(--color-secondary);text-decoration:none;transition:color .2s var(--ease-out-soft)}
   .promo-cta svg{width:.72em;height:.72em}
@@ -53,6 +55,11 @@ const { item } = Astro.props;
   :global(html.js) .promo-img{opacity:0;transform:scale(1.035);transition:opacity .8s var(--ease-out-soft),transform 1.2s var(--ease-out-soft)}
   :global(html.js) .promo.in .promo-text > *{opacity:1;transform:none}
   :global(html.js) .promo.in .promo-img{opacity:1;transform:none}
+  @media (hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference){
+    .col-media{overflow:hidden}
+    .col-media :global(.promo-img){transition:opacity .8s var(--ease-out-soft),transform 1.2s var(--ease-out-soft),scale .6s var(--ease-out-soft),filter .4s ease}
+    .col-media:hover :global(.promo-img){scale:1.02;filter:brightness(.92)}
+  }
   @media (prefers-reduced-motion:reduce){
     :global(html.js) .promo-text > *,:global(html.js) .promo-img{opacity:1;transform:none;transition:none}
   }
