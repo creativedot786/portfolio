@@ -456,12 +456,7 @@
 /* phones get narrower drawings with the same type size, so the labels stay readable */
 @media (max-width:599px){.cs-tradeling .imp-charts .panel{--ar:480 / 540 !important}}
 .cs-tradeling .imp-charts picture{display:block;width:100%;height:100%}
-/* Decision 01: the home page in Strapi, a section card over the content manager, in a browser window.
-   Text above and the picture across the page, so the screenshots stay readable. */
-@media (min-width:1024px){
-.cs-tradeling .dec.cms .dec-txt{grid-column:4/10;position:static;margin-bottom:48px}
-.cs-tradeling .dec.cms .dec-m{grid-column:4/-1;margin-right:0}
-}
+/* Decision 01: the home page in Strapi, a section card over the content manager, in a browser window, right of the text */
 .cs-tradeling .cms-shot{position:relative;margin:0;aspect-ratio:1000/700;container-type:inline-size}
 .cs-tradeling .cms-win{position:absolute;left:0;top:0;width:70%;background:#fff;border-radius:1cqw;overflow:hidden;
   box-shadow:0 0 0 1px rgb(0 0 0 / .08),0 2cqw 5cqw -1.5cqw rgb(0 0 0 / .5)}
