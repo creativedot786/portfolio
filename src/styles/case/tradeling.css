@@ -450,3 +450,9 @@
 .cs-tradeling .fd-tn span{display:none}
 .cs-tradeling .fd-tv i{width:20px}
 }
+/* Impact: the two charts that back the numbers, one above the other so their labels stay readable */
+.cs-tradeling .imp-charts{grid-column:1/-1;display:grid;gap:32px;margin-top:56px}
+@media (min-width:1024px){.cs-tradeling .imp-charts{grid-column:4/11;gap:48px;margin-top:72px}}
+/* phones get narrower drawings with the same type size, so the labels stay readable */
+@media (max-width:599px){.cs-tradeling .imp-charts .panel{--ar:480 / 540 !important}}
+.cs-tradeling .imp-charts picture{display:block;width:100%;height:100%}

@@ -24,7 +24,7 @@ export const work: Work[] = [
     industryLabel: 'B2B Marketplace',
     platform: 'Mobile App',
     title: 'Increasing conversion rate and digital adoption by personalising the app experience',
-    line: 'Most business customers on Tradeling ordered through sales agents, not the app. I redesigned it so each type of business gets its own home page. Conversion rose around 38%, and GMV from the app around 30%.',
+    line: 'Most business customers on Tradeling ordered through sales agents, not the app. I redesigned it so each type of business gets its own home page. Conversion rose around 33%, and GMV from the app around 47%.',
   },
   {
     slug: 'tradeling-lending',
