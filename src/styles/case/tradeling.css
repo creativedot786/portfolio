@@ -456,3 +456,18 @@
 /* phones get narrower drawings with the same type size, so the labels stay readable */
 @media (max-width:599px){.cs-tradeling .imp-charts .panel{--ar:480 / 540 !important}}
 .cs-tradeling .imp-charts picture{display:block;width:100%;height:100%}
+/* Decision 01: the home page in Strapi, a section card over the content manager, in a browser window.
+   Text above and the picture across the page, so the screenshots stay readable. */
+@media (min-width:1024px){
+.cs-tradeling .dec.cms .dec-txt{grid-column:4/10;position:static;margin-bottom:48px}
+.cs-tradeling .dec.cms .dec-m{grid-column:4/-1;margin-right:0}
+}
+.cs-tradeling .cms-shot{position:relative;margin:0;aspect-ratio:1000/700;container-type:inline-size}
+.cs-tradeling .cms-win{position:absolute;left:0;top:0;width:70%;background:#fff;border-radius:1cqw;overflow:hidden;
+  box-shadow:0 0 0 1px rgb(0 0 0 / .08),0 2cqw 5cqw -1.5cqw rgb(0 0 0 / .5)}
+.cs-tradeling .cms-bar{display:flex;align-items:center;gap:.7cqw;height:3.6cqw;padding:0 1.4cqw;background:#eceef1;box-shadow:inset 0 -1px 0 #dcdfe4}
+.cs-tradeling .cms-bar i{width:.9cqw;height:.9cqw;border-radius:50%;background:#cfd2d8}
+.cs-tradeling .cms-bar span{margin:0 auto;padding:.3cqw 3cqw;border-radius:.6cqw;background:#fff;font:500 1.2cqw/1.3 var(--font-body);color:#5b6170}
+.cs-tradeling .cms-win img,.cs-tradeling .cms-card img{display:block;width:100%;height:auto}
+.cs-tradeling .cms-card{position:absolute;left:40%;top:27%;width:60%;border-radius:.8cqw;overflow:hidden;background:#fff;
+  box-shadow:0 3cqw 7cqw -2cqw rgb(0 0 0 / .6)}
